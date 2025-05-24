@@ -14,7 +14,7 @@ import Reference from "../../components/Reference.astro"
 
 In this article, we show how to implement an algorithm for constructing a graphically optimal conditional instrumental set. Instrumental variables are a popular tool for identifying and estimating causal effects and conditional instrumental sets generalize this notion further. As there may be many different conditional instruments in a causal graph, it is an important question which intruments to prefer over others. <Reference id="henckelIV" format="author(year)"/> develop conditonal instruments with statistical efficiency guarantees they call *graphical optimality*. The main result is stated in the following theorem. 
 
-**Theorem** [<Reference id="henckelIV" format="author(year)"/>]    
+**Theorem 1** [<Reference id="henckelIV" format="author(year)"/>]    
 Let $x$ and $y$ be distinct nodes in an ADMG $G$ such that $\text{de}(x)_G = \{x, y\}$. It holds for $W^{\text{opt}} = \text{dis}^+_{G, \{x\}}(y) \setminus \{x, y\}$ and $Z^{\text{opt}} = \text{dis}^+_{G, \{y\}}(x) \setminus (W^{\text{opt}} \cup \{x, y\})$ that
 1. if $Z^\text{opt} \neq \emptyset$, then $(Z^\text{opt}, W^\text{opt})$ is a valid conditional instrumental set relative to $(x, y)$ in $G$ and
 2. if $Z^\text{opt} \cap (\text{pa}_G(x) \cup \text{sib}_G(x)) \neq \emptyset$, then $(Z^\text{opt}, W^\text{opt})$ is graphically optimal relative to $(x, y)$ in $G$. 
@@ -23,14 +23,28 @@ The criterion is stated of ADMGs, which are graphs with both directed and bidire
 
 The criterion assumes that $y$ is the only descendant of $x$, which may appear like a strong restriction. However, one may consider the *latent projection* over all other descendants of $x$ to satisfy this condition. The only consequence of this, is that no descendants of $x$ in the original graph can be part of the instrumental set. However, this is a mild assumption because if such variables could be used as part of the instrument, then the causal effect would also be identifiable using adjustment. Therefore, in the following, we will always assume that this is not the case and the causal effect *cannot* be identified by adjustment. Checking this is also possible using CIfly, however, it goes beyond the scope of this article. 
 
-While using the latent projection over descendants of $x$ (apart from $y$) is correct under this assumption, algorithmically, computing the latent projection is more expensive than CIfly reachability algorithms. Hence, we would like to avoid this operation here. To this aim, we use the following graphical formulation for $W^\text{opt}$ and $Z^\text{opt}$ in the CIfly paper. 
+While using the latent projection over all descendants of $x$ (apart from $y$) is correct under this assumption, algorithmically, computing the latent projection is more expensive than CIfly reachability algorithms. Hence, we would like to avoid this operation here. To this aim, we use the following graphical formulation for $W^\text{opt}$ and $Z^\text{opt}$ in the CIfly paper. 
 
-**Theorem**    
-Consider distinct nodes $x$ and $y$ in an ADMG $G$ such that $y \in \text{de}_G(x)$ and let $A = V \setminus D$. Moreover, define
+**Theorem 2**    
+Consider distinct nodes $x$ and $y$ in an ADMG $G$ and $D = \text{de}_G(x)$ such that $y \in D$ and let $A = V \setminus D$. Then, $W^{\text{opt}}$ and $Z^{\text{opt}}$ for the graph obtained by latent projection over $D \setminus \{x, y\}$ are equivalent to the following constructions in $G$:
+1. $W^{\text{opt}} = \{ v \in V \; \mid \; v \text{ is on a path } p \rightarrow c_1 \leftrightarrow \cdots \leftrightarrow \cdots c_k \leftrightarrow d_1 \rightarrow \cdots \rightarrow \cdots d_l \rightarrow y \} \cap A$,  where $p, c_1, \dots, c_k \in A$ and $d_1, \dots, d_l \in (D \setminus \{ x \})$ possibly with $k=0$ or $l=0$ and 
+2. $Z^{\text{opt}} = \{ v \in V \; \mid \; v \text{ is on a path } p \rightarrow c_1 \leftrightarrow \cdots \leftrightarrow c_k \leftrightarrow x\} \setminus W^{\text{opt}}$, where  $p, c_1, \dots, c_k \in A$ possibly with $k=0$.
 
-$$
-Test
-$$
+Using this theorem, we proceed as follows:
+1. Check that $y \in \text{de}_G(x)$. 
+2. Compute $W^{\text{opt}}$ and $Z^{\text{opt}}$ as defined in Theorem 2. 
+3. Check Condition 1. and 2. of Theorem 1.
+
+This will guarantee that the resulting sets $W^{\text{opt}}$ and $Z^{\text{opt}}$ constitute a graphical optimal instrumental sets, assuming that there is no adjustment set relative to $x$ and $y$ in $G$. Now, let us consider the three steps one-by-one.
+
+#### Descendant check
+TODO
+
+#### Compute $W^{\text{opt}}$ and $Z^{\text{opt}}$
+TODO
+
+#### Check optimality condition
+TODO
 
 <ExampleCode id="optimalIV.R"/>
 
