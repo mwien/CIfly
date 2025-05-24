@@ -1,0 +1,31 @@
+---
+import { Code } from "astro:components";
+import { addCornerButton } from "../shiki/transformers.ts";
+const {
+  id,
+  largeText,
+  suppressButton,
+  wrapperClass: wrapperClassName,
+  codeClass: codeClassName,
+  ...rest
+} = Astro.props;
+import { getEntry } from "astro:content";
+const ruletable_raw = await getEntry("ruletables_raw", id);
+import ciflyGrammar from "../shiki/grammar/cifly.tmLanguage.json";
+import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+---
+
+<div class:list={["relative font-mono w-full", wrapperClassName]} {...rest}>
+  <Code
+    code={ruletable_raw.data.raw}
+    lang={ciflyGrammar}
+    theme={customCatppucinLatte}
+    transformers={suppressButton ? [] : [addCornerButton()]}
+    class:list={[
+      "text-sm p-2 rounded-lg",
+      { "md:text-base": largeText },
+      codeClassName,
+    ]}
+    id={id}
+  />
+</div>

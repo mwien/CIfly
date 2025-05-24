@@ -1,0 +1,7 @@
+---
+const { first } = Astro.props;
+---
+
+<div class:list={["carousel-slide", { hidden: !first }]}>
+  <slot />
+</div>

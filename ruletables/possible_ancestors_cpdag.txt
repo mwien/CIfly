@@ -1,0 +1,7 @@
+EDGES --> <--, ---
+SETS X, W
+START <-- AT X
+OUTPUT ...
+
+... | <-- | next not in W
+... | --- | next not in W

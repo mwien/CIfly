@@ -1,0 +1,29 @@
+---
+import "../../styles/global.css";
+import Layout from "../../layouts/Layout.astro";
+import ApplicationCard from "../../components/ApplicationCard.astro";
+import { getCollection } from "astro:content";
+
+const applications = await getCollection("applications");
+---
+
+<Layout>
+  <div class="w-full md:w-7/10">
+    <p class="md:text-lg text-pretty mb-4 mt-1 md:my-4 hyphens-auto">
+      CIfly can be used for a variety of tasks in graphical causal inference.
+      Here, we discuss example applications and show how they can be solved
+      transparently and efficiently with CIfly.
+    </p>
+    <ul class="flex flex-col">
+      {
+        applications
+          .sort((a, b) => (a.id < b.id ? -1 : 1))
+          .map((application) => (
+            <li>
+              <ApplicationCard application={application} />
+            </li>
+          ))
+      }
+    </ul>
+  </div>
+</Layout>

@@ -1,0 +1,9 @@
+EDGES --> <--, ---
+SETS X, Z
+COLORS pass, yield
+START --> [pass] AT X
+OUTPUT ... [yield]
+
+... [pass]  | ---, --> [pass]  | next not in X and next not in Z
+... [pass]  | ---, --> [yield] | next not in X and next in Z
+... [yield] | ---, --> [yield] | next not in X

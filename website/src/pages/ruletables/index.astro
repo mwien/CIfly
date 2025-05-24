@@ -1,0 +1,44 @@
+---
+import "../../styles/global.css";
+import Layout from "../../layouts/Layout.astro";
+import RuletableCard from "../../components/RuletableCard.astro";
+import { getCollection } from "astro:content";
+
+const ruletables = await getCollection("ruletables");
+
+// compute the examples in which the ruletable code is given
+const applications = await getCollection("applications");
+const ruletableApplications = new Map();
+applications.forEach((application) => {
+  application.data.ruletables.forEach((ruletable) => {
+    const list = ruletableApplications.get(ruletable.id) || [];
+    list.push(application);
+    ruletableApplications.set(ruletable.id, list);
+  });
+});
+---
+
+<Layout>
+  <div class="w-full md:w-7/10">
+    <p class="md:text-lg text-pretty mb-4 mt-1 md:my-4 hyphens-auto">
+      At the core of a CIfly algorithm lies its ruletable. Here, we present an
+      overview the ruletables that we use in our application examples. For
+      personal use, just copy the ruletable into your project and modify it to
+      your needs.
+    </p>
+    <ul class="flex flex-col">
+      {
+        ruletables
+          .sort((a, b) => (a.data.source.id < b.data.source.id ? -1 : 1))
+          .map((table) => (
+            <li>
+              <RuletableCard
+                ruletable={table}
+                applications={ruletableApplications}
+              />
+            </li>
+          ))
+      }
+    </ul>
+  </div>
+</Layout>

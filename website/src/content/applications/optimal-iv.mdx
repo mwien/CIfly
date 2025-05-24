@@ -1,0 +1,39 @@
+---
+title: Optimal conditional instruments
+summary: Finding an asymptotically optimal conditional instrumental set.
+code: [optimalIV.R]
+ruletables: [descendants_admg, optimal_iv_admg]
+graph: ADMG
+language: R
+references: [henckelIV]
+---
+
+import ExampleCode from "../../components/ExampleCode.astro"
+import Ruletable from "../../components/Ruletable.astro"
+import Reference from "../../components/Reference.astro"
+
+In this article, we show how to implement an algorithm for constructing a graphically optimal conditional instrumental set. Instrumental variables are a popular tool for identifying and estimating causal effects and conditional instrumental sets generalize this notion further. As there may be many different conditional instruments in a causal graph, it is an important question which intruments to prefer over others. <Reference id="henckelIV" format="author(year)"/> develop conditonal instruments with statistical efficiency guarantees they call *graphical optimality*. The main result is stated in the following theorem. 
+
+**Theorem** [<Reference id="henckelIV" format="author(year)"/>]    
+Let $x$ and $y$ be distinct nodes in an ADMG $G$ such that $\text{de}(x)_G = \{x, y\}$. It holds for $W^{\text{opt}} = \text{dis}^+_{G, \{x\}}(y) \setminus \{x, y\}$ and $Z^{\text{opt}} = \text{dis}^+_{G, \{y\}}(x) \setminus (W^{\text{opt}} \cup \{x, y\})$ that
+1. if $Z^\text{opt} \neq \emptyset$, then $(Z^\text{opt}, W^\text{opt})$ is a valid conditional instrumental set relative to $(x, y)$ in $G$ and
+2. if $Z^\text{opt} \cap (\text{pa}_G(x) \cup \text{sib}_G(x)) \neq \emptyset$, then $(Z^\text{opt}, W^\text{opt})$ is graphically optimal relative to $(x, y)$ in $G$. 
+
+The criterion is stated of ADMGs, which are graphs with both directed and bidirected edges that do not contain a directed cycle. , $\text{pa}_G(x)$ are the parents of $x$ in $G$, i.e., nodes $p$ with $p \rightarrow x$, and $\text{sib}_G(x)$ are the siblings of $x$ in $G$, i.e., the nodes with $p \leftrightarrow x$. Further, $\text{dis}_{G, W}(x)$ contains all nodes connected to $x$ via a path of bidirected edges, with all nodes on the path not being in $W$, and $\text{dis}_{G, W}^+(x) = (\text{dis}_{G, W}(x) \cup \text{pa}_G(\text{dis}_{G, W}(x))) \setminus W$. 
+
+The criterion assumes that $y$ is the only descendant of $x$, which may appear like a strong restriction. However, one may consider the *latent projection* over all other descendants of $x$ to satisfy this condition. The only consequence of this, is that no descendants of $x$ in the original graph can be part of the instrumental set. However, this is a mild assumption because if such variables could be used as part of the instrument, then the causal effect would also be identifiable using adjustment. Therefore, in the following, we will always assume that this is not the case and the causal effect *cannot* be identified by adjustment. Checking this is also possible using CIfly, however, it goes beyond the scope of this article. 
+
+While using the latent projection over descendants of $x$ (apart from $y$) is correct under this assumption, algorithmically, computing the latent projection is more expensive than CIfly reachability algorithms. Hence, we would like to avoid this operation here. To this aim, we use the following graphical formulation for $W^\text{opt}$ and $Z^\text{opt}$ in the CIfly paper. 
+
+**Theorem**    
+Consider distinct nodes $x$ and $y$ in an ADMG $G$ such that $y \in \text{de}_G(x)$ and let $A = V \setminus D$. Moreover, define
+
+$$
+Test
+$$
+
+<ExampleCode id="optimalIV.R"/>
+
+And this is the ruletable TODO
+
+<Ruletable id="optimal_iv_admg"/>

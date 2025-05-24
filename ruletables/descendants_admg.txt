@@ -1,0 +1,6 @@
+EDGES --> <--, <->
+SETS X
+START --> AT X
+OUTPUT ...
+
+... | --> | true

@@ -1,0 +1,20 @@
+[project]
+name = "ciflypy-examples"
+version = "0.1.0"
+description = ""
+authors = [
+{name = "Marcel Wienöbst",email = "marcel.wienoebst@gmx.de"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ciflypy",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
+
+[tool.uv.sources]
+ciflypy = { path = "../../ciflypy" }

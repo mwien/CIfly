@@ -1,0 +1,9 @@
+EDGES --> <--, ---
+SETS X, C, Z
+START <-- AT X
+OUTPUT ...
+
+--> | <-- | current in Z
+--- | --- | current not in Z
+... | --> | current not in Z and (current not in X or next not in C)
+<-- | ... | current not in Z 

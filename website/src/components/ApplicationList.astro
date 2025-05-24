@@ -1,0 +1,26 @@
+---
+import "../styles/global.css";
+const { applications, small, truncate } = Astro.props;
+---
+
+{
+  applications.length > 0 && (
+    <div
+  class:list={["font-bold text-blue-700 mr-1", { "text-sm md:text-base": small }, { truncate: truncate }]}
+    >
+      Applications:
+    </div>
+    <div
+      class:list={[{ "text-sm md:text-base": small }, { truncate: truncate }]}
+    >
+      {applications.map((application, index) => (
+        <>
+          <a class="text-gray-800" href={`/applications/${application.id}/`}>
+            {application.data.title}
+          </a>
+          {index < applications.length - 1 && <span>, </span>}
+        </>
+      ))}
+    </div>
+  )
+}

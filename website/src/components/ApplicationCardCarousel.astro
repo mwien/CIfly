@@ -1,0 +1,43 @@
+---
+import "../styles/global.css";
+import ReferenceList from "./ReferenceList.astro";
+const { application } = Astro.props;
+---
+
+<div class="md:mx-16">
+  <div
+    class="w-full h-40 md:h-44 p-2 mt-3 mb-2 bg-white border border-gray-100 rounded-lg shadow-sm mx-auto flex flex-col justify-between"
+  >
+    <a
+      href={`/applications/${application.id}/`}
+      class="flex justify-between gap-2 w-full mb-6 md:mb-4"
+    >
+      <h1 class="text-sm md:text-base font-extrabold text-blue-700 truncate">
+        {application.data.title}
+      </h1>
+      <div class="text-sm md:text-base font-extrabold text-blue-700">
+        {application.data.graph}
+      </div>
+    </a>
+    <div
+      class="text-sm md:text-base mb-2 px-8 md:px-0 line-clamp-2 text-pretty hyphens-auto"
+    >
+      {application.data.summary}
+    </div>
+    <div
+      class="grid grid-cols-[90px_1fr] md:grid-cols-[102px_1fr] w-full px-2 md:px-0"
+    >
+      <div class="font-bold text-blue-700 mr-1 text-sm md:text-base">
+        Language:
+      </div>
+      <div class="text-gray-800 text-sm md:text-base">
+        {application.data.language}
+      </div>
+      <ReferenceList
+        references={application.data.references}
+        small={true}
+        truncate={true}
+      />
+    </div>
+  </div>
+</div>

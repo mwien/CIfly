@@ -1,0 +1,9 @@
+node_modules/
+
+__pycache__/
+.RHistory
+.Rhistory
+.RData
+
+target/
+.env/

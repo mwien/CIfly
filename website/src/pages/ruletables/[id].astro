@@ -1,0 +1,65 @@
+---
+import "../../styles/global.css";
+import "katex/dist/katex.min.css";
+import Layout from "../../layouts/Layout.astro";
+import Prose from "../../components/Prose.astro";
+import { getCollection, render } from "astro:content";
+import Ruletable from "../../components/Ruletable.astro";
+import ReferenceList from "../../components/ReferenceList.astro";
+import ApplicationList from "../../components/ApplicationList.astro";
+import BackButton from "../../components/BackButton.astro";
+export async function getStaticPaths() {
+  const ruletables = await getCollection("ruletables");
+  return ruletables.map((ruletable) => ({
+    params: { id: ruletable.id },
+    props: { ruletable },
+  }));
+}
+const { ruletable } = Astro.props;
+const { Content } = await render(ruletable);
+
+// compute the examples in which the ruletable code is given
+const applications = await getCollection("applications");
+const ruletableApplications = new Map();
+applications.forEach((application) => {
+  application.data.ruletables.forEach((ruletable) => {
+    const list = ruletableApplications.get(ruletable.id) || [];
+    list.push(application);
+    ruletableApplications.set(ruletable.id, list);
+  });
+});
+---
+
+<Layout>
+  <div class="w-full md:w-7/10 md:my-4">
+    <h1 class="font-extrabold text-blue-700 mb-3">
+      {ruletable.data.title}
+    </h1>
+    <div class="flex flex-col gap-0.5">
+      <Prose>
+        <Content />
+      </Prose>
+      <Ruletable id={ruletable.data.source.id} wrapperClass="my-4" />
+      <div class="grid grid-cols-[100px_1fr] md:grid-cols-[112px_1fr] w-full">
+        <div class="font-bold text-blue-700 mr-1 text-sm md:text-base">
+          Graph type:
+        </div>
+        <div class="text-gray-800 text-sm md:text-base">
+          {ruletable.data.graph}
+        </div>
+        <ApplicationList
+          applications={ruletableApplications.get(ruletable.data.source.id) ||
+            []}
+          small={true}
+          truncate={true}
+        />
+        <ReferenceList
+          references={ruletable.data.references}
+          small={true}
+          truncate={true}
+        />
+      </div>
+      <BackButton link="/ruletables/" />
+    </div>
+  </div>
+</Layout>

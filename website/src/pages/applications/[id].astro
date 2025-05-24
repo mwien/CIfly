@@ -1,0 +1,40 @@
+---
+import "../../styles/global.css";
+import "katex/dist/katex.min.css";
+import Layout from "../../layouts/Layout.astro";
+import Prose from "../../components/Prose.astro";
+import ReferenceList from "../../components/ReferenceList.astro";
+import BackButton from "../../components/BackButton.astro";
+import { getCollection, render } from "astro:content";
+export async function getStaticPaths() {
+  const applications = await getCollection("applications");
+  return applications.map((application) => ({
+    params: { id: application.id },
+    props: { application },
+  }));
+}
+const { application } = Astro.props;
+const { Content } = await render(application);
+---
+
+<Layout>
+  <div class="w-full md:w-7/10 md:my-4">
+    <div class="flex justify-between w-full mb-4">
+      <h1 class="font-extrabold text-blue-700">
+        {application.data.title}
+      </h1>
+      <div class="font-extrabold text-blue-700">
+        {application.data.graph}
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <Prose>
+        <Content />
+      </Prose>
+      <div class="flex flex-row">
+        <ReferenceList references={application.data.references} small={false} />
+      </div>
+      <BackButton link="/applications/" />
+    </div>
+  </div>
+</Layout>

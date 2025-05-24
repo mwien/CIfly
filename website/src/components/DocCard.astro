@@ -1,0 +1,22 @@
+---
+import "../styles/global.css";
+import ArrowButton from "./ArrowButton.astro";
+const { doc } = Astro.props;
+---
+
+<div
+  class="w-full p-2.5 my-2 md:my-3 bg-white border border-blue-600 rounded-lg shadow-sm mx-auto"
+>
+  <a
+    href={`/docs/${doc.id}/`}
+    class="flex flex-row justify-between w-full mb-2"
+  >
+    <h1 class="text-sm md:text-base font-extrabold text-blue-700">
+      {doc.data.title}
+    </h1>
+    <ArrowButton />
+  </a>
+  <div>
+    {doc.data.summary}
+  </div>
+</div>

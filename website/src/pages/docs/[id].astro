@@ -1,0 +1,31 @@
+---
+import "../../styles/global.css";
+import "katex/dist/katex.min.css";
+import Layout from "../../layouts/Layout.astro";
+import Prose from "../../components/Prose.astro";
+import BackButton from "../../components/BackButton.astro";
+import { getCollection, render } from "astro:content";
+export async function getStaticPaths() {
+  const docs = await getCollection("docs");
+  return docs.map((docPost) => ({
+    params: { id: docPost.id },
+    props: { docPost },
+  }));
+}
+const { docPost } = Astro.props;
+const { Content } = await render(docPost);
+---
+
+<Layout>
+  <div class="w-full md:w-7/10 md:my-4">
+    <h1 class="font-extrabold text-lg text-blue-700 mb-4">
+      {docPost.data.title}
+    </h1>
+    <div class="flex flex-col">
+      <Prose>
+        <Content />
+      </Prose>
+      <BackButton link="/docs/" />
+    </div>
+  </div>
+</Layout>

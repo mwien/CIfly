@@ -1,0 +1,318 @@
+---
+import "../styles/global.css";
+import "katex/dist/katex.min.css";
+import Layout from "../layouts/Layout.astro";
+import Box from "../components/Box.astro";
+import Ruletable from "../components/Ruletable.astro";
+import Carousel from "../components/Carousel.astro";
+import CarouselSlide from "../components/CarouselSlide.astro";
+import RuletableCardCarousel from "../components/RuletableCardCarousel.astro";
+import ApplicationCardCarousel from "../components/ApplicationCardCarousel.astro";
+import ReductionFigure from "../components/ReductionFigure.astro";
+import { getCollection } from "astro:content";
+import { Code } from "astro:components";
+import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+
+let ruletables = await getCollection("ruletables");
+ruletables = ruletables.sort((a, b) =>
+  a.data.source.id < b.data.source.id ? -1 : 1,
+);
+let applications = await getCollection("applications");
+applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
+---
+
+<Layout>
+  <div class="w-full md:w-17/18 flex flex-col gap-10 md:gap-14 my-4 md:mb-10">
+    <section class="flex flex-col items-center mt-2 md:mt-8 mb-1">
+      <h2
+        class="text-gray-900 text-lg md:text-2xl text-center font-bold font-sans mb-2"
+      >
+        A declarative framework for designing efficient causal inference
+        algorithms
+      </h2>
+      <a
+        href="/docs/"
+        class="bg-blue-700 hover:bg-blue-600 rounded-lg text-white md:text-lg font-bold px-4 py-2 mt-4 md:mt-6"
+      >
+        Get Started
+      </a>
+    </section>
+
+    <Box>
+      <Fragment slot="title">What is CIfly?</Fragment>
+      <p class="text-center text-gray-800 md:text-xl my-6 md:my-8">
+        CIfly is a framework for developing and writing causal inference
+        algorithms.
+      </p>
+
+      <hr class="text-blue-700 mb-4" />
+
+      <div
+        class="py-2 md:grid md:grid-flow-col md:auto-cols-fr md:gap-4 md:px-3 md:mx-1 md:pt-4"
+      >
+        <div class="mb-3 md:mb-1">
+          <p class="text-blue-700 md:text-lg font-extrabold mb-1 md:mb-1">
+            Python and R support:
+          </p>
+          <p class="md:text-lg hyphens-auto">
+            CIfly algorithms can be developed language-independent and easily be
+            called from both Python and R.
+          </p>
+        </div>
+        <div class="mb-3 md:mb-0">
+          <p class="text-blue-700 md:text-lg font-extrabold mb-1 md:mb-1">
+            Concise specification:
+          </p>
+          <p class="md:text-lg hyphens-auto">
+            Algorithms are specified in ruletables to avoid boilerplate and put
+            the causal logic in the center.
+          </p>
+        </div>
+        <div>
+          <p class="text-blue-700 md:text-lg font-extrabold mb-1 md:mb-1">
+            Performance:
+          </p>
+          <p class="md:text-lg hyphens-auto">
+            CIfly runs in linear time and its Rust implementation enables
+            further speedups over R or Python.
+          </p>
+        </div>
+      </div>
+    </Box>
+
+    <Box>
+      <Fragment slot="title">Installation</Fragment>
+
+      <div class="mb-2 md:mx-4">
+        <p class="md:text-lg mb-4 hyphens-auto">
+          We are working on CIfly being installable in the standard way via pip
+          in Python and from CRAN in R.
+        </p>
+
+        <div class="flex flex-col md:flex-row gap-4 mb-4">
+          <Code
+            code={`# Python installation with pip
+pip install ciflypy`}
+            lang="bash"
+            theme={customCatppucinLatte}
+            class="text-sm md:text-base p-2 rounded-lg w-full"
+          />
+
+          <Code
+            code={`# R installation via CRAN
+install.packages("ciflyR")`}
+            lang="r"
+            theme={customCatppucinLatte}
+            class="text-sm md:text-base p-2 rounded-lg w-full"
+          />
+        </div>
+        <p class="md:text-lg mb-2 hyphens-auto">
+          In Python, the installation should work out-of-the-box without relying
+          on any further dependencies. In R, if the package is build on your
+          system, as is the case for Linux distributions, the <a
+            href="https://rustup.rs/"
+            class="text-blue-700">Rust toolchain</a
+          >
+          needs to be installed.
+        </p>
+      </div>
+    </Box>
+
+    <Box>
+      <Fragment slot="title">Example</Fragment>
+
+      <div class="mb-2 md:mx-4">
+        <p class="md:text-lg mb-4 hyphens-auto">
+          As a "Hello World" example, we show how to test d-separation with
+          CIfly. The CIfly algorithm specified by thefollowing ruletable returns
+          all nodes d-connected to set X given set Z.
+        </p>
+
+        <Ruletable
+          id="dsep"
+          largeText={true}
+          suppressButton={true}
+          wrapperClass="my-4"
+        />
+
+        <p class="md:text-lg my-4 hyphens-auto">
+          The ruletable can be embedded into the code or loaded via file path
+          such as in the implementation below that tests d-separation using
+          Python and R.
+        </p>
+
+        <div class="relative my-4">
+          <div>
+            <button
+              code-tab="py"
+              class="flex items-center justify-center absolute cursor-pointer bg-blue-700 hover:bg-blue-600 text-xs md:text-base text-white font-bold rounded-sm md:rounded-lg p-1 h-6 md:h-8 w-12 md:w-16 right-13 md:right-18 top-1"
+              >Python</button
+            >
+            <button
+              code-tab="r"
+              class="flex items-center justify-center absolute cursor-pointer bg-white hover:bg-blue-100 border border-blue-700 text-xs md:text-base text-blue-700 font-bold rounded-sm md:rounded-lg p-1 h-6 md:h-8 w-12 md:w-16 right-1 top-1"
+              >R</button
+            >
+          </div>
+
+          <div>
+            <div code-content="py">
+              <Code
+                code={`import ciflypy as cifly
+
+dsep_table_path = "path/to/table"
+
+def test_dsep(G, x, y, Z):
+      R = cifly.reach(G, {"X": x, "Z": Z}, dsep_table_path)
+      return y not in R
+
+
+`}
+                lang="python"
+                theme={customCatppucinLatte}
+                class="text-sm md:text-base p-2 rounded-lg"
+              />
+            </div>
+            <div code-content="r" class="hidden">
+              <Code
+                code={`library("ciflyR")
+
+dsepTablePath <- "path/to/table"
+
+test_dsep <- function(G, x, y, Z) {
+      R <- reach(G, list("X" = x, "Z" = Z), dsepTablePath)
+      return (!(y %in% R))
+}
+`}
+                lang="r"
+                theme={customCatppucinLatte}
+                class="text-sm md:text-base p-2 rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+        <p class="md:text-lg mt-4 mb-2 md:mb-3 hyphens-auto">
+          Find a more detailed explanation of this rule table <a
+            href="/docs/ruletables/"
+            class="text-blue-700">in our documentation</a
+          >.
+        </p>
+      </div>
+    </Box>
+
+    <Box>
+      <Fragment slot="title">Applications</Fragment>
+
+      <div class="md:mx-4">
+        <p class="md:text-lg md:mb-6 hyphens-auto">
+          Beyond fundamental tasks such as deciding d-separation, a large class
+          of problems in causal inference can be solved flexibly using CIfly. We
+          present a number of <a href="/examples/" class="text-blue-700"
+            >selected examples</a
+          >.
+        </p>
+
+        <Carousel>
+          {
+            applications.map((application, idx) => (
+              <CarouselSlide first={idx === 0}>
+                <ApplicationCardCarousel application={application} />
+              </CarouselSlide>
+            ))
+          }
+        </Carousel>
+      </div>
+    </Box>
+
+    <Box>
+      <Fragment slot="title">Ruletable</Fragment>
+
+      <div class="md:mx-4">
+        <p class="md:text-lg md:mb-6 hyphens-auto">
+          We believe that causal inference software should be transparent,
+          reusable and easy-to-adapt to the users needs. At the core of our
+          framework lie ruletables which ensure these properties. We provide
+          <a href="/ruletables/" class="text-blue-700">ruletables</a> for many basic
+          primitives.
+        </p>
+
+        <Carousel>
+          {
+            ruletables.map((table, idx) => (
+              <CarouselSlide first={idx === 0}>
+                <RuletableCardCarousel ruletable={table} />
+              </CarouselSlide>
+            ))
+          }
+        </Carousel>
+      </div>
+    </Box>
+
+    <Box>
+      <Fragment slot="title">Theoretical Foundations</Fragment>
+
+      <div class="md:mx-4">
+        <p class="md:text-lg hyphens-auto">
+          CIfly is based on causality-specific reductions to reachability, which
+          we formally introduce in <a
+            class="text-blue-700"
+            href="https://arxiv.org/">this paper</a
+          >. The mapping to the reachability input and back to the causal domain
+          is constrained such that the overall algorithm runs in linear time.
+        </p>
+
+        <div
+          class="w-full md:w-3/4 mx-auto mt-6 md:mt-8 mb-4 md:mb-6 border border-gray-100 rounded-lg shadow-sm p-1"
+        >
+          <ReductionFigure />
+        </div>
+      </div>
+    </Box>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const tabs = document.querySelectorAll("[code-tab]");
+      const contents = document.querySelectorAll("[code-content]");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.getAttribute("code-tab");
+
+          tabs.forEach((t) => {
+            if (t.getAttribute("code-tab") === target) {
+              t.classList.add("bg-blue-700", "text-white", "hover:bg-blue-600");
+              t.classList.remove(
+                "bg-white",
+                "text-blue-700",
+                "border-blue-700",
+                "border",
+                "hover:bg-blue-100",
+              );
+            } else {
+              t.classList.remove(
+                "bg-blue-700",
+                "text-white",
+                "hover:bg-blue-600",
+              );
+              t.classList.add(
+                "bg-white",
+                "text-blue-700",
+                "border-blue-700",
+                "border",
+                "hover:bg-blue-100",
+              );
+            }
+          });
+
+          contents.forEach((content) => {
+            content.classList.add("hidden");
+            if (content.getAttribute("code-content") === target) {
+              content.classList.remove("hidden");
+            }
+          });
+        });
+      });
+    });
+  </script>
+</Layout>

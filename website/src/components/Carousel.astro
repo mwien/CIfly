@@ -1,0 +1,79 @@
+<div
+  class="w-full md:w-5/6 mx-auto relative bg-white overflow-hidden carousel mt-1 mb-2"
+>
+  <div>
+    <slot />
+  </div>
+
+  <div class="flex justify-around">
+    <div class="flex items-center absolute inset-y-0 -left-1 md:-left-2">
+      <button
+        class="prev text-blue-700 bg-transparent px-3 h-full md:px-5 hover:text-blue-500 cursor-pointer flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="3"
+          stroke="currentColor"
+          class="size-6 md:size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 19.5 8.25 12l7.5-7.5"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="flex items-center absolute inset-y-0 -right-1 md:-right-2">
+      <button
+        class="next text-blue-700 bg-transparent px-3 h-full md:px-6 hover:text-blue-500 cursor-pointer flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="3"
+          stroke="currentColor"
+          class="size-6 md:size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const carousels = document.querySelectorAll("[class~='carousel']");
+    carousels.forEach((carousel) => {
+      const slides = carousel.querySelectorAll(".carousel-slide");
+      console.log(slides);
+      const prevBtn = carousel.querySelector("[class~='prev']");
+      const nextBtn = carousel.querySelector("[class~='next']");
+      let currentSlide = 0;
+
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.toggle("hidden", i !== index);
+        });
+      }
+
+      prevBtn.addEventListener("click", () => {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+      });
+
+      showSlide(currentSlide);
+    });
+  });
+</script>

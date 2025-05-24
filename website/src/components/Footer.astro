@@ -1,0 +1,31 @@
+---
+const today = new Date();
+---
+
+<footer class="max-w-screen-lg bg-white mx-auto sticky top-[100vh]">
+  <div
+    class="px-2 py-3 md:py-4 mx-2 border-t border-t-blue-700 md:flex md:items-center md:justify-between"
+  >
+    <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
+      >© {today.getFullYear()}
+      <a href="/" class="hover:underline">CIfly</a>. All Rights Reserved.
+    </span>
+    <ul
+      class="hidden md:flex flex-wrap text-sm font-medium text-gray-500 dark:text-gray-400"
+    >
+      <li>
+        <a href="/docs/" class="hover:underline me-4 md:me-6">Documentation</a>
+      </li>
+      <li>
+        <a href="/applications/" class="hover:underline me-4 md:me-6"
+          >Applications</a
+        >
+      </li>
+      <li>
+        <a href="/ruletables/" class="hover:underline me-4 md:me-6"
+          >Ruletables</a
+        >
+      </li>
+    </ul>
+  </div>
+</footer>

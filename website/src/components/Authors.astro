@@ -1,0 +1,18 @@
+---
+const { authors } = Astro.props;
+export function toAuthorString(authors: Array<String>) {
+  const lastnames = authors.map((author) => author.split(",")[0]);
+  if (lastnames.length == 0) {
+    return "N.N.";
+  }
+  if (lastnames.length == 1) {
+    return lastnames[0];
+  }
+  if (lastnames.length == 2) {
+    return lastnames[0] + ", " + lastnames[1];
+  }
+  return lastnames[0] + " et al.";
+}
+---
+
+<span>{toAuthorString(authors)}</span>

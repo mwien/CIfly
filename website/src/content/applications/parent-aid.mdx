@@ -1,0 +1,24 @@
+---
+title: Parent adjustment distance
+summary: Computing the parent adjustment distance
+code: [parentAid.R]
+ruletables: [possible_descendants_cpdag, not_amenable_cpdag, forbidden_path_connected_cpdag, non_causal_connected_cpdag]
+graph: CPDAG
+language: R
+references: [henckelAID]
+---
+
+import ExampleCode from "../../components/ExampleCode.astro"
+import Ruletable from "../../components/Ruletable.astro"
+import Reference from "../../components/Reference.astro"
+
+In this article, we provide an R implementation for computing the parent adjustment distance between two CPDAGs as proposed by <Reference id="henckelAID" format="author(year)"/>. 
+
+<ExampleCode id="parentAid.R"/>
+
+It relies on the following ruletables...
+
+<Ruletable id="possible_descendants_cpdag"/>
+
+TODO
+

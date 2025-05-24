@@ -1,0 +1,10 @@
+EDGES  --> <--, <->
+SETS   S, D, F
+COLORS pass, yield
+START  <-- [pass] AT S
+OUTPUT ... [yield]
+
+...         | -->              | false
+<-- [pass]  | <--      [pass]  | next in D     and next not in F
+<-- [pass]  | <--, <-> [yield] | next not in D and next not in F
+<-> [yield] | <--, <-> [yield] | next not in D and next not in F

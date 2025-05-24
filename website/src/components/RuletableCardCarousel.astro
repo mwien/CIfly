@@ -1,0 +1,31 @@
+---
+import "../styles/global.css";
+import Ruletable from "./Ruletable.astro";
+const { ruletable } = Astro.props;
+---
+
+<div class="md:mx-16">
+  <div
+    class="w-full p-2 mt-3 mb-2 bg-white border border-gray-100 rounded-lg shadow-sm"
+  >
+    <a
+      href={`/ruletables/${ruletable.id}/`}
+      class="flex justify-between gap-2 w-full mb-2"
+    >
+      <h1 class="font-extrabold text-sm md:text-base text-blue-700 truncate">
+        {ruletable.data.title}
+      </h1>
+      <div class="text-sm md:text-base font-extrabold text-blue-700">
+        {ruletable.data.graph}
+      </div>
+    </a>
+    <div class="flex flex-col my-1 gap-0.5 px-5 md:px-0">
+      <Ruletable
+        id={ruletable.data.source.id}
+        largeText={true}
+        codeClass="mb-1 mx-2 mt-2 h-38 md:h-58"
+        suppressButton={true}
+      />
+    </div>
+  </div>
+</div>

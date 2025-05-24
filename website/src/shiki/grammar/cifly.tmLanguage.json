@@ -1,0 +1,33 @@
+{
+  "name": "cifly",
+  "scopeName": "source.cifly",
+  "fileTypes": [],
+  "patterns": [
+    {
+      "include": "#main"
+    }
+  ],
+  "repository": {
+    "main": {
+      "patterns": [
+        {
+          "name": "keyword.control.specifiers.cifly",
+          "match": "\\b(EDGES|SETS|COLORS|START|AT|OUTPUT)\\b"
+        },
+        {
+          "name": "keyword.constant.logical.cifly",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "keyword.operator.logical.cifly",
+          "match": "\\b(in|not|and|or)\\b"
+        },
+        {
+          "name": "variable.other.constant.node.cifly",
+          "match": "\\b(current|next)\\b"
+        }
+      ]
+    }
+  }
+}
+

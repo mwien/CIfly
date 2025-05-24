@@ -1,0 +1,8 @@
+EDGES --> <--, ---
+SETS X
+COLORS init, yield
+START ... [init] AT X
+OUTPUT ... [yield]
+
+... [init]  | ---      [yield] | next not in X
+... [yield] | ---, --> [yield] | next not in X

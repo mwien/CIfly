@@ -1,0 +1,25 @@
+---
+import "../styles/global.css";
+import Reference from "./Reference.astro";
+const { references, small, truncate } = Astro.props;
+---
+
+{
+  references.length > 0 && (
+    <div
+      class:list={["font-bold text-blue-700 mr-1", { "text-sm md:text-base": small }, { truncate: truncate }]}
+    >
+      References:
+    </div>
+    <div class:list={[{ "text-sm md:text-base": small }, { truncate: truncate }]}>
+      {references.map((reference, index) => (
+        <>
+          <span>
+            <Reference id={reference.id} format="author(year)" />
+          </span>
+          {index < references.length - 1 && <span>; </span>}
+        </>
+      ))}
+    </div>
+  )
+}

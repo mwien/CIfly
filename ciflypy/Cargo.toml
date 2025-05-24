@@ -1,0 +1,13 @@
+[package]
+name = "ciflypy"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "ciflypy"
+crate-type = ["cdylib"]
+
+[dependencies]
+cifly = { path = "../cifly" }
+pyo3 = "0.25.0"
