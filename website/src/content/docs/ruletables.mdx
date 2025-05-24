@@ -6,25 +6,16 @@ number: 1
 
 import Ruletable from "../../components/Ruletable.astro"
 
-At the heart of CIfly lie rule tables. These objects specify CIfly algorithms. In this article, we describe the syntax of CIfly rule tables. 
-
-A CIfly rule table consists of two parts. In the upper half, general configurations are specified, such as the edge types that the causal graph may contain or the states, where the reachability algorithm is started. In the bottom half, the rules are stated line-by-line. 
+At the heart of CIfly lie rule tables. These objects specify CIfly algorithms. In this article, we describe the syntax of CIfly rule tables. A CIfly rule table consists of two parts. In the upper half, general configurations are specified, such as the edge types that the causal graph may contain or the states, where the reachability algorithm is started. In the bottom half, the rules are stated line-by-line. 
 As a basic example, consider the rule table for *d-connectivity* in DAGs. 
 
-<Ruletable id="dsep" suppressButton={true}/>
-
-As intuitive explanation of the rules at the bottom, observe that the first line concerns colliders for which it is checked that current node is in set $Z$. The condition in the second line is only evaluated in case the first one was skipped. Hence, the second line is only reached for non-colliders. Here, ```...``` matches any edge, thus this is a catch-all case for which it is checked that the current node is not in set $Z$. 
-
-For an introduction to the precise semantics of rule tables, we refer to the [paper](https://arxiv.org) developing its theoretical foundations. 
-
-#### Running Example
-As a more advanced example, which we use to showcase rule-table syntax, consider the rule table for finding all *non-amenable* nodes from some starting set $X$. This notion is relevant for checking adjustment sets in CPDAGs, however, the causal theory behind this definition will not be important in this article. Essentially, a node $y$ is called non-amenable if there exists a path from a node $x \in X$ to $y$ such that the first edge is undirected, all other edges are either undirected or directed towards $y$ and that the path contains no further node in $x$.  This can be expressed in the following rule table. 
+To showcase the CIfly rule-table syntax, we use a rule table for finding all *non-amenable* nodes from some starting set $X$. This notion is relevant for checking adjustment sets in CPDAGs. However, the causal theory behind this definition will not be important in this article. Essentially, a node $y$ is called non-amenable if there exists a path from a node $x \in X$ to $y$ such that the first edge is undirected, all other edges are either undirected or directed towards $y$ and that the path contains no further node in $x$.  This can be expressed in the following rule table. 
 
 <Ruletable id="not_amenable_cpdag" suppressButton={true}/>
 
-Again, let us briefly give some intuitive explanation of this rule table. In the rules at the bottom of the table, it is ensured that when the current state has the ```init``` color and there is an undirected edge from the current node, we check a transition to a state with the ```yield``` color by testing whether the next node (the one connected to the current node by an undirected edge) is indeed not in set $X$. Note that in this table, the ```yield``` color distinguishes the nodes that should be output as specified in the ```OUTPUT``` line. Transitions between states with color ```yield``` are possible for undirected edges and directed edges pointing towards the next node. The reachability algorithm starts at the nodes in $X$ with initial color ```init``` as specified in the ```START``` line. With these specifications, the rule table ensures that only nodes are output that are on paths starting at a node $x \in X$ with the first edge being undirected, followed afterwards by undirected or directed edges pointing away from $x$, never again visiting a node in $X$. 
+Let us briefly give some intuitive explanation of this rule table. In the rules at the bottom of the table, it is ensured that when the current state has the ```init``` color and there is an undirected edge from the current node, we check a transition to a state with the ```yield``` color by testing whether the next node (the one connected to the current node by an undirected edge) is indeed not in set $X$. Note that in this table, the ```yield``` color distinguishes the nodes that should be output as specified in the ```OUTPUT``` line. Transitions between states with color ```yield``` are possible for undirected edges and directed edges pointing towards the next node. The reachability algorithm starts at the nodes in $X$ with initial color ```init``` as specified in the ```START``` line. With these specifications, the rule table ensures that only nodes are output that are on paths starting at a node $x \in X$ with the first edge being undirected, followed afterwards by undirected or directed edges pointing away from $x$, never again visiting a node in $X$. 
 
-Below, we focus on the *syntax* of rule tables in more detail. Before we start, we briefly note that one can add whole-line comments in a rule table by having ```#``` as first non-whitespace character. Empty lines are ignored. 
+Below, we focus on the *syntax* of rule tables in more detail. Before we start, we note that one can add whole-line comments in a rule table by having ```#``` as first non-whitespace character. Empty lines are ignored. 
 
 #### Edges
 

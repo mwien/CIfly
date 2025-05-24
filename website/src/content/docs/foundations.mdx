@@ -1,0 +1,53 @@
+---
+title: Theoretical foundations
+summary: "Introduces the principles underlying CIfly"
+number: 0
+---
+
+import Ruletable from "../../components/Ruletable.astro"
+import ReductionFigure from "../../components/ReductionFigure.astro"
+import StateSpaceGraphFigure from "../../components/StateSpaceGraphFigure.astro"
+
+In this article, we explore the main ideas underlying the CIfly framework. This will lay the groundwork for introducing the precise CIfly syntax afterwards. For a more detailed exposition, we refer to the [paper](https://arxiv.org) which thoroughly develops these theoretical foundations. 
+The central principle of CIfly is to solve tasks from graphical causal inference with reachability algorithms. The following illustration gives a overview of what we call a *causal-to-reach reduction*.
+
+<ReductionFigure/>
+
+We assume that the causal input consists of a graph $G=(V, (E_1, \dots, E_k))$ and a sequence of node sets $(L_1, \dots, L_{\ell})$. Note that there are multiple edge sets each containing the edges of a specific type. E.g., $E_1$ may contain directed edges and $E_2$ undirected edges. The output of the causal task is a set of vertices $R \subseteq V$. 
+
+Of course, many tasks in causal inference do not directly fit into this framework, however, often they can be solved by multiple causal primitives that do. The most basic example of a CIfly primitive is to find all nodes d-connected to a set of vertices $X$ given a conditioning set $Z$ in a DAG $G$. Here, a set $R$ of d-connected nodes is returned, which can be subsequently used to test d-separation of $X$ and $Y$ by checking wether $R \cap Y$ is empty. 
+
+The causal primitive is solved by constructing a reachability input, consisting of a directed graph $G_{\text{dir}} = (V_{\text{dir}}, E_{\text{dir}})$ and a node set $S \subseteq V_{\text{dir}}$, then finding all nodes reachable from $S$ in $G_{\text{dir}}$ and mapping this set $T$ back to the causal domain to the result $R$. Note that the graph $G_{\text{dir}}$ has a different node and edge set compared to original graph $G$.
+
+The CIfly framework offers a concise way of specifying the mappings $\mathcal{I}$ and $\mathcal{O}$ between the causal and reachability task. Based on this, it can automatically perform the reduction shown in the figure above. Crucially, the mappings are defined in what is called a *rule table*. We define rule tables in such a way that they can express quite general mappings $\mathcal{I}$ and $\mathcal{O}$ while still guaranteeing an overall linear run-time in the size of the causal input. We call the reductions expressed in this way *CIfly reductions*. 
+
+To explain CIfly reductions, let us first introduce the structure of the reachability input graph $G_{\text{dir}}$. We define $V_{\text{dir}} = V \times N_{\mathcal{E}} \times C$ where $N_{\mathcal{E}}$ is the set of *neighbor-types* and $C$ is a finite set of *colors*. A node $s \in V_{\text{dir}}$ is also called a *state*. The neighbor-types correspond to the different types of neighbors a node might have. E.g., in a causal graph with both directed and undirected edges, a node $v$ can have three types of neighbors: parents $u \rightarrow v$, children $u \leftarrow v$ and undirected neighbors $u - v$. The colors can be used to further distinguish between states, more on that later. 
+
+The directed edges in $G_{\text{dir}}$ follow from a set of rules that we collect in a rule table. Consider two states $(v_1, n_1, c_1)$ and $(v_2, n_2, c_2)$ in $V_{\text{dir}}$. A *rule* might say: if $n_1 = \; \rightarrow$ and $n_2 = \; \leftarrow$, and moreover $v_2 \in L_2$, then there should be an edge $(v_1, n_1, c_1) \rightarrow (v_2, n_2, c_2)$ in $G_{\text{dir}}$. To connect this to the original graph $G$, this edge will only be present if $v_2$ is an neighbor of type $n_2$ of $v_1$ in $G$. 
+
+This construction may appear quite complicated at first, but essentially this connects *walks* in the graph $G$ to *paths* in $G_{\text{dir}}$ where information about the type of the last traversed edge is stored in the states. This information is often useful to express causal notions such as d-connectivity. 
+
+**Definition** (d-separation)     
+Let $X$ and $Z$ be two disjoint node sets in a DAG $G = (V, E)$. Then, $Y \subseteq V \setminus (X \cup Z)$ is *d-connected* to $X$ in $G$ if there exists $x \in X$, $y \in Y$ and a walk $w$ from $x$ to $y$ such that
+1. for any collider $v$ on $w$, it holds that $v \in Z$ and
+2. for any non-collider $v$ on $w$, it holds that $v \not\in Z$. 
+
+Conversely, if $X$ and $Y$ are not d-connected, they are called *d-separated*. 
+
+Note that this definition is slightly different from the more common one that, instead of walks (which may visit nodes multiple times), talk about paths between $x$ and $y$. However, this has the drawback that the condition for colliders is more complicated. The definition above can be translated directly into the following CIfly rule table that returns all nodes d-connected to $X$ given $Z$.
+
+<Ruletable id="dsep" suppressButton={true}/>
+
+The precise syntax of rule tables is discussed in the [next article](/docs/ruletables/). As intuitive explanation of the rules at the bottom, observe that the first line concerns colliders for which it is checked that current node is in set $Z$, exactly as in the definition of d-connectivity. The condition in the second line is only evaluated in case the first one was skipped. Hence, the second line is only reached for non-colliders. Here, ```...``` matches any edge, thus this is a catch-all case for which it is checked that the current node is not in set $Z$. 
+
+In terms of states of the reachability input graph, the rule
+```cifly
+--> | <-- | current in Z
+```
+effectively prescribes that there is a transition $(\text{current}, \rightarrow, \cdot)$ to $(\text{next}, \leftarrow, \cdot)$ if $\text{current} \in Z$ and there is an edge $\text{current} \leftarrow \text{next}$ in $G$ (this is checked implicitly and does not have to be stated in the rule). Note that we just use $\cdot$ as color because colors are not needed for this example. Let us consider the constructed reachability input for a concrete input graph. 
+
+<StateSpaceGraphFigure />
+
+In the DAG on the left, the nodes $v_1$ and $v_4$ are d-connected given $v_5$ due to the walk $v_1 \rightarrow v_2 \rightarrow v_5 \leftarrow v_2 \leftarrow v_3 \rightarrow v_4$. On the right, the path corresponding to this walk is highlighted in red. There are two copies of every node from the original graph, one for each neighbor-type (this is marked at the top left of the boxes). This neighbor-type encodes the type (and direction) of the last edge on the walk. Hence, the states that are visited on the path are, in this order, $(v_1, \leftarrow, \cdot)$, $(v_2, \rightarrow, \cdot)$, $(v_5, \rightarrow, \cdot)$, $(v_2, \leftarrow, \cdot)$, $(v_3, \leftarrow, \cdot)$, $(v_4, \rightarrow, \cdot)$. 
+
+For more details on this example, see our [paper](https://arxiv.org). In the next articles, we will focus on the syntax of CIfly rule tables and the ```ciflypy``` and ```ciflyR``` packages for using CIfly in your Python or R code. 
