@@ -12,7 +12,26 @@ import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
-In this article, we provide an R implementation for computing the parent adjustment distance between two CPDAGs as proposed by <Reference id="henckelAID" format="author(year)"/>. 
+In this article, we provide an R implementation for computing the parent adjustment distance between two CPDAGs as proposed by <Reference id="henckelAID" format="author(year)"/>. Broadly speaking (we will define this more precisely below), for two graphs $G_{\text{guess}}$ and $G_{\text{true}}$, this distance measures the number of node pairs $x$ and $y$ such that the validity of the parents of $x$ in $G_{\text{guess}}$ as adjustment set differs between the two graphs. E.g., if the parents of $x$ in $G_{\text{guess}}$ are an adjustment set for $G_{\text{guess}}$ but not for $G_{\text{true}}$ the distance increases by one. To make this more precise, let us recall the CPDAG adjustment by <Reference id="perkovicComplete" format="author(year)"/>. 
+
+**Theorem 1** [<Reference id="perkovicComplete" format="author(year)"/>]    
+Consider disjoint node sets $X$, $Y$ and $Z$ in a CPDAG $G$. Then, $Z$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,
+1. all proper possibly directed paths from $X$ to $Y$ begin with a directed edge,
+2. $\text{forb}_G(X, Y) \cap Z = \emptyset$ and
+3. all proper definite-status non-causal paths from $X$ to $Y$ are blocked by $Z$ in $G$.
+
+Now, we are able to define the parent adjustment distance for two graphs. 
+
+**Definition 1** (Parent adjustment distance)    
+Consider two graphs $G_{\text{guess}}$ and $G_{\text{true}}$. Then, the *parent adjustment distance* corresponds to the number of node pairs $x$
+and $y$ such that 
+1. Condition 1 of Theorem 1 is violated relative to $(x,y)$ in $G_{\text{guess}}$ but not in $G_{\text{true}}$,
+2. $y$ is a parent of $x$ in $G_{\text{guess}}$ which implies a zero causal-effect but $y$ is a descendant of $x$ in $G_{\text{true}}$, or
+3.  the parents of $x$ in $G_{\text{guess}}$ are a valid adjustment set in $G_{\text{guess}}$ but not a valid adjustment set relative to $x$ and $y$ in $G_{\text{true}}$.
+
+Directly evaluating this definition, by iterating over all node pairs $x, y$ and checking adjustment as discussed, e.g., in our [earlier article](/application/cpdag-adjustment-check/), would yield a $p^2 \cdot (p + m)$ time algorithm for graphs with $p$ nodes and $m$ edges. As proposed by TODO:Henckel, this can be improved further by checking all $y$ at once, for a given $x$. 
+
+TODO
 
 <ExampleCode id="parentAid.R"/>
 
