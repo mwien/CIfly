@@ -10,26 +10,45 @@ getRuletablePath <- function() {
 }
 
 # vectorized function to compute the parents for each node in a CIfly graph
+# can be adapted to solve similar tasks
 parentsCifly <- function(p, g) {
 	dirEdges <- g[["-->"]]
-	mat <- do.call(rbind, dirEdges)
-	grouped <- split(mat[,1], mat[,2])
+	grouped <- split(dirEdges[, 1], dirEdges[, 2])
 	result <- replicate(p, integer(0), simplify = FALSE)
 	names(result) <- as.character(1:p)
 	result[names(grouped)] <- grouped
 	return (result)
 }
 
+# returns highest vertex which takes part in an edge
+# if you need to access the number of vertices of the graph, 
+# it is recommended to store that directly instead of using this function
+# to ensure consistent handling of isolated vertices
+highestVertexCifly <- function(g) {
+	nodeIds <- unlist(g)
+	if (length(nodeIds) == 0) {
+		return (0)
+	} else {
+		return (max(nodeIds))
+	}
+}
+
 # vectorized function to remove edges from a CIfly graph
 removeEdgesCifly <- function(g, fromVars, toVars, edgeType) {
 	p <- highestVertexCifly(g)
+	if (p == 0) {
+		return (g)
+	}
+
+	# enable efficient lookup of membership in fromVars and toVars
 	fromVarsLogical <- rep(FALSE, p)
 	fromVarsLogical[fromVars] <- TRUE
 	toVarsLogical <- rep(FALSE, p)
 	toVarsLogical[toVars] <- TRUE
 
-	modEdges <- g[[edgeType]][sapply(g[[edgeType]], function (v) return (!fromVarsLogical[v[1]] || !toVarsLogical[v[2]]))]
+	edgeList <- g[[edgeType]]
+	edgeListNew <- edgeList[!fromVarsLogical[edgeList[,1]] | !toVarsLogical[edgeList[,2]], , drop=FALSE]
 	gNew <- g
-	gNew[[edgeType]] <- modEdges
+	gNew[[edgeType]] <- edgeListNew
 	return (gNew)
 }
