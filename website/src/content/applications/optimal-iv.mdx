@@ -69,7 +69,10 @@ Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), optIVTable), W)
 ```
 
 #### Checking the optimality condition
-The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The other condition is that $Z$ contains a parent or sibling of $x$. While this could also be checked using CIfly, clearly it is preferred to do this directly in R. TODO
+The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The other condition is that $Z$ contains a parent or sibling of $x$. While this could also be checked using CIfly, clearly it is preferred to do this directly in R. Here, we do this based on the CIfly graph representation in R, but you may prefer your favorite graph library or format instead. 
+
+TODO: add code
+
 
 #### Full implementation
 TODO
