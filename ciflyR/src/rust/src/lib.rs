@@ -19,7 +19,7 @@ extendr_module! {
 ///
 /// For the given graph and sets, a CIfly reachability algorithm is run according to the ruletable specified in the ruletable argument. The algorithm returns all reachable nodes. It is guaranteed to run in linear-time.
 ///
-/// @param graph A list mapping edge types to edge lists.
+/// @param graph A list mapping edge types to edge lists stored in matrix format.
 /// @param sets A list mapping set names to a list of elements.
 /// @param ruletable Path to a ruletable file.
 /// @param tableAsString Optional argument to enable passing the ruletable as multi-line string. Default value is FALSE.
@@ -35,7 +35,7 @@ extendr_module! {
 ///     ... | ... | current not in Z
 /// "
 ///
-/// edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+/// edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 /// sets <- list("X" = c(1), "Z" = c(4))
 /// reach(edgelist, sets, dsepTable, tableAsString=TRUE)
 /// @export
@@ -111,7 +111,7 @@ impl Ruletable {}
 /// "
 ///
 /// rt <- parseRuletable(dsepTable, tableAsString=TRUE)
-/// edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+/// edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 /// sets <- list("X" = c(1), "Z" = c(4))
 /// reach(edgelist, sets, rt)
 /// @export
@@ -148,7 +148,7 @@ impl Graph {}
 ///     --> | <-- | current in Z
 ///     ... | ... | current not in Z
 /// "
-/// edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+/// edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 ///
 /// g <- parseGraph(edgelist, dsepTable, tableAsString=TRUE)
 /// sets <- list("X" = c(1), "Z" = c(4))
@@ -163,7 +163,7 @@ fn parseGraph(graph: Robj, ruletable: Robj, #[default = "FALSE"] tableAsString: 
             parsed_ruletable = to_ruletable(
                 ruletable
                     .as_str()
-                    .expect("Error: xpected a string as ruletable argument."),
+                    .expect("Error: expected a string as ruletable argument."),
                 tableAsString,
             );
             &parsed_ruletable
@@ -238,48 +238,47 @@ fn to_graph(graph: &Robj, ruletable: &cifly::Ruletable) -> cifly::Graph {
     let vecs = graph.as_list().unwrap().into_hashmap();
     let mut edge_lists = HashMap::new();
     for (edge_string, v) in vecs.iter() {
-        if !v.is_list() && !v.is_null() {
-            panic!("Error: each edge list should be as list");
+        if !v.is_null() && !v.is_matrix() {
+            panic!("Error: each edge list should be given as x times 2 matrix of integers");
         }
-        let mut edges = Vec::new();
-        if !v.is_null() {
-            for tuple in v.as_list().unwrap().values() {
-                if tuple.is_null() || tuple.is_empty() {
-                    continue;
-                }
-                let e: Vec<usize>;
-                if tuple.is_integer() {
-                    e = tuple
-                        .as_integer_slice()
-                        .unwrap()
-                        .iter()
-                        .map(|&x| {
-                            (x as usize)
-                                .checked_sub(1)
-                                .expect("Error: node ids have to be > 0")
-                        })
-                        .collect();
-                } else if tuple.is_real() {
-                    e = tuple
-                        .as_real_slice()
-                        .unwrap()
-                        .iter()
-                        .map(|&x| {
-                            (x.round() as usize)
-                                .checked_sub(1)
-                                .expect("Error: node ids have to be > 0")
-                        })
-                        .collect();
-                } else {
-                    panic!("Error: vec is neither integer nor real");
-                }
-                if e.len() != 2 {
-                    panic!("Error: each edge should consist of two vertices");
-                }
-                edges.push((e[0], e[1]));
+        let edge_list = if !v.is_null() {
+            if v.is_integer() {
+                let edge_list_r: RMatrix<i32> = v
+                    .as_matrix()
+                    .expect("Error: edge list should be given as x times 2 matrix");
+                let num_edges = edge_list_r.nrows();
+                let edge_list_raw = edge_list_r.data();
+                (0..num_edges)
+                    .map(|i| {
+                        (
+                            i32_to_node_id(edge_list_raw[i]),
+                            i32_to_node_id(edge_list_raw[i + num_edges]),
+                        )
+                    })
+                    .collect()
+            } else if v.is_real() {
+                let edge_list_r: RMatrix<f64> = v
+                    .as_matrix()
+                    .expect("Error: edge list should be given as x times 2 matrix");
+                let num_edges = edge_list_r.nrows();
+                let edge_list_raw = edge_list_r.data();
+                (0..num_edges)
+                    .map(|i| {
+                        (
+                            f64_to_node_id(edge_list_raw[i]),
+                            f64_to_node_id(edge_list_raw[i + num_edges]),
+                        )
+                    })
+                    .collect()
+            } else {
+                panic!(
+                    "Error: edge list matrix contains neither integers nor floating point numbers"
+                )
             }
-        }
-        edge_lists.insert(edge_string.to_string(), edges);
+        } else {
+            Vec::new()
+        };
+        edge_lists.insert(edge_string.to_string(), edge_list);
     }
     cifly::Graph::new(&edge_lists, ruletable).unwrap()
 }
@@ -302,27 +301,36 @@ fn to_sets(sets: &Robj, ruletable: &cifly::Ruletable) -> cifly::Sets {
                 .as_integer_slice()
                 .unwrap()
                 .iter()
-                .map(|&x| {
-                    (x as usize)
-                        .checked_sub(1)
-                        .expect("Error: node ids have to be > 0")
-                })
+                .map(|&x| i32_to_node_id(x))
                 .collect();
         } else if v.is_real() {
             s = v
                 .as_real_slice()
                 .unwrap()
                 .iter()
-                .map(|&x| {
-                    (x.round() as usize)
-                        .checked_sub(1)
-                        .expect("Error: node ids have to be > 0")
-                })
+                .map(|&x| f64_to_node_id(x))
                 .collect();
         } else {
-            panic!("vec is neither integer nor real");
+            panic!("Error: set vector contains neither integers nor floating point numbers");
         }
         set_lists.insert(set_string.to_string(), s);
     }
     cifly::Sets::new(&set_lists, ruletable).unwrap()
+}
+
+fn i32_to_node_id(id: i32) -> usize {
+    if id >= 1 {
+        (id as usize) - 1
+    } else {
+        panic!("Error: expected positive integer as node id")
+    }
+}
+
+fn f64_to_node_id(id: f64) -> usize {
+    let rounded_id = id.round();
+    if rounded_id >= 1.0 {
+        (rounded_id as usize) - 1
+    } else {
+        panic!("Error: expected positive integer as node id")
+    }
 }

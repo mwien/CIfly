@@ -7,7 +7,7 @@
 reach(graph, sets, ruletable, tableAsString = FALSE, verbose = FALSE)
 }
 \arguments{
-\item{graph}{A list mapping edge types to edge lists.}
+\item{graph}{A list mapping edge types to edge lists stored in matrix format.}
 
 \item{sets}{A list mapping set names to a list of elements.}
 
@@ -33,7 +33,7 @@ dsepTable <- "
     ... | ... | current not in Z
 "
 
-edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 sets <- list("X" = c(1), "Z" = c(4))
 reach(edgelist, sets, dsepTable, tableAsString=TRUE)
 }

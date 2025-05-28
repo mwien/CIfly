@@ -28,7 +28,7 @@ dsepTable <- "
 "
 
 rt <- parseRuletable(dsepTable, tableAsString=TRUE)
-edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 sets <- list("X" = c(1), "Z" = c(4))
 reach(edgelist, sets, rt)
 }

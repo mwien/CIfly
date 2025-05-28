@@ -14,7 +14,7 @@ NULL
 #'
 #' For the given graph and sets, a CIfly reachability algorithm is run according to the ruletable specified in the ruletable argument. The algorithm returns all reachable nodes. It is guaranteed to run in linear-time.
 #'
-#' @param graph A list mapping edge types to edge lists.
+#' @param graph A list mapping edge types to edge lists stored in matrix format.
 #' @param sets A list mapping set names to a list of elements.
 #' @param ruletable Path to a ruletable file.
 #' @param tableAsString Optional argument to enable passing the ruletable as multi-line string. Default value is FALSE.
@@ -30,7 +30,7 @@ NULL
 #'     ... | ... | current not in Z
 #' "
 #'
-#' edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+#' edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 #' sets <- list("X" = c(1), "Z" = c(4))
 #' reach(edgelist, sets, dsepTable, tableAsString=TRUE)
 #' @export
@@ -54,7 +54,7 @@ reach <- function(graph, sets, ruletable, tableAsString = FALSE, verbose = FALSE
 #' "
 #'
 #' rt <- parseRuletable(dsepTable, tableAsString=TRUE)
-#' edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+#' edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 #' sets <- list("X" = c(1), "Z" = c(4))
 #' reach(edgelist, sets, rt)
 #' @export
@@ -77,7 +77,7 @@ parseRuletable <- function(ruletable, tableAsString = FALSE) .Call(wrap__parseRu
 #'     --> | <-- | current in Z
 #'     ... | ... | current not in Z
 #' "
-#' edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+#' edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 #'
 #' g <- parseGraph(edgelist, dsepTable, tableAsString=TRUE)
 #' sets <- list("X" = c(1), "Z" = c(4))

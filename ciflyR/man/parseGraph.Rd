@@ -28,7 +28,7 @@ dsepTable <- "
     --> | <-- | current in Z
     ... | ... | current not in Z
 "
-edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 
 g <- parseGraph(edgelist, dsepTable, tableAsString=TRUE)
 sets <- list("X" = c(1), "Z" = c(4))
