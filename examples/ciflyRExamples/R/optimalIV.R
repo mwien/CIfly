@@ -19,7 +19,10 @@ optimalInstrument <- function(g, x, y) {
 	W <- reach(g, list("S" = y, "D" = des, "F" = x), optIVTable)
 	Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), optIVTable), W)
 
-	if (length(Z) > 0) {
+	if (length(Z) == 0) {
+		return (NULL)
+	}
+	if (containsParentCifly(g, x, Z) || containsSiblingCifly(g, x, Z)) {
 		return (list("Z" = Z, "W" = W))
 	} else {
 		return (NULL)

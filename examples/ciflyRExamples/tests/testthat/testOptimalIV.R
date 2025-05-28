@@ -58,6 +58,5 @@ test_that("CIS Paper Figure 3b", {
 	y <- 5
 
 	iv <- optimalInstrument(g, x, y)
-	expect_equal(iv$Z, c(1))
-	expect_equal(iv$W, c(2, 3))
+	expect_equal(iv, NULL)
 })

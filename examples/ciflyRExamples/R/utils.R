@@ -52,3 +52,25 @@ removeEdgesCifly <- function(g, fromVars, toVars, edgeType) {
 	gNew[[edgeType]] <- edgeListNew
 	return (gNew)
 }
+
+containsParentCifly <- function(g, x, Z) {
+	p <- highestVertexCifly(g)
+
+	# enable efficient lookup of membership in Z
+	zLogical <- rep(FALSE, p)
+	zLogical[Z] <- TRUE
+
+	edgeList <- g[["-->"]]
+	return (length(edgeList[zLogical[edgeList[,1]] & edgeList[,2] == x]) > 0)
+}
+
+containsSiblingCifly <- function(g, x, Z) {
+	p <- highestVertexCifly(g)
+
+	# enable efficient lookup of membership in Z
+	zLogical <- rep(FALSE, p)
+	zLogical[Z] <- TRUE
+
+	edgeList <- g[["-->"]]
+	return (length(edgeList[(zLogical[edgeList[,1]] & edgeList[,2] == x) | (zLogical[edgeList[,2]] & edgeList[,1] == x)]) > 0)
+}
