@@ -98,7 +98,8 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
 pip install ciflypy`}
             lang="bash"
             theme={customCatppucinLatte}
-            class="text-sm md:text-base p-2 rounded-lg w-full"
+            transformers={[addHeader("")]}
+            class="text-sm md:text-base p-2 w-full"
           />
 
           <Code
@@ -107,7 +108,8 @@ pip install ciflypy`}
 install.packages("ciflyR")`}
             lang="r"
             theme={customCatppucinLatte}
-            class="text-sm md:text-base p-2 rounded-lg w-full"
+            transformers={[addHeader("")]}
+            class="text-sm md:text-base p-2 w-full"
           />
         </CodeSwitcher>
         <p class="md:text-lg mb-2 hyphens-auto">
@@ -150,7 +152,7 @@ install.packages("ciflyR")`}
             slot="python-code"
             code={`import ciflypy as cifly
 
-dsep_table_path = "path/to/table"
+dsep_table_path = "./dsep.txt"
 
 def test_dsep(G, x, y, Z):
       R = cifly.reach(G, {"X": x, "Z": Z}, dsep_table_path)
@@ -167,7 +169,7 @@ def test_dsep(G, x, y, Z):
             slot="r-code"
             code={`library("ciflyR")
 
-dsepTablePath <- "path/to/table"
+dsepTablePath <- "./dsep.txt"
 
 test_dsep <- function(G, x, y, Z) {
       R <- reach(G, list("X" = x, "Z" = Z), dsepTablePath)

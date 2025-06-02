@@ -28,7 +28,6 @@ export function addCopyButton() {
           }),
         ),
       );
-      console.log(node);
       node.properties.class += " relative";
       node.children.push(button);
     },
@@ -50,7 +49,7 @@ export function addHeader(title: String) {
         "div",
         {
           class:
-            "bg-gray-50 font-mono border-b border-gray-200 px-4 py-2 flex items-center",
+            "bg-gray-50 font-mono border-b border-gray-200 px-4 py-2 flex items-center h-10.25",
         },
         [{ type: "text", value: title } as Text],
       );
