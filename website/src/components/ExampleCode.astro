@@ -1,5 +1,6 @@
 ---
 import { Code } from "astro:components";
+import { addCopyButton, addHeader } from "../shiki/transformers.ts";
 const { id, largeText } = Astro.props;
 import { getEntry } from "astro:content";
 const code_raw = await getEntry("code_raw", id);
@@ -7,15 +8,10 @@ const lang = id.split(".").pop().toLowerCase();
 import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
 ---
 
-<div class="relative">
-  <Code
-    code={code_raw.data.raw}
-    lang={lang}
-    theme={customCatppucinLatte}
-    transformers={[]}
-    class:list={[
-      "font-mono p-2 w-full rounded-lg text-sm",
-      { "md:text-base": largeText },
-    ]}
-  />
-</div>
+<Code
+  code={code_raw.data.raw}
+  lang={lang}
+  theme={customCatppucinLatte}
+  transformers={[addCopyButton(), addHeader("test")]}
+  class:list={["font-mono p-2 w-full text-sm", { "md:text-base": largeText }]}
+/>

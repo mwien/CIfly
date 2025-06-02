@@ -1,0 +1,51 @@
+<div class="code-switcher my-4 relative">
+  <div
+    class="absolute top-0 right-0 h-10.25 bg-gray-200 rounded-tr-lg rounded-bl-lg inline-flex"
+  >
+    <button
+      code-tab="py"
+      class="flex items-center justify-center cursor-pointer shadow-sm text-sm bg-gray-50 font-bold rounded-lg m-1 p-1 w-16"
+    >
+      Python
+    </button>
+    <button
+      code-tab="r"
+      class="flex items-center justify-center cursor-pointer text-sm font-bold rounded-lg m-1 p-1 w-16"
+    >
+      R
+    </button>
+  </div>
+
+  <div>
+    <div code-content="py">
+      <slot name="python-code" />
+    </div>
+    <div code-content="r" class="hidden">
+      <slot name="r-code" />
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll(".code-switcher").forEach((container) => {
+    const tabs = container.querySelectorAll("[code-tab]");
+    const contents = container.querySelectorAll("[code-content]");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.getAttribute("code-tab");
+
+        tabs.forEach((t) => {
+          const isTarget = t.getAttribute("code-tab") === target;
+          t.classList.toggle("bg-gray-50", isTarget);
+          t.classList.toggle("shadow-sm", isTarget);
+        });
+
+        contents.forEach((content) => {
+          const isMatch = content.getAttribute("code-content") === target;
+          content.classList.toggle("hidden", !isMatch);
+        });
+      });
+    });
+  });
+</script>

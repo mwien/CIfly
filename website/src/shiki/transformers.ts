@@ -1,9 +1,11 @@
 import { h } from "hastscript";
-export function addCornerButton() {
+import type { Element, Root, Text } from "hast";
+
+export function addCopyButton() {
   return {
-    name: "shiki-transformer-corner-buttons",
-    pre(node) {
-      const button = h(
+    name: "add-copy-button",
+    pre(node: Element) {
+      const button: Element = h(
         "button",
         {
           class:
@@ -26,8 +28,46 @@ export function addCornerButton() {
           }),
         ),
       );
-      delete node.properties.tabindex;
+      console.log(node);
+      node.properties.class += " relative";
       node.children.push(button);
+    },
+  };
+}
+
+export function addHeader(title: String) {
+  return {
+    name: "add-header",
+    root(root: Root) {
+      if (root.children.length === 0) {
+        return root; // Return unchanged if no children
+      }
+
+      // assume first child is pre
+      const preElement = root.children[0] as Element;
+
+      const headerDiv: Element = h(
+        "div",
+        {
+          class:
+            "bg-gray-50 font-mono border-b border-gray-200 px-4 py-2 flex items-center",
+        },
+        [{ type: "text", value: title } as Text],
+      );
+
+      const wrapper: Element = h(
+        "div",
+        {
+          class:
+            "bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden",
+        },
+        [headerDiv, preElement],
+      );
+
+      return {
+        type: "root",
+        children: [wrapper],
+      };
     },
   };
 }

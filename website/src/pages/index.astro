@@ -4,6 +4,8 @@ import "katex/dist/katex.min.css";
 import Layout from "../layouts/Layout.astro";
 import Box from "../components/Box.astro";
 import Ruletable from "../components/Ruletable.astro";
+import CodeSwitcher from "../components/CodeSwitcher.astro";
+import { addHeader } from "../shiki/transformers.ts";
 import Carousel from "../components/Carousel.astro";
 import CarouselSlide from "../components/CarouselSlide.astro";
 import RuletableCardCarousel from "../components/RuletableCardCarousel.astro";
@@ -84,13 +86,14 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
       <Fragment slot="title">Installation</Fragment>
 
       <div class="mb-2 md:mx-4">
-        <p class="md:text-lg mb-4 hyphens-auto">
+        <p class="md:text-lg hyphens-auto">
           We are working on CIfly being installable in the standard way via pip
           in Python and from CRAN in R.
         </p>
 
-        <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <CodeSwitcher>
           <Code
+            slot="python-code"
             code={`# Python installation with pip
 pip install ciflypy`}
             lang="bash"
@@ -99,13 +102,14 @@ pip install ciflypy`}
           />
 
           <Code
+            slot="r-code"
             code={`# R installation via CRAN
 install.packages("ciflyR")`}
             lang="r"
             theme={customCatppucinLatte}
             class="text-sm md:text-base p-2 rounded-lg w-full"
           />
-        </div>
+        </CodeSwitcher>
         <p class="md:text-lg mb-2 hyphens-auto">
           In Python, the installation should work out-of-the-box without relying
           on any further dependencies. In R, if the package is build on your
@@ -141,24 +145,10 @@ install.packages("ciflyR")`}
           Python and R.
         </p>
 
-        <div class="relative my-4">
-          <div>
-            <button
-              code-tab="py"
-              class="flex items-center justify-center absolute cursor-pointer bg-blue-700 hover:bg-blue-600 text-xs md:text-base text-white font-bold rounded-sm md:rounded-lg p-1 h-6 md:h-8 w-12 md:w-16 right-13 md:right-18 top-1"
-              >Python</button
-            >
-            <button
-              code-tab="r"
-              class="flex items-center justify-center absolute cursor-pointer bg-white hover:bg-blue-100 border border-blue-700 text-xs md:text-base text-blue-700 font-bold rounded-sm md:rounded-lg p-1 h-6 md:h-8 w-12 md:w-16 right-1 top-1"
-              >R</button
-            >
-          </div>
-
-          <div>
-            <div code-content="py">
-              <Code
-                code={`import ciflypy as cifly
+        <CodeSwitcher>
+          <Code
+            slot="python-code"
+            code={`import ciflypy as cifly
 
 dsep_table_path = "path/to/table"
 
@@ -168,14 +158,14 @@ def test_dsep(G, x, y, Z):
 
 
 `}
-                lang="python"
-                theme={customCatppucinLatte}
-                class="text-sm md:text-base p-2 rounded-lg"
-              />
-            </div>
-            <div code-content="r" class="hidden">
-              <Code
-                code={`library("ciflyR")
+            lang="python"
+            theme={customCatppucinLatte}
+            transformers={[addHeader("dsep.py")]}
+            class="text-sm md:text-base p-2"
+          />
+          <Code
+            slot="r-code"
+            code={`library("ciflyR")
 
 dsepTablePath <- "path/to/table"
 
@@ -184,13 +174,13 @@ test_dsep <- function(G, x, y, Z) {
       return (!(y %in% R))
 }
 `}
-                lang="r"
-                theme={customCatppucinLatte}
-                class="text-sm md:text-base p-2 rounded-lg"
-              />
-            </div>
-          </div>
-        </div>
+            lang="r"
+            theme={customCatppucinLatte}
+            transformers={[addHeader("dsep.R")]}
+            class="text-sm md:text-base p-2"
+          />
+        </CodeSwitcher>
+
         <p class="md:text-lg mt-4 mb-2 md:mb-3 hyphens-auto">
           Find more details on this example and how to use CIfly <a
             href="/docs/"
@@ -269,50 +259,4 @@ test_dsep <- function(G, x, y, Z) {
       </div>
     </Box>
   </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const tabs = document.querySelectorAll("[code-tab]");
-      const contents = document.querySelectorAll("[code-content]");
-
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-          const target = tab.getAttribute("code-tab");
-
-          tabs.forEach((t) => {
-            if (t.getAttribute("code-tab") === target) {
-              t.classList.add("bg-blue-700", "text-white", "hover:bg-blue-600");
-              t.classList.remove(
-                "bg-white",
-                "text-blue-700",
-                "border-blue-700",
-                "border",
-                "hover:bg-blue-100",
-              );
-            } else {
-              t.classList.remove(
-                "bg-blue-700",
-                "text-white",
-                "hover:bg-blue-600",
-              );
-              t.classList.add(
-                "bg-white",
-                "text-blue-700",
-                "border-blue-700",
-                "border",
-                "hover:bg-blue-100",
-              );
-            }
-          });
-
-          contents.forEach((content) => {
-            content.classList.add("hidden");
-            if (content.getAttribute("code-content") === target) {
-              content.classList.remove("hidden");
-            }
-          });
-        });
-      });
-    });
-  </script>
 </Layout>

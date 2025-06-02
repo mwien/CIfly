@@ -1,6 +1,6 @@
 ---
 import { Code } from "astro:components";
-import { addCornerButton } from "../shiki/transformers.ts";
+import { addCopyButton } from "../shiki/transformers.ts";
 const {
   id,
   largeText,
@@ -20,7 +20,7 @@ import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
     code={ruletable_raw.data.raw}
     lang={ciflyGrammar}
     theme={customCatppucinLatte}
-    transformers={suppressButton ? [] : [addCornerButton()]}
+    transformers={suppressButton ? [] : [addCopyButton()]}
     class:list={[
       "text-sm p-2 rounded-lg",
       { "md:text-base": largeText },
