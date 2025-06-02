@@ -9,9 +9,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.2.2",
+    "@astrojs/mdx": "^4.3.0",
     "@tailwindcss/vite": "^4.0.17",
-    "astro": "^5.5.2",
+    "astro": "^5.8.1",
     "fs-extra": "^11.3.0",
     "hastscript": "^9.0.1",
     "rehype-katex": "^7.0.1",

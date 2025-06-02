@@ -71,6 +71,6 @@ containsSiblingCifly <- function(g, x, Z) {
 	zLogical <- rep(FALSE, p)
 	zLogical[Z] <- TRUE
 
-	edgeList <- g[["-->"]]
+	edgeList <- g[["<->"]]
 	return (length(edgeList[(zLogical[edgeList[,1]] & edgeList[,2] == x) | (zLogical[edgeList[,2]] & edgeList[,1] == x)]) > 0)
 }

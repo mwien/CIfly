@@ -21,7 +21,7 @@ Let $x$ and $y$ be distinct nodes in an ADMG $G$ such that $\text{de}(x)_G = \{x
 
 The criterion is stated of ADMGs, which are graphs with both directed and bidirected edges that do not contain a directed cycle. , $\text{pa}_G(x)$ are the parents of $x$ in $G$, i.e., nodes $p$ with $p \rightarrow x$, and $\text{sib}_G(x)$ are the siblings of $x$ in $G$, i.e., the nodes with $p \leftrightarrow x$. Further, $\text{dis}_{G, W}(x)$ contains all nodes connected to $x$ via a path of bidirected edges, with all nodes on the path not being in $W$, and $\text{dis}_{G, W}^+(x) = (\text{dis}_{G, W}(x) \cup \text{pa}_G(\text{dis}_{G, W}(x))) \setminus W$. 
 
-The criterion assumes that $y$ is the only descendant of $x$, which may appear like a strong restriction. However, one may consider the *latent projection* over all other descendants of $x$ to satisfy this condition. The only consequence of this, is that no descendants of $x$ in the original graph can be part of the instrumental set. However, this is a mild assumption because if such variables could be used as part of the instrument, then the causal effect would also be identifiable using adjustment. Therefore, in the following, we will always assume that this is not the case and the causal effect *cannot* be identified by adjustment. Checking this is also possible using CIfly, however, it goes beyond the scope of this article. 
+The criterion assumes that $y$ is the only descendant of $x$, which may appear like a strong restriction. However, one may consider the *latent projection* over all other descendants of $x$ to satisfy this condition. The only consequence of this, is that no descendants of $x$ in the original graph can be part of the instrumental set. However, this is a mild assumption because if such variables could be used as part of the instrument, then the causal effect would also be identifiable using adjustment. One way to deal with it, is to first search for an adjustment set (a task that can also be solved using CIfly) and if none exists proceed with the methodology described in this article. Hence, in the following, we will always assume that the causal effect *cannot* be identified by adjustment. 
 
 While using the latent projection over all descendants of $x$ (apart from $y$) is correct under this assumption, algorithmically, computing the latent projection is more expensive than CIfly reachability algorithms. Hence, we would like to avoid this operation here. To this aim, we use the following graphical formulation for $W^\text{opt}$ and $Z^\text{opt}$ in the CIfly paper. 
 
@@ -43,8 +43,6 @@ Of course, the task of checking whether $y$ is a descendant of $x$ in $G$ is obv
 <Ruletable id="descendants_admg"/>
 
 Effectively, this table describes to start at the nodes in $X$ as if the last edge was $\rightarrow$ and from there only follow directed edges. All reached nodes are returned as the descendants of $X$. We can use this in R to check whether $y \in \text{de}_G(x)$. 
-
-TODO: adapt code at bottom like this
 
 ```py
 descendants <- reach(g, list("X" = x), descendantsTable)
@@ -69,13 +67,63 @@ Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), optIVTable), W)
 ```
 
 #### Checking the optimality condition
-The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The other condition is that $Z$ contains a parent or sibling of $x$. While this could also be checked using CIfly, clearly it is preferred to do this directly in R. Here, we do this based on the CIfly graph representation in R, but you may prefer your favorite graph library or format instead. 
+The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The other condition is that $Z$ contains a parent or sibling of $x$. While this could also be checked using CIfly, clearly it is preferred to do this directly in R. Here, we do this based on the CIfly graph representation in R, but you may prefer to do this using your favorite graph library or format instead.
 
-TODO: add code
+Recall that a CIfly graph is stored as one edge list per edge type (as explained [here](/docs/r-wrapper/)). The edge lists are given as $r \times 2$ matrices in case there are $r$ edges of that type. In order to check whether some node in $Z$ is a parent of $x$ we can filter the edge list matrix for such rows. For efficient look-up in the filtering, we first store a Boolean vector indicating membership in $Z$. Afterwards, we filter the edges in ```g[["-->"]]``` that have a node in $Z$ as first and $x$ as second element and return ```TRUE``` or ```FALSE``` based on the length of the filtered matrix. 
 
+```r
+containsParentCifly <- function(g, x, Z) {
+	# enable efficient lookup of membership in Z
+	p <- highestVertexCifly(g)
+	zLogical <- rep(FALSE, p)
+	zLogical[Z] <- TRUE
+
+	edgeList <- g[["-->"]]
+	return (length(edgeList[zLogical[edgeList[,1]] & edgeList[,2] == x]) > 0)
+}
+```
+
+This code uses a small helper function ```highestVertexCifly``` to find the highest node ID in a CIfly graph. Note that the number of nodes is not stored in a CIfly graph object and, hence, has to be managed outside of it if needed. 
+
+```r
+highestVertexCifly <- function(g) {
+	nodeIds <- unlist(g)
+	if (length(nodeIds) == 0) {
+		return (0)
+	} else {
+		return (max(nodeIds))
+	}
+}
+```
+
+Both functions take time $O(m)$ when the CIfly graph has $m$ edges. This is fine in this case because they are called only once. If they are needed repeatedly for different nodes, then it is certainly useful to maintain a different graph representation, in addition to the CIfly graph, with more efficient access to these information. 
+
+The siblings can be retrieved similarly, only this time checking for both possible orders of the endpoints in the edge list matrix. 
+
+```r
+containsSiblingCifly <- function(g, x, Z) {
+	p <- highestVertexCifly(g)
+	zLogical <- rep(FALSE, p)
+	zLogical[Z] <- TRUE
+
+	edgeList <- g[["<->"]]
+	return (length(edgeList[(zLogical[edgeList[,1]] & edgeList[,2] == x) | (zLogical[edgeList[,2]] & edgeList[,1] == x)]) > 0)
+}
+```
+
+In our code these functions can be used as follows to give a Boolean checking Condition 2. 
+```r
+containsParentCifly(g, x, Z) || containsSiblingCifly(g, x, Z)
+```
+
+In case this is needed more often, a helper function 
+```r 
+containsNeighborCifly(g, x, Z, edgeType, orderedEdge=TRUE)
+```
+may prove useful that abstracts this code for different edge types including an argument that indicates whether this edge type is ordered.  
 
 #### Full implementation
-TODO
+Hence, we obtain the following implementation for finding graphically optimal instrumental sets $Z$ and $W$ assuming that the causal effect of $x$ on $y$ cannot be identified with adjustment. 
 
 <ExampleCode id="optimalIV.R"/>
 
