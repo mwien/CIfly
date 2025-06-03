@@ -34,7 +34,7 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
       </h2>
       <a
         href="/docs/"
-        class="bg-blue-700 hover:bg-blue-600 rounded-lg text-white md:text-lg font-bold px-4 py-2 mt-4 md:mt-6"
+        class="bg-blue-700 hover:bg-blue-600 rounded-lg shadow-sm transition-all text-white md:text-lg font-bold px-4 py-2 mt-4 md:mt-6"
       >
         Get Started
       </a>
@@ -138,6 +138,7 @@ install.packages("ciflyR")`}
           id="dsep"
           largeText={true}
           suppressButton={true}
+          withHeader={true}
           wrapperClass="my-4"
         />
 
@@ -147,7 +148,7 @@ install.packages("ciflyR")`}
           Python and R.
         </p>
 
-        <CodeSwitcher>
+        <CodeSwitcher class="text-sm md:text-base">
           <Code
             slot="python-code"
             code={`import ciflypy as cifly
@@ -163,7 +164,7 @@ def test_dsep(G, x, y, Z):
             lang="python"
             theme={customCatppucinLatte}
             transformers={[addHeader("dsep.py")]}
-            class="text-sm md:text-base p-2"
+            class="p-2"
           />
           <Code
             slot="r-code"
@@ -179,7 +180,7 @@ test_dsep <- function(G, x, y, Z) {
             lang="r"
             theme={customCatppucinLatte}
             transformers={[addHeader("dsep.R")]}
-            class="text-sm md:text-base p-2"
+            class="p-2"
           />
         </CodeSwitcher>
 
@@ -217,7 +218,7 @@ test_dsep <- function(G, x, y, Z) {
     </Box>
 
     <Box>
-      <Fragment slot="title">Ruletable</Fragment>
+      <Fragment slot="title">Ruletables</Fragment>
 
       <div class="md:mx-4">
         <p class="md:text-lg md:mb-6 hyphens-auto">

@@ -8,13 +8,13 @@ const { ruletable, applications } = Astro.props;
 ---
 
 <div
-  class="w-full px-2.5 pb-2.5 my-2 md:my-3 bg-white border border-blue-600 rounded-lg shadow-sm mx-auto"
+  class="w-full px-2.5 pb-2.5 my-2 md:my-3 bg-white border border-gray-200 rounded-lg shadow-sm mx-auto"
 >
   <a
     href={`/ruletables/${ruletable.id}/`}
     class="flex justify-between w-full py-2.5 mb-1 md:mb-2"
   >
-    <h1 class="text-sm md:text-base font-extrabold text-blue-700">
+    <h1 class="text-sm md:text-lg font-bold">
       {ruletable.data.title}
     </h1>
     <ArrowButton />
@@ -23,12 +23,10 @@ const { ruletable, applications } = Astro.props;
     id={ruletable.data.source.id}
     largeText={true}
     wrapperClass="mt-1.5 mb-4"
-    codeClass="max-h-48"
+    codeClass="max-h-48 rounded-lg"
   />
   <div class="grid grid-cols-[100px_1fr] md:grid-cols-[112px_1fr] w-full">
-    <div class="font-bold text-blue-700 mr-1 text-sm md:text-base">
-      Graph type:
-    </div>
+    <div class="font-bold mr-1 text-sm md:text-base">Graph type:</div>
     <div class="text-gray-800 text-sm md:text-base">{ruletable.data.graph}</div>
     <ApplicationList
       applications={applications.get(ruletable.data.source.id) || []}

@@ -79,7 +79,6 @@ const applications = defineCollection({
     code: z.array(reference("code_raw")),
     ruletables: z.array(reference("ruletables_raw")),
     graph: z.string(),
-    language: z.string(),
     references: z.array(reference("references")),
   }),
 });

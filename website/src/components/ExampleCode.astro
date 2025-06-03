@@ -8,10 +8,15 @@ const lang = id.split(".").pop().toLowerCase();
 import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
 ---
 
-<Code
-  code={code_raw.data.raw}
-  lang={lang}
-  theme={customCatppucinLatte}
-  transformers={[addCopyButton(), addHeader("test")]}
-  class:list={["font-mono p-2 w-full text-sm", { "md:text-base": largeText }]}
-/>
+<div class:list={["text-sm", { "md:text-base": largeText }]}>
+  <Code
+    code={code_raw.data.raw}
+    lang={lang}
+    theme={customCatppucinLatte}
+    transformers={[addHeader("")]}
+    class:list={[
+      "font-mono p-2 w-full text-sm/6",
+      { "md:text-base": largeText },
+    ]}
+  />
+</div>

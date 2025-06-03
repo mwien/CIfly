@@ -9,7 +9,7 @@ export function addCopyButton() {
         "button",
         {
           class:
-            "absolute top-0 right-0 p-1.5 md:p-2.5 text-blue-700 bg-transparent hover:text-blue-500 cursor-pointer",
+            "absolute top-0 right-0 p-1.5 md:p-2.5 bg-transparent hover:text-blue-500 cursor-pointer",
         },
         h(
           "svg",
@@ -49,7 +49,7 @@ export function addHeader(title: String) {
         "div",
         {
           class:
-            "bg-gray-50 font-mono border-b border-gray-200 px-4 py-2 flex items-center h-10.25",
+            "bg-gray-50 font-mono border-b border-gray-200 px-2 py-2 flex items-center h-10.25",
         },
         [{ type: "text", value: title } as Text],
       );
@@ -58,7 +58,7 @@ export function addHeader(title: String) {
         "div",
         {
           class:
-            "bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden",
+            "not-prose rounded-lg shadow-sm border border-gray-200 overflow-hidden",
         },
         [headerDiv, preElement],
       );

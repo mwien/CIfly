@@ -19,11 +19,11 @@ const { Content } = await render(application);
 
 <Layout>
   <div class="w-full md:w-7/10 md:my-4">
-    <div class="flex justify-between w-full mb-4">
-      <h1 class="font-extrabold text-blue-700">
+    <div class="flex text-lg justify-between w-full mb-4">
+      <h1 class="font-bold">
         {application.data.title}
       </h1>
-      <div class="font-extrabold text-blue-700">
+      <div class="font-bold">
         {application.data.graph}
       </div>
     </div>
@@ -31,7 +31,7 @@ const { Content } = await render(application);
       <Prose>
         <Content />
       </Prose>
-      <div class="flex flex-row">
+      <div class="flex flex-row mt-2">
         <ReferenceList references={application.data.references} small={false} />
       </div>
       <BackButton link="/applications/" />

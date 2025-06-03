@@ -5,8 +5,9 @@ const {
   id,
   largeText,
   suppressButton,
-  wrapperClass: wrapperClassName,
-  codeClass: codeClassName,
+  withHeader,
+  wrapperClass: wrapperClass,
+  codeClass: codeClass,
   ...rest
 } = Astro.props;
 import { getEntry } from "astro:content";
@@ -15,15 +16,19 @@ import ciflyGrammar from "../shiki/grammar/cifly.tmLanguage.json";
 import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
 ---
 
-<div class:list={["relative font-mono w-full", wrapperClassName]} {...rest}>
+<div
+  class:list={["text-sm", wrapperClass, { "md:text-base": largeText }]}
+  {...rest}
+>
   <Code
     code={ruletable_raw.data.raw}
     lang={ciflyGrammar}
     theme={customCatppucinLatte}
-    transformers={suppressButton
-      ? [addHeader(id + ".txt")]
-      : [addHeader(id + ".txt"), addCopyButton()]}
-    class:list={["text-sm p-2", { "md:text-base": largeText }, codeClassName]}
+    transformers={[
+      ...(!suppressButton ? [addCopyButton()] : []),
+      ...(withHeader ? [addHeader(id + ".txt")] : []),
+    ]}
+    class:list={["p-2 text-sm/6", codeClass, { "md:text-base": largeText }]}
     id={id}
   />
 </div>

@@ -12,7 +12,7 @@ library("ciflyR")
 # it is assumed that X and Y are disjoint
 isAmenable <- function(g, X, Y) {
     sets <- list("X" = X)
-    tablePath <- "not_amenable_cpdag.txt"
+    tablePath <- "./not_amenable_cpdag.txt"
     reached <- reach(g, sets, tablePath)
     return (!(intersect(reached, Y)))
 }
@@ -81,7 +81,7 @@ As an example, consider the code below that computes all amenable nodes for ever
 ```r
 library("ciflyR")
 
-table = parseRuletable("not_amenable_cpdag.txt")
+table = parseRuletable("./not_amenable_cpdag.txt")
 
 # p stores the number of nodes
 p = 4

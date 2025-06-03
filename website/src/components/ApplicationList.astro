@@ -6,7 +6,7 @@ const { applications, small, truncate } = Astro.props;
 {
   applications.length > 0 && (
     <div
-  class:list={["font-bold text-blue-700 mr-1", { "text-sm md:text-base": small }, { truncate: truncate }]}
+  class:list={["font-bold mr-1", { "text-sm md:text-base": small }, { truncate: truncate }]}
     >
       Applications:
     </div>

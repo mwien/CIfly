@@ -8,6 +8,8 @@ language: Python
 references: [perkovicComplete]
 ---
 
+import CodeHelper from "../../components/CodeHelper.astro"
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
 import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
@@ -29,7 +31,7 @@ Let us first revisit the notion of a proper possibly directed path. A *proper* p
 
 In our [documentation](/docs/python-wrapper/), we already used the rule table below for finding all non-amenable nodes as a running example. It finds all nodes $v$ for which there exists a proper possibly directed path starting with an undirected edge from a node $x \in X$ to $v$. Effectively, these are the nodes that cannot be in set $Y$. 
 
-<Ruletable id="not_amenable_cpdag"/>
+<Ruletable id="not_amenable_cpdag" withHeader={true}/>
 
 To check amenability, one can hence use this ruletable for set $X$ and check whether the intersection of returned nodes with $Y$ is empty. 
 
@@ -39,31 +41,42 @@ We compute the forbidden set in multiple steps. First, we find all $w$ on a prop
 
 Hence, we need a table for finding nodes on proper possibly directed paths from $X$ with the option to stop before nodes of a passed set $W$ are reached. Clearly, this table can also be used to find possible descendants. 
 
-<Ruletable id="possible_descendants_cpdag"/>
+<Ruletable id="possible_descendants_cpdag" withHeader={true}/>
 
 We also need to find the nodes from which there exists a proper possibly directed path to $Y$. For this, we can simply start the reachability algorithm at $Y$ and traverse these paths the opposite way. 
 
-<Ruletable id="possible_ancestors_cpdag"/>
+<Ruletable id="possible_ancestors_cpdag" withHeader={true}/>
 
 Using these tables (assuming they are stored in ```possible_anc``` and ```possible_des```), the forbidden set can be computed as follows.
 
-```py
-anc = cf.reach(g, {"X": Y, "W": X}, possible_anc)
+<CodeSwitcher>
+<CodeHelper slot="python-code" code = {
+`anc = cf.reach(g, {"X": Y, "W": X}, possible_anc)
 des = cf.reach(g, {"X": X, "W": []}, possible_des)
 cn = set(anc).intersection(des)
-forb = cf.reach(g, {"X": cn}, possible_des)
-```
+forb = cf.reach(g, {"X": cn}, possible_des)`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code = {
+`anc <- reach(cpdag, list("X" = Y, "W" = X), possibleAncestors)
+des <- reach(cpdag, list("X" = X, "W" = c()), possibleDescendants)
+cn <- intersect(anc, des)
+forb <- reach(cpdag, list("X" = cn), possibleDescendants)`
+} lang="r" title="" />
+</CodeSwitcher>
 
 #### Blocking condition
 The blocking condition concerns itself with proper definite-status non-causal paths. Again, let us briefly introduce this terminology. A path from $X$ to $Y$ is called *non-causal* if it is not possibly directed from $X$ to $Y$. Further, a path is *definite-status* if every non-endpoint node on it is either a collider or a definite non-collider on the path. A *collider* is a node $w$ such that it is connected to its neighbors on the path as $u \rightarrow w \leftarrow v$. A *definite non-collider* is a node $w$ where the edge to its neighbor $u$ or to its neighbor $v$ points towards $u$, respectively $v$, or where both edges are undirected. 
 
 To check the condition, it should be verified that proper definite-status non-causal paths are blocked given $Z$. For this, it has hold that there exists a collider $w$ on the path such $w \not\in Z$ or a definite-status non-colllider $w$ such that $w \in Z$. We again verify this by finding all reachable nodes and checking that $Y$ contains no such nodes. To do this, we use the following table. 
 
-<Ruletable id="backdoor_connected_cpdag"/>
+<Ruletable id="backdoor_connected_cpdag" withHeader={true}/>
 
 This table tracks definite-status paths open given $Z$ exactly as discussed above. To ensure that they are non-causal, any transition from $X$ to a node in $C$ (a set containing all nodes on a possible directed path from $X$ to $Y$) is excluded in the table. For this, it is explicitly used that the amenability condition ensures that only directed edges from $X$ to $C$ may exist (else the exclusion of transitions from $X$ to $C$ would need to be added to the second and fourth rule as well). 
 
 #### Full implementation
 The implementation uses the four tables introduced above to check the conditions one-by-one. We note that it would be possible to return early if the first or second condition is violated. This is omitted here for sake of a clearer presentation. 
 
-<ExampleCode id="cpdag_adjustment_check.py"/>
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="cpdag_adjustment_check.py"/>
+	<ExampleCode slot="r-code" id="cpdagAdjustmentCheck.R"/>
+</CodeSwitcher>

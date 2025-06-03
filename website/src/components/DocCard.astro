@@ -5,13 +5,13 @@ const { doc } = Astro.props;
 ---
 
 <div
-  class="w-full p-2.5 my-2 md:my-3 bg-white border border-blue-600 rounded-lg shadow-sm mx-auto"
+  class="w-full p-2.5 my-2 md:my-3 bg-white border border-gray-200 rounded-lg shadow-sm mx-auto"
 >
   <a
     href={`/docs/${doc.id}/`}
     class="flex flex-row justify-between w-full mb-2"
   >
-    <h1 class="text-sm md:text-base font-extrabold text-blue-700">
+    <h1 class="text-sm md:text-lg font-bold">
       {doc.data.title}
     </h1>
     <ArrowButton />

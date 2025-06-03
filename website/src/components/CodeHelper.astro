@@ -1,0 +1,14 @@
+---
+const { code, lang, title } = Astro.props;
+import { Code } from "astro:components";
+import { addHeader } from "../shiki/transformers.ts";
+import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+---
+
+<Code
+  code={code}
+  lang={lang}
+  theme={customCatppucinLatte}
+  transformers={[addHeader(title)]}
+  class="text-sm/6 p-2"
+/>

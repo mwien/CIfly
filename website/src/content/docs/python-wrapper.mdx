@@ -13,7 +13,7 @@ import ciflypy as cf
 # it is assumed that X and Y are disjoint
 def is_amenable(g, X, Y):
     sets = {"X": X}
-    table_path = "not_amenable_cpdag.txt"
+    table_path = "./not_amenable_cpdag.txt"
     reached = cf.reach(g, sets, table_path)
     return not set(reached).intersection(Y)
 
@@ -84,7 +84,7 @@ As an example, consider the code below that computes all amenable nodes for ever
 ```py
 import ciflypy as cf
 
-table = cf.Ruletable("not_amenable_cpdag.txt")
+table = cf.Ruletable("./not_amenable_cpdag.txt")
 
 # p stores the number of nodes
 p = 4
