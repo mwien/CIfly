@@ -9,7 +9,7 @@ export function addCopyButton() {
         "button",
         {
           class:
-            "absolute top-0 right-0 p-1.5 md:p-2.5 bg-transparent hover:text-blue-500 cursor-pointer",
+            "absolute top-0 right-0 p-1.5 md:p-2.5 bg-transparent hover:text-gray-500 cursor-pointer",
         },
         h(
           "svg",

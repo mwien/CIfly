@@ -35,6 +35,16 @@ const { class: className, ...rest } = Astro.props;
     const tabs = container.querySelectorAll("[code-tab]");
     const contents = container.querySelectorAll("[code-content]");
 
+    const height = contents[0]
+      .querySelector("pre")
+      .getBoundingClientRect().height;
+
+    // set height according to first tab element
+    contents.forEach((content) => {
+      const preElement = content.querySelector("pre");
+      preElement.style.height = `${height}px`;
+    });
+
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
         const target = tab.getAttribute("code-tab");

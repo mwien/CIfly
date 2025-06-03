@@ -80,6 +80,7 @@ const applications = defineCollection({
     ruletables: z.array(reference("ruletables_raw")),
     graph: z.string(),
     references: z.array(reference("references")),
+    number: z.number(),
   }),
 });
 
@@ -88,7 +89,7 @@ const references = defineCollection({
   schema: z.object({
     authors: z.array(z.string()),
     title: z.string(),
-    year: z.number(),
+    year: z.string(),
     venue: z.string(),
     url: z.string(),
   }),

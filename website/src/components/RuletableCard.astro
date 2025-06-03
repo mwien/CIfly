@@ -27,14 +27,16 @@ const { ruletable, applications } = Astro.props;
   />
   <div class="grid grid-cols-[100px_1fr] md:grid-cols-[112px_1fr] w-full">
     <div class="font-bold mr-1 text-sm md:text-base">Graph type:</div>
-    <div class="text-gray-800 text-sm md:text-base">{ruletable.data.graph}</div>
+    <div class="text-sm md:text-base text-gray-800">{ruletable.data.graph}</div>
     <ApplicationList
       applications={applications.get(ruletable.data.source.id) || []}
+      darker={true}
       small={true}
       truncate={true}
     />
     <ReferenceList
       references={ruletable.data.references}
+      darker={true}
       small={true}
       truncate={true}
     />

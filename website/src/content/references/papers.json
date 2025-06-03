@@ -6,7 +6,7 @@
             "Maathuis, Marloes H."
         ],
         "title": "Graphical tools for selecting conditional instrumental sets",
-        "year": 2024,
+        "year": "2024a",
         "venue": "Biometrika",
         "url": "https://doi.org/10.1093/biomet/asad066"
     },
@@ -18,7 +18,7 @@
             "Maathuis, Marloes H."
         ],
         "title": "Complete Graphical Characterization and Construction of Adjustment Sets in Markov Equivalence Classes of Ancestral Graphs",
-        "year": 2018,
+        "year": "2018",
         "venue": "JMLR",
         "url": "https://www.jmlr.org/papers/v18/16-319.html"
     },
@@ -28,7 +28,7 @@
             "Liśkiewicz, Maciej"
         ],
         "title": "Finding minimal d-separators in linear time and applications",
-        "year": 2020,
+        "year": "2020",
         "venue": "UAI",
         "url": "https://proceedings.mlr.press/v115/van-der-zander20a.html"
     },
@@ -39,7 +39,7 @@
             "Weichwald, Sebastian"
         ],
         "title": "Adjustment Identification Distance: A gadjid for Causal Structure Learning",
-        "year": 2024,
+        "year": "2024b",
         "venue": "UAI",
         "url": "https://proceedings.mlr.press/v244/henckel24a.html"
     },
@@ -50,7 +50,7 @@
             "Textor, Johannes"
         ],
         "title": "Separators and adjustment sets in causal graphs: Complete criteria and an algorithmic framework",
-        "year": 2019,
+        "year": "2019",
         "venue": "Artificial Intelligence",
         "url": "https://www.sciencedirect.com/science/article/pii/S0004370219300025"
     }
