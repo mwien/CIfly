@@ -1,10 +1,10 @@
 import ciflypy as cf
 import ciflypy_examples.utils as utils
+from ciflypy_examples.nearest_dsep import find_nearest_separator
 
 ruletables = utils.get_ruletable_path()
 anc_table = cf.Ruletable(str(ruletables / "ancestors_admg.txt"))
 desc_table = cf.Ruletable(str(ruletables / "descendants_admg.txt"))
-closure_table = cf.Ruletable(str(ruletables / "closure_admg.txt"))
 dsep_table = cf.Ruletable(str(ruletables / "dconnected_admg.txt"))
 
 
@@ -20,19 +20,8 @@ def forbidden(g, x, y):
     cn = set(anc).intersection(des) - set([x])
     return cf.reach(g, {"X": cn}, desc_table) + [x]
 
-
-def find_nearest_separator(g, x, y, r):
-    # x and y are ints
-    anc = cf.reach(g, {"X": [x, y]}, anc_table)
-    z0 = set(r).intersection(set(anc) - set([x, y]))
-    xstar = cf.reach(g, {"X": x, "Z": z0, "A": anc}, closure_table)
-    if y in xstar:
-        return None
-    return list(z0.intersection(xstar))
-
-
 def witness_ancestral_instrument(g, x, y, z, non_forb):
-    w = find_nearest_separator(g, y, z, non_forb)
+    w = find_nearest_separator(g, [y], [z], [], non_forb)
     if w is None or z not in cf.reach(g, {"X": x, "Z": w}, dsep_table):
         return None
     return w
