@@ -8,6 +8,8 @@ references: [henckelIV]
 number: 2
 ---
 
+import CodeHelper from "../../components/CodeHelper.astro"
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
 import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
@@ -40,41 +42,60 @@ This will guarantee that the resulting sets $W^{\text{opt}}$ and $Z^{\text{opt}}
 #### Descendant check
 Of course, the task of checking whether $y$ is a descendant of $x$ in $G$ is obvious and available in many off-the-shelf graph packages. Still, we show how it can be easily done in CIfly as well. For this, we use the following rule table. 
 
-<Ruletable id="descendants_admg"/>
+<Ruletable id="descendants_admg" withHeader={true}/>
 
-Effectively, this table describes to start at the nodes in $X$ as if the last edge was $\rightarrow$ and from there only follow directed edges. All reached nodes are returned as the descendants of $X$. We can use this in R to check whether $y \in \text{de}_G(x)$. 
+Effectively, this table describes to start at the nodes in $X$ as if the last edge was $\rightarrow$ and from there only follow directed edges. All reached nodes are returned as the descendants of $X$. We can use this in as follows to check whether $y \in \text{de}_G(x)$. 
 
-```py
-descendants <- reach(g, list("X" = x), descendantsTable)
-isDescendant <- y %in% descendants
-```
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`descendants = cf.reach(g, {"X": x}, "descendants_admg.txt")
+isDescendant = y in descendants`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`descendants <- reach(g, list("X" = x), "descendants_admg.txt")
+isDescendant <- y %in% descendants`
+} lang="r" title="" />
+</CodeSwitcher>
 
 #### Compute $W^{\text{opt}}$ and $Z^{\text{opt}}$
 We will compute both $W^{\text{opt}}$ and $Z^{\text{opt}}$ using the same underlying ruletable. Let us begin with $W^{\text{opt}}$. Here, we want to start at $y$ and track paths that, first, follow edges $\leftarrow$ (assuming the respective nodes are in $D \setminus \{x\}$) until at some point it is switched to bidirected edges for edges in $A$. The path may end with final directed edge $\leftarrow$ to a node in $A$. To do this consider the following rule table. 
 
-<Ruletable id="optimal_iv_admg"/>
+<Ruletable id="optimal_iv_admg" withHeader={true}/>
 
-Here, we use the fact that $A = V \setminus D$, hence only $D$ needs to be passed. $S$ is the set of starting nodes and $F$ gives us the possibility to restrict nodes to be visited further. As can be seen, the table tracks exactly the kind of paths described above. It returns only the reached nodes in $A$ using the colors ```pass``` and ```yield```. Hence, $W^{\text{opt}}$ can be computed as follows.
+Here, we use the fact that $A = V \setminus D$, hence only $D$ needs to be passed. $S$ is the set of starting nodes and $F$ gives us the possibility to restrict nodes to be visited further. As can be seen, the table tracks exactly the kind of paths described above. It returns only the reached nodes in $A$ using the colors ```pass``` and ```yield```. Hence, $W^{\text{opt}}$ and $Z^{\text{opt}}$ can both be computed using this table as follows. For the latter, observe that descendants of $x$ can never be connected to it via $x \leftarrow \cdots$ due to the acyclicity of the underlying graph.
 
-```r
-W <- reach(g, list("S" = y, "D" = des, "F" = x), optIVTable)
-```
-
-Now, consider $Z^{\text{opt}}$ and observe that descendants of $x$ can never be connected to it via $x \leftarrow \cdots$ due to the acyclicity of the underlying graph. Hence, we can use the same table to compute this set (here in combination with ```setdiff```). 
-
-```r
-Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), optIVTable), W)
-```
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`W = set(cf.reach(g, {"S": y, "D": descendants, "F": x}, "./optimal_iv_admg.txt"))
+Z = set(cf.reach(g, {"S": x, "D": descendants, "F": []}, "./optimal_iv_admg.txt")) - W`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`W <- reach(g, list("S" = y, "D" = descendants, "F" = x), "./optimal_iv_admg.txt")
+Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), "./optimal_iv_admg.txt"), W)`
+} lang="r" title="" />
+</CodeSwitcher>
 
 #### Checking the optimality condition
-The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The other condition is that $Z$ contains a parent or sibling of $x$. While this could also be checked using CIfly, clearly it is preferred to do this directly in R. Here, we do this based on the CIfly graph representation in R, but you may prefer to do this using your favorite graph library or format instead.
+The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The second condition is that $Z$ contains a parent or sibling of $x$. While this could also be checked using a CIfly algorithm, clearly it is preferred to do this directly in Python or R. Here, we do this based on the CIfly graph representation, but you may prefer to do this using your favorite graph library or format instead.
 
-Recall that a CIfly graph is stored as one edge list per edge type (as explained [here](/docs/r-wrapper/)). The edge lists are given as $r \times 2$ matrices in case there are $r$ edges of that type. In order to check whether some node in $Z$ is a parent of $x$ we can filter the edge list matrix for such rows. For efficient look-up in the filtering, we first store a Boolean vector indicating membership in $Z$. Afterwards, we filter the edges in ```g[["-->"]]``` that have a node in $Z$ as first and $x$ as second element and return ```TRUE``` or ```FALSE``` based on the length of the filtered matrix. 
+Recall that a CIfly graph is stored as one edge list per edge type. In Python, each edge is given as a pair of node IDs. Hence, we may use the following helper functions to check whether $Z$ contains a parent or sibling of $x$. 
+
+```py
+def contains_parent(g, x, Z):
+    return any(map(lambda uv: uv[0] in Z and uv[1] == x, g["-->"]))
+
+def contains_sibling(g, x, Z):
+    return any(map(lambda uv: (uv[0] in Z and uv[1] == x) or (uv[0] == x and uv[1] in Z), g["<->"]))
+```
+
+To do the parent check, the lambda function tests for a pair ```uv``` from the edge list of directed edges whether the first node is in $Z$ and the second node is $x$. The sibling check is a bit more verbose because both orderings have to be tested. Provided that testing membership in $Z$ is constant-time (as is the case here because we pass $Z$ as a Python set), these functions run in linear-time in the size of the graph as a whole edge list is searched. Of course, better run-times are possible if graph representations more suitable to this task are used. While this does not matter for the time complexity of this procedure, it can be useful to maintain such a representation in case the parent and sibling checks are needed repeatedly. 
+
+In R, the edge lists are given as $r \times 2$ matrices in case there are $r$ edges of that type. In order to check whether some node in $Z$ is a parent of $x$ we can filter the edge list matrix for such rows, quite similar to the Python code above. However, because R has no native set data structure, we take some extra steps to ensure efficient look-up in the filtering (even for large sets $Z$). Namely, we first store a Boolean vector indicating membership in $Z$. Afterwards, we filter the edges in ```g[["-->"]]``` that have a node in $Z$ as first and $x$ as second element and return ```TRUE``` or ```FALSE``` based on the length of the filtered matrix. Let us consider this for the parent check first. 
 
 ```r
-containsParentCifly <- function(g, x, Z) {
+containsParent <- function(g, x, Z) {
 	# enable efficient lookup of membership in Z
-	p <- highestVertexCifly(g)
+	p <- highestNodeId(g)
 	zLogical <- rep(FALSE, p)
 	zLogical[Z] <- TRUE
 
@@ -83,10 +104,10 @@ containsParentCifly <- function(g, x, Z) {
 }
 ```
 
-This code uses a small helper function ```highestVertexCifly``` to find the highest node ID in a CIfly graph. Note that the number of nodes is not stored in a CIfly graph object and, hence, has to be managed outside of it if needed. 
+This code uses a small helper function ```highestNodeId``` to find the highest node ID in a CIfly graph. Note that the number of nodes is not stored in a CIfly graph object and, hence, has to be managed outside of it if needed. 
 
 ```r
-highestVertexCifly <- function(g) {
+highestNodeId <- function(g) {
 	nodeIds <- unlist(g)
 	if (length(nodeIds) == 0) {
 		return (0)
@@ -96,13 +117,11 @@ highestVertexCifly <- function(g) {
 }
 ```
 
-Both functions take time $O(m)$ when the CIfly graph has $m$ edges. This is fine in this case because they are called only once. If they are needed repeatedly for different nodes, then it is certainly useful to maintain a different graph representation, in addition to the CIfly graph, with more efficient access to these information. 
-
-The siblings can be retrieved similarly, only this time checking for both possible orders of the endpoints in the edge list matrix. 
+Again, the siblings can be retrieved similarly, only now checking for both possible orders of the endpoints in the edge list matrix. 
 
 ```r
-containsSiblingCifly <- function(g, x, Z) {
-	p <- highestVertexCifly(g)
+containsSibling <- function(g, x, Z) {
+	p <- highestNodeId(g)
 	zLogical <- rep(FALSE, p)
 	zLogical[Z] <- TRUE
 
@@ -111,19 +130,17 @@ containsSiblingCifly <- function(g, x, Z) {
 }
 ```
 
-In our code these functions can be used as follows to give a Boolean checking Condition 2. 
-```r
-containsParentCifly(g, x, Z) || containsSiblingCifly(g, x, Z)
-```
-
-In case this is needed more often, a helper function 
+We note that in case this functionality is used more often, a helper function 
 ```r 
 containsNeighborCifly(g, x, Z, edgeType, orderedEdge=TRUE)
 ```
-may prove useful that abstracts this code for different edge types including an argument that indicates whether this edge type is ordered.  
+may prove useful, which abstracts this code for different edge types including an argument that indicates whether the edge type is ordered.  
 
 #### Full implementation
 Hence, we obtain the following implementation for finding graphically optimal instrumental sets $Z$ and $W$ assuming that the causal effect of $x$ on $y$ cannot be identified with adjustment. 
 
-<ExampleCode id="optimalIV.R"/>
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="optimal_iv.py"/>
+	<ExampleCode slot="r-code" id="optimalIV.R"/>
+</CodeSwitcher>
 

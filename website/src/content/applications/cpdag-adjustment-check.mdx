@@ -47,20 +47,20 @@ We also need to find the nodes from which there exists a proper possibly directe
 
 <Ruletable id="possible_ancestors_cpdag" withHeader={true}/>
 
-Using these tables (assuming they are stored in ```possible_anc``` and ```possible_des```), the forbidden set can be computed as follows.
+Using these tables, the forbidden set can be computed as follows.
 
 <CodeSwitcher>
-<CodeHelper slot="python-code" code = {
-`anc = cf.reach(g, {"X": Y, "W": X}, possible_anc)
-des = cf.reach(g, {"X": X, "W": []}, possible_des)
+<CodeHelper slot="python-code" code={
+`anc = cf.reach(g, {"X": Y, "W": X}, "./possible_ancestors_cpdag.txt")
+des = cf.reach(g, {"X": X, "W": []}, "./possible_descendants_cpdag.txt")
 cn = set(anc).intersection(des)
-forb = cf.reach(g, {"X": cn}, possible_des)`
+forb = cf.reach(g, {"X": cn}, "./possible_descendants_cpdag.txt")`
 } lang="py" title="" />
-<CodeHelper slot="r-code" code = {
-`anc <- reach(cpdag, list("X" = Y, "W" = X), possibleAncestors)
-des <- reach(cpdag, list("X" = X, "W" = c()), possibleDescendants)
+<CodeHelper slot="r-code" code={
+`anc <- reach(cpdag, list("X" = Y, "W" = X), "./possible_ancestors_cpdag.txt")
+des <- reach(cpdag, list("X" = X, "W" = c()), "./possible_descendants_cpdag.txt")
 cn <- intersect(anc, des)
-forb <- reach(cpdag, list("X" = cn), possibleDescendants)`
+forb <- reach(cpdag, list("X" = cn), "./possible_descendants_cpdag.txt")`
 } lang="r" title="" />
 </CodeSwitcher>
 

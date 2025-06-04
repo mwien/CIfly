@@ -31,10 +31,9 @@ const { Content } = await render(application);
       <Prose>
         <Content />
       </Prose>
-      <div class="flex flex-row mt-2">
+      <div class="flex flex-row mt-6">
         <ReferenceList references={application.data.references} small={false} />
       </div>
-      <BackButton link="/applications/" />
     </div>
   </div>
 </Layout>

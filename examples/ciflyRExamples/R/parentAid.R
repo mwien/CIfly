@@ -50,7 +50,7 @@ parentAid <- function(p, gTrue, gGuess) {
 	gTrueParsed <- parseGraph(gTrue, possDescendants)
 	gGuessParsed <- parseGraph(gGuess, possDescendants)
 
-	paList <- parentsCifly(p, gGuess)
+	paList <- parents(p, gGuess)
 
 	mistakes <- 0
 	for (t in seq(p)) {

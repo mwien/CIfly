@@ -45,7 +45,7 @@ soundAndCompleteInstrument <- function(p, g, x, y) {
 	notForb <- setdiff(1:p, forb)
 	cn <- causalNodes(g, x, y)
 	
-	gMod <- removeEdgesCifly(g, x, cn, "-->")
+	gMod <- removeEdges(g, x, cn, "-->")
 	gModParsed <- parseGraph(gMod, ancTable)
 	
 	instruments <- list()

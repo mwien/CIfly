@@ -11,7 +11,7 @@ getRuletablePath <- function() {
 
 # vectorized function to compute the parents for each node in a CIfly graph
 # can be adapted to solve similar tasks
-parentsCifly <- function(p, g) {
+parents <- function(p, g) {
 	dirEdges <- g[["-->"]]
 	grouped <- split(dirEdges[, 1], dirEdges[, 2])
 	result <- replicate(p, integer(0), simplify = FALSE)
@@ -24,7 +24,7 @@ parentsCifly <- function(p, g) {
 # if you need to access the number of vertices of the graph, 
 # it is recommended to store that directly instead of using this function
 # to ensure consistent handling of isolated vertices
-highestVertexCifly <- function(g) {
+highestNodeId <- function(g) {
 	nodeIds <- unlist(g)
 	if (length(nodeIds) == 0) {
 		return (0)
@@ -34,8 +34,8 @@ highestVertexCifly <- function(g) {
 }
 
 # vectorized function to remove edges from a CIfly graph
-removeEdgesCifly <- function(g, fromVars, toVars, edgeType) {
-	p <- highestVertexCifly(g)
+removeEdges <- function(g, fromVars, toVars, edgeType) {
+	p <- highestNodeId(g)
 	if (p == 0) {
 		return (g)
 	}
@@ -53,8 +53,8 @@ removeEdgesCifly <- function(g, fromVars, toVars, edgeType) {
 	return (gNew)
 }
 
-containsParentCifly <- function(g, x, Z) {
-	p <- highestVertexCifly(g)
+containsParent <- function(g, x, Z) {
+	p <- highestNodeId(g)
 
 	# enable efficient lookup of membership in Z
 	zLogical <- rep(FALSE, p)
@@ -64,8 +64,8 @@ containsParentCifly <- function(g, x, Z) {
 	return (length(edgeList[zLogical[edgeList[,1]] & edgeList[,2] == x]) > 0)
 }
 
-containsSiblingCifly <- function(g, x, Z) {
-	p <- highestVertexCifly(g)
+containsSibling <- function(g, x, Z) {
+	p <- highestNodeId(g)
 
 	# enable efficient lookup of membership in Z
 	zLogical <- rep(FALSE, p)

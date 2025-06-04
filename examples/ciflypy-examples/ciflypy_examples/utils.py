@@ -23,3 +23,9 @@ def removed_edges(g, from_vars, to_vars, edge_type):
         )
     )
     return gmod
+
+def contains_parent(g, x, Z):
+    return any(map(lambda uv: uv[0] in Z and uv[1] == x, g["-->"]))
+
+def contains_sibling(g, x, Z):
+    return any(map(lambda uv: (uv[0] in Z and uv[1] == x) or (uv[0] == x and uv[1] in Z), g["<->"]))

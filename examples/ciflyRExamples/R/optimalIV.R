@@ -16,13 +16,10 @@ optimalInstrument <- function(g, x, y) {
 	if (!(y %in% descendants)) {
 		return (NULL)
 	} 
-	W <- reach(g, list("S" = y, "D" = des, "F" = x), optimalIVTable)
-	Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), optimalIVTable), W)
+	W <- reach(g, list("S" = y, "D" = descendants, "F" = x), optimalIVTable)
+	Z <- setdiff(reach(g, list("S" = x, "D" = descendants, "F" = c()), optimalIVTable), W)
 
-	if (length(Z) == 0) {
-		return (NULL)
-	}
-	if (containsParentCifly(g, x, Z) || containsSiblingCifly(g, x, Z)) {
+	if (length(Z) > 0 && (containsParent(g, x, Z) || containsSibling(g, x, Z))) {
 		return (list("Z" = Z, "W" = W))
 	} else {
 		return (NULL)

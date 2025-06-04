@@ -54,6 +54,4 @@ def test_appendix_graphical_tools_for_cis_figure_3b():
     y = 4
 
     opt_iv = optimal_instrument(admg, x, y)
-    assert opt_iv is not None
-    assert set(opt_iv[0]) == {0}
-    assert set(opt_iv[1]) == {1, 2}
+    assert opt_iv is None
