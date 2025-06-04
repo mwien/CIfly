@@ -1,4 +1,5 @@
-source("../../R/optimalIV.R")
+library("here")
+source(here("R", "optimalIV.R"))
 
 test_that("Figure 5b", {
 	dirEdges <- rbind(c(1, 2), c(1, 4), c(2, 3), c(4, 5))

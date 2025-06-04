@@ -27,6 +27,6 @@ def test_figure_6dot2_3():
     x = 0
     y = 6
 
-    nearest_dsep = find_nearest_separator(admg, [x], [y], [], list(range(6)))
+    nearest_dsep = find_nearest_separator(admg, [x], [y], [], list(range(7)))
     assert nearest_dsep is not None
     assert set(nearest_dsep) == {1, 4}

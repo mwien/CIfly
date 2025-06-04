@@ -2,11 +2,11 @@ library("ciflyR")
 library("here")
 
 source(here("R", "utils.R"))
+source(here("R", "nearestDsep.R"))
 
 ruletables <- getRuletablePath()
 ancTable <- parseRuletable(file.path(ruletables, "ancestors_admg.txt"))
 desTable <- parseRuletable(file.path(ruletables, "descendants_admg.txt"))
-closureTable <- parseRuletable(file.path(ruletables, "closure_admg.txt"))
 dconTable <- parseRuletable(file.path(ruletables, "dconnected_admg.txt"))
 
 causalNodes <- function(g, x, y) {
@@ -22,18 +22,8 @@ forbidden <- function(g, x, y) {
 	return (append(reach(g, list("X" = cn), desTable), x))
 }
 
-findNearestSeparator <- function(g, x, y, r) {
-	anc <- reach(g, list("X" = c(x, y)), ancTable)
-	z0 <- intersect(r, anc[!(anc %in% c(x, y))])
-	xstar <- reach(g, list("X" = x, "Z" = z0, "A" = anc), closureTable)
-	if (y %in% xstar) {
-		return (NULL)
-	}
-	return (intersect(z0, xstar))
-}
-
 witnessAncestralInstrument <- function(g, x, y, z, notForb) {
-	W <- findNearestSeparator(g, y, z, notForb)
+	W <- findNearestSeparator(g, c(y), c(z), c(), notForb)
 	if (is.null(W) || !(z %in% reach(g, list("X" = x, "Z" = W), dconTable))) {
 		return (NULL)
 	}

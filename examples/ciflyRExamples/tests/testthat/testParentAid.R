@@ -1,4 +1,5 @@
-source("../../R/parentAid.R")
+library("here")
+source(here("R", "parentAid.R"))
 
 test_that("Simple DAG test", {
 	dagTrue <- list("-->" = rbind(c(1, 2), c(2, 3), c(1, 4), c(4, 3)))

@@ -1,4 +1,5 @@
-source("../../R/soundAndCompleteIV.R")
+library("here")
+source(here("R", "soundAndCompleteIV.R"))
 
 test_that("Figure 5b", {
 	p <- 5
