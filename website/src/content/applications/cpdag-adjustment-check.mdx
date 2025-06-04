@@ -76,6 +76,8 @@ This table tracks definite-status paths open given $Z$ exactly as discussed abov
 #### Full implementation
 The implementation uses the four tables introduced above to check the conditions one-by-one. We note that it would be possible to return early if the first or second condition is violated. This is omitted here for sake of a clearer presentation. 
 
+We rely on a function in ```utils``` that returns the path to the rule-table folder. In Python, this function returns a ```Path``` object from the ```pathlib``` library. In R, it returns a string holding this path, which is created using the ```here``` library. 
+
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="cpdag_adjustment_check.py"/>
 	<ExampleCode slot="r-code" id="cpdagAdjustmentCheck.R"/>

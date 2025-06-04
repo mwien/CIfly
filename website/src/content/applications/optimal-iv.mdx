@@ -76,7 +76,7 @@ Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), "./optimal_iv_admg.tx
 </CodeSwitcher>
 
 #### Checking the optimality condition
-The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The second condition is that $Z$ contains a parent or sibling of $x$. While this could also be checked using a CIfly algorithm, clearly it is preferred to do this directly in Python or R. Here, we do this based on the CIfly graph representation, but you may prefer to do this using your favorite graph library or format instead.
+The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The second condition is that $Z$ contains a parent or sibling of $x$. While this could  be checked using a CIfly algorithm, clearly it is easier to do this directly in Python or R as well. Here, we do this based on the CIfly graph representation, but you may prefer to do this using your favorite graph library or format instead.
 
 Recall that a CIfly graph is stored as one edge list per edge type. In Python, each edge is given as a pair of node IDs. Hence, we may use the following helper functions to check whether $Z$ contains a parent or sibling of $x$. 
 
@@ -104,7 +104,7 @@ containsParent <- function(g, x, Z) {
 }
 ```
 
-This code uses a small helper function ```highestNodeId``` to find the highest node ID in a CIfly graph. Note that the number of nodes is not stored in a CIfly graph object and, hence, has to be managed outside of it if needed. 
+This code uses a small helper function ```highestNodeId``` to find the highest node ID that is part of an edge in a CIfly graph. Note that the number of nodes is not stored in a CIfly graph object and, hence, has to be managed outside of it if needed. 
 
 ```r
 highestNodeId <- function(g) {
@@ -117,7 +117,7 @@ highestNodeId <- function(g) {
 }
 ```
 
-Again, the siblings can be retrieved similarly, only now checking for both possible orders of the endpoints in the edge list matrix. 
+Again, the siblings can be retrieved similarly, by checking for both possible orders of the endpoints in the edge list matrix. 
 
 ```r
 containsSibling <- function(g, x, Z) {
@@ -138,6 +138,8 @@ may prove useful, which abstracts this code for different edge types including a
 
 #### Full implementation
 Hence, we obtain the following implementation for finding graphically optimal instrumental sets $Z$ and $W$ assuming that the causal effect of $x$ on $y$ cannot be identified with adjustment. 
+
+The functions for checking parents and siblings are loaded from ```utils```. As [before](/applications/cpdag-adjustment-check/), we also rely on a simple function ```get_ruletable_path()```, respectively ```getRuletablePath()```, that returns a path to the rule-table folder. 
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="optimal_iv.py"/>
