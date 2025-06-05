@@ -1,14 +1,65 @@
 ---
-title: Minimal d-separators
+title: Finding minimal d-separators
 summary: Find a minimal d-separator for sets of variables X and Y, that is one for which no subset d-separates X and Y. 
 code: [min_dsep.py, minDsep.R]
-ruletables: [descendants_admg, optimal_iv_admg]
+ruletables: [ancestors_admg, closure_admg]
 graph: ADMG
 references: [vanderzanderNearest]
 number: 3
 ---
 
+import CodeHelper from "../../components/CodeHelper.astro"
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
 import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
+In this article, we implement the algorithm developed by <Reference id="vanderzanderNearest" format="author(year)"/> for finding a minimal d-separator using CIfly. The concept of d-separation lies at the center of graphical causality as a bridge between graphs and conditional independencies. We have already seen an simple CIfly algorithm for *testing* d-separation on the [home page](/#dsep-example). However, now we consider the task of *finding* d-separators and, more precisely, *minimal* ones. A d-separator $Z$ for sets of nodes $X$ and $Y$ is minimal if no subset of $Z$ d-separates $X$ and $Y$. 
+
+For our implementation, we follow the algorithmic techniques presented in Section 5 in (<Reference id="vanderzanderNearest" format="author year"/>) which apply to quite general classes of causal graph including CPDAGs and MAGs, both popular in the context of causal structure learning. However, here we only focus on *acyclic directed mixed graphs* (ADMGs). At the core of the algorithm lies the notion of a *closure* of a set of nodes in a causal graph. It is used to find a *nearest d-separator* that, in turn, can be used to find a minimal d-separator. We also use nearest d-separators later when implementing a sound-and-complete algorithm for [finding conditional instrumental sets](/applications/sound-and-complete-iv/). Let us now discuss these concepts in more detail.
+
+#### Preliminaries
+Acyclic directed mixed graphs, or ADMGs for short, are graphs that include directed as well as bidirected edges and do not contain a directed cycle. A node $u$ is an *ancestor* of a node $v$ if there exists a directed path from $u$ to $v$. The set of all ancestors of $v$ in a graph $G$ is denoted by $\text{an}_{G}(v)$. This can be generalized to sets of nodes $Z$, for which we define $\text{an}_G(Z)$ as the union of the ancestors of the individual nodes, that is $\bigcup_{z \in Z} \text{an}_G(z)$. Moreover, a *collider* on a path is a node where the incident edges point towards it (for example $\rightarrow v \leftrightarrow$) and a *non-collider* is a node for which this does not hold.
+
+#### Closure
+Based on these notions, the closure of a set of nodes can be defined as follows.
+
+**Definition** [<Reference id="vanderzanderNearest" format="author(year)"/>]    
+Let $G$ be an ADMG, $X$ and $Z$ set of nodes, and $A = \text{an}_G(X \cup Y)$. Then, the closure of $X$ with respect to $Z$, written $\text{closure}_G(X, Z)$, is defined as the set of all nodes $v$ for which there exists a path from $X$ to $v$ in $G$ that only contains nodes in $A$ and no non-collider in $Z$. 
+
+The closure can be directly encoded into a CIfly rule table that tracks paths over nodes in $A$ and ensures that non-colliders, here in the bottom rule, are not in $Z$. 
+
+<Ruletable id="closure_admg" withHeader={true}/>
+
+#### Nearest d-separators
+As <Reference id="vanderzanderNearest" format="author(year)"/> show, *nearest separators* can be used to compute minimal ones. We will follow this strategy, in particular because we will re-use the concept of nearest separators in a [later article](/applications/sound-and-complete-iv/). Roughly speaking, a *nearest separator* relative to $X$ and $Y$ d-separates these sets using nodes closer to $X$ than $Y$ whenever possible. For a more precise definition, we refer to <Reference id="vanderzanderNearest" format="author(year)"/>. 
+
+The strategy for computing the nearest separator works as follows:
+
+1. determine a potential d-separator for $X$ and $Y$, namely $Z_0 = A \setminus (X \cup Y)$,
+2. compute $X^*$, the closure of $X$ with respect to $Z_0$, and
+3. if $X^*$ contains nodes in $Y$, then return $\bot$ as there exists no d-separator, else return $X^* \cap Z_0$.
+
+The idea behind this strategy is that the closure contains the nodes closest to $X$ that are needed to d-separate $X$ and $Y$. This is essentially the case because the search stops at non-colliders in $Z$. Due to the definition of d-separation non-colliders not in $Z$ are not blocked and, because the search runs over ancestors of $X$ and $Y$, it also continues for colliders (no matter whether in $Z$ or not). For the formal details, we refer to <Reference id="vanderzanderNearest" format="author(year)"/>. 
+
+This algorithm can be implemented as follows using CIfly and the rule table for computing the closure from above. Here, as in the original work, we have added $I$ and $R$ as arguments which ensure that only separators $Z$ which satisfy $I \subseteq Z \subseteq R$ are returned. This gives the user the option to further constrain the desired d-separator and is used below. 
+
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="nearest_dsep.py"/>
+	<ExampleCode slot="r-code" id="nearestDsep.R"/>
+</CodeSwitcher>
+
+#### Minimal d-separators
+
+Using the algorithm for finding nearest separators as a primitive, it is possible to compute a *minimal d-separator* with the following strategy:
+
+1. Compute $Z_X$ as a nearest separator between $X$ and $Y$ (or return $\bot$ if none exists),
+2. compute $Z_Y$ as a nearest d-separator between $Y$ and $X$ with $R = Z_X$ (or return $\bot$ if none exists) and
+3. return $Z_X \cap Z_Y$. 
+
+Here $Z_X$ is a nearest separator between $X$ and $Y$ that is used to constrain the nearest separator for $Y$ in the second step. This strategy can be directly translated to Python and R code. Again, we allow for arguments $I$ and $R$ constraining the minimal d-separator $Z$ to $I \subseteq Z \subseteq R$. For more details on intuition and the correctness of this procedure, we again refer to <Reference id="vanderzanderNearest" format="author(year)"/>.
+
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="min_dsep.py"/>
+	<ExampleCode slot="r-code" id="minDsep.R"/>
+</CodeSwitcher>

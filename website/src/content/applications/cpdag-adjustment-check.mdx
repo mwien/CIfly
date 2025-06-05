@@ -14,7 +14,7 @@ import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
-In this article, we show how to implement a CPDAG adjustment checker using CIfly. We directly rely on the graphical criterion derived by <Reference id="perkovicComplete" format="author(year)"/>. Adjustment is a fundamental technique for identifying causal effects. Utilizing this technique in combination with CPDAGs (these causal graphs that can be learned from data), enables the possibility of combining causal discovery and causal effect estimation. As we will be purely focused on implementing an algorithm checking this criterion and refer the reader to the paper for additional background on CPDAGs and adjustment. 
+In this article, we show how to implement a CPDAG adjustment checker using CIfly. We directly rely on the graphical criterion derived by <Reference id="perkovicComplete" format="author(year)"/>. Adjustment is a fundamental technique for identifying causal effects. Utilizing this technique in combination with CPDAGs (certain causal graphs that can be learned from data), enables the possibility of combining causal discovery and causal effect estimation. As we will be purely focused on implementing an algorithm checking this criterion and refer the reader to the paper for additional background on CPDAGs and adjustment. 
 
 **Theorem** [<Reference id="perkovicComplete" format="author(year)"/>]    
 Consider disjoint node sets $X$, $Y$ and $Z$ in a CPDAG $G$. Then, $Z$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,

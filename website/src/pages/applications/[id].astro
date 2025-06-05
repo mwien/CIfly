@@ -19,7 +19,9 @@ const { Content } = await render(application);
 
 <Layout>
   <div class="w-full md:w-7/10 md:my-4">
-    <div class="flex text-lg justify-between w-full mb-4">
+    <div
+      class="flex font-bold text-gray-900 text-lg justify-between w-full mb-4"
+    >
       <h1 class="font-bold">
         {application.data.title}
       </h1>
@@ -32,7 +34,11 @@ const { Content } = await render(application);
         <Content />
       </Prose>
       <div class="flex flex-row mt-6">
-        <ReferenceList references={application.data.references} small={false} />
+        <ReferenceList
+          references={application.data.references}
+          darker={true}
+          small={false}
+        />
       </div>
     </div>
   </div>
