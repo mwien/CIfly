@@ -9,21 +9,124 @@ references: [henckelIV, vanderzanderNearest]
 number: 5
 ---
 
+import CodeHelper from "../../components/CodeHelper.astro"
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
 import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
-In this article, we provide a Python implementation for finding a conditional instrument in an ADMG based on the sound and complete criterion given by <Reference id="henckelIV" format="author(year)"/>. We rely on algorithmic ideas introduced in TODO.
+In this article, we provide a CIfly-based implementation of a sound-and-complete algorithm for finding a conditional instrument in an acyclic directed mixed graph (ADMG). Such graphs are very common in graphical causality. They contain directed and bidirected edges and represent causal models with potential latent confounding. For causal effect identification in such graphs, instrumental variables constitute a fundamental technique under a linearity assumption and they can be effective even in case of latent confounding between the outcome and treatment variables. *Conditional* instruments allow for an additional set $W$ to make this strategy more general. 
 
-TODO: realistically one should discuss minimal separators before this article can be added. Because we use nearest separator which is very similar. 
+The algorithm we develop here is the first sound and complete one for this setting, that is, one that finds a conditional instrument precisely if a valid one exists. This is achieved by building on the recently developed *complete* graphical criterion by <Reference id="henckelIV" format="author(year)"/>. Algorithmically, we rely on techniques from earlier work by <Reference id="vanderzanderNearest" format="author(year)"/> that are, however, not based on an complete criterion. We begin by stating the criterion by <Reference id="henckelIV" format="author(year)"/>. 
+
+**Theorem 1** [<Reference id="henckelIV" format="author(year)"/>]
+Let $\{x,y\},Z$ and $W$ be disjoint node sets in an acyclic directed mixed graph $G$. Then, $(Z,W)$ is a valid conditional instrumental set relative to $(x,y)$ in $G$ if, and only if,
+1. $(Z \cup W) \cap \text{forb}_G(x, y) = \emptyset$,
+2. $x \not\perp_{G} Z \mid W$ and
+3. $y \perp_{\tilde{G}} Z \mid W$,
+  where $\tilde{G}$ is $G$ with all directed edges from $x$ to a node in $\text{causal}_G(x,y)$ removed.
+
+Let us introduce some of the terminology of this criterion more precisely. An acyclic directed mixed graph, ADMG for short, is a graph which may contain both directed and bidirected edges, however, no directed cycle. We denote d-separation in $G$ by $\perp_G$ and d-connectivity by $\not\perp_G$. For the descendants of a node $x$ in graph $G$, we write $\text{de}_G(x)$. We use $\text{causal}_G(x, y)$ to denote all nodes on directed paths from $x$ to $y$, excluding $x$ itself, and the set of *forbidden* nodes relative to $x$ and $y$ in $G$ as $\text{forb}_G = \text{de}_G(\text{causal}_G(x, y)) \cup \{x\}$. 
+
+Let us begin by saying that *checking* this criterion for given $x$, $y$, $Z$ and $W$ can be done straightforwardly with CIfly by verifying the conditions one-by-one. Conditions 2 and 3 are d-separation checks that we have already seen on the [home page](/#dsep-example). The first condition can be checked by computing $\text{forb}$ which amounts to chaining descendant and ancestor computations similar to what we have done in the [CPDAG adjustment criterion verifier](/applications/cpdag-adjustment-check/). We discuss this in more detail below.
+
+#### Algorithm for finding conditional instruments
+For *finding* a conditional instrument based on this criterion, one first has to develop a suitable algorithm which can then be implemented with CIfly. This is a non-trivial task and needs some sophistication. In our paper, we derive such an algorithm which is based upon the techniques introduced by <Reference id="vanderzanderNearest" format="author(year)"/>. 
+
+The algorithm is based on the following observations:
+
+- if a conditional instrument $Z$, $W$ exists, then there also exists a conditional instrument $z$, $W$, that is one consisting of a single instrument node $z$ instead of a set $Z$,
+- if there exists a set $W$ for a node $z$ such that $z$, $W$ is a conditional instrument, then $z$, $W'$ is also a conditional instrument with $W'$ being a nearest separator between $y$ and $z$ restricted to nodes in $\text{an}_{\tilde{G}}(y, z) \setminus \text{forb}_G(x, y)$.
+
+While the first observation is straightforward, it would go beyond the scope of this article to prove the second observation. For more details, we refer to the appendix of the CIfly paper. 
+
+These observations enable the following algorithmic strategy:
+- iterate over all $z \in V$ that are not in $\text{forb}_G(x, y) \cup \{x, y\}$,
+- compute $W$ as the nearest separator between $y$ and $z$ in $\tilde{G}$ restricted to nodes in $V \setminus \text{forb}_G(x, y) \cup \{x, y\}$,
+- if $W$ exists and $x \not\perp_G z \mid W$, then return conditional instrument $(z, W)$
+
+As all non-forbidden $z$ are tried by computing a nearest separator $W$ (again only containing non-forbidden nodes, thereby ensuring Condition 1), which by definition satisfies Condition 3, and Condition 2 is checked explicitly, the correctness follows. If no conditional instrument is returned, then none exists, and, conversely, every returned instrument is valid. The algorithm runs in time $O(p \cdot (p + m))$ because CIfly algorithms are called for each potential $z$. For the implementation, we first need to discuss how to compute $\text{forb}_G(x, y)$. 
+
+#### Computing the forbidden set
+The forbidden set is defined as $\text{forb}_G = \text{de}_G(\text{causal}_G(x, y)) \cup \{x\}$ where $\text{causal}_G(x, y)$ contains all node on a directed path from $x$ to $y$ (excluding $x$ itself). It is easy to see that $\text{causal}_G(x, y) = \text{de}_G(x) \cap \text{an}_G(y) \setminus \{x\}$ because a node is on a directed path between $x$ and $y$ it is a descendant of $x$ and an ancestor of $y$. Hence, the forbidden set can be constructed by 
+
+1. computing $\text{causal}_G(x, y)$ based on the descendants of $x$ and the ancestors of $y$
+2. computing $\text{forb}_G(x, y)$ based on the descendants of $\text{causal}_G(x, y)$
+
+Thus, we need to compute the ancestors and descendants in an ADMG. Clearly, this is a trivial task that can be performed easily without CIfly as well. Still, we do this here with the following two straightforward rule tables. 
+
+<Ruletable id="ancestors_admg" withHeader={true}/>
+
+The descendants can be computed analogously to the ancestors.
+
+<Ruletable id="descendants_admg" withHeader={true}/>
+
+Hence, we obtain the following code for computing $\text{causal}_G(x, y)$ and $\text{forb}_G(x, y)$.
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`anc = cf.reach(g, {"X": y}, anc_table)
+des = cf.reach(g, {"X": x}, desc_table)
+cn = set(anc).intersection(des) - set([x])
+forb = cf.reach(g, {"X": cn}, desc_table) + [x]`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`anc <- reach(g, list("X" = y), ancTable)
+des <- reach(g, list("X" = x), desTable)
+cn <- setdiff(intersect(anc, des), c(x))
+forb <- append(reach(g, list("X" = cn), desTable), x)`
+} lang="r" title="" />
+</CodeSwitcher>
 
 
-<ExampleCode id="sound_and_complete_iv.py"/>
-
-It relies on the following ruletables...
-
-<Ruletable id="ancestors_admg"/>
-
-TODO
+#### Full implementation
+Now, we are able to provide a full implementation based on the algorithm described above. The only thing we haven't discussed yet is how to compute $\tilde{G}$, that is the graph obtained by deleting all directed edges from $x$ to a node in $\text{causal}_G(x, y)$ from $G$. This graph modification can be done directly for graphs in the CIfly format (based on edgelists), but can also be done in your favorite graph library if you prefer to use the CIfly graph format only in ```reach``` calls. We show code for doing this directly CIfly graphs below. We note that one can also avoid the graph modification altogether, when encoding in the rule table that edges between $x$ and $\text{causal}_G(x, y)$ can not be traversed (as we have done in this [article](/applications/cpdag-adjustment-check/)). 
 
 
+The function removes edge between the sets ```from``` and ```to``` which have the specified edge type. This is done by constructing a new graph where these edges are filtered out. Hence, this function has no side effects and runs in time $O(p + m)$. You may implement this differently depending on your use case. We note that the function only works for ordered edges but can be easily adapted to unordered ones similar to the discussing for checking parents and siblings in [this article](/applications/optimal-iv/).
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`def removed_ordered_edges(g, from_vars, to_vars, edge_type):
+    if edge_type not in g:
+        return g
+
+    # enable efficient lookup of membership in from_vars and to_vars
+    from_set = set(from_vars)
+    to_set = set(to_vars)
+    gmod = dict(g)
+    gmod[edge_type] = list(
+        filter(
+            lambda uv: uv[0] not in from_set or uv[1] not in to_set,
+            g[edge_type],
+        )
+    )
+    return gmod`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`removeOrderedEdges <- function(g, fromVars, toVars, edgeType) {
+    p <- highestNodeId(g)
+    if (p == 0 || !(edgeType %in% names(g))) {
+        return (g)
+    }
+
+    # enable efficient lookup of membership in fromVars and toVars
+    fromVarsLogical <- rep(FALSE, p)
+    fromVarsLogical[fromVars] <- TRUE
+    toVarsLogical <- rep(FALSE, p)
+    toVarsLogical[toVars] <- TRUE
+
+    edgeList <- g[[edgeType]]
+    edgeListNew <- edgeList[!fromVarsLogical[edgeList[,1]] | !toVarsLogical[edgeList[,2]], , drop=FALSE]
+    gNew <- g
+   gNew[[edgeType]] <- edgeListNew
+   return (gNew)
+}`
+} lang="r" title="" />
+</CodeSwitcher>
+
+Now, we are able to give the full implementation of the first sound-and-complete algorithm for finding conditional instruments. 
+
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="sound_and_complete_iv.py"/>
+	<ExampleCode slot="r-code" id="soundAndCompleteIV.R"/>
+</CodeSwitcher>

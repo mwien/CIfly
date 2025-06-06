@@ -1,0 +1,10 @@
+---
+title: "Backdoor-connected"
+source: backdoor_connected_cpdag
+graph: CPDAG
+references: [perkovicComplete]
+---
+
+import Reference from "../../components/Reference.astro"
+
+A rule table that finds all nodes that are reachable from set $X$ via a proper definite-status path open given $Z$ that does not start with an edge to a node in $C$ in a completed partially directed acyclic graph (CPDAG). We use this for verifying the adjustment criterion (<Reference id="perkovicComplete" format="author year"/>) for CPDAGs where $C$ is the set of nodes on a causal path between $X$ and the set of outcome variables $Y$.

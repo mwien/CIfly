@@ -53,5 +53,14 @@
         "year": "2019",
         "venue": "Artificial Intelligence",
         "url": "https://www.sciencedirect.com/science/article/pii/S0004370219300025"
+    },
+    "shachterBayesBall": {
+        "authors": [
+            "Shachter, Ross"
+        ],
+        "title": "Bayes-Ball: The Rational Pastime (for Determining Irrelevance and Requisite Information in Belief Networks and Influence Diagrams)",
+        "year": "1998",
+        "venue": "UAI",
+        "url": "https://arxiv.org/abs/1301.7412"
     }
 }

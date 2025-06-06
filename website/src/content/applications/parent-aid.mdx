@@ -8,11 +8,15 @@ references: [henckelAID]
 number: 4
 ---
 
+import CodeHelper from "../../components/CodeHelper.astro"
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
 import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
-In this article, we provide an R implementation for computing the parent adjustment distance between two CPDAGs as proposed by <Reference id="henckelAID" format="author(year)"/>. Broadly speaking (we will define this more precisely below), for two graphs $G_{\text{guess}}$ and $G_{\text{true}}$, this distance measures the number of node pairs $x$ and $y$ such that the validity of the parents of $x$ in $G_{\text{guess}}$ as adjustment set differs between the two graphs. E.g., if the parents of $x$ in $G_{\text{guess}}$ are an adjustment set for $G_{\text{guess}}$ but not for $G_{\text{true}}$ the distance increases by one. To make this more precise, let us recall the CPDAG adjustment by <Reference id="perkovicComplete" format="author(year)"/>. 
+In this article, we present an implementation for computing the parent adjustment distance between two CPDAGs as proposed by <Reference id="henckelAID" format="author(year)"/>. CPDAGs are causal graphs made up of directed as well as undirected edges that are learned by causal discovery algorithms. Such algorithms try to recover the graphical structure of the underlying causal model based on, typically, observational data. In the following, we will usually denote the estimated CPDAG as $G_{\text{guess}}$ and the CPDAG representing the true underlying model as $G_{\text{true}}$. 
+
+The parent adjustment distance measures the distance of $G_{\text{guess}}$ from $G_{\text{true}}$. Broadly speaking (we will define this more precisely below), this distance measures the number of node pairs $x$ and $y$ for which the validity of the adjustment set consisting of the parents of $x$ in $G_{\text{guess}}$ differs between the two graphs. E.g., if the parents of $x$ in $G_{\text{guess}}$ are an adjustment set for $G_{\text{guess}}$ but not for $G_{\text{true}}$ the distance increases by one. To make this more precise, let us recall the CPDAG adjustment criterion by <Reference id="perkovicComplete" format="author(year)"/> which we discussed previously in [this article](/applications/cpdag-adjustment-check/). 
 
 **Theorem 1** [<Reference id="perkovicComplete" format="author(year)"/>]    
 Consider disjoint node sets $X$, $Y$ and $Z$ in a CPDAG $G$. Then, $Z$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,
@@ -20,24 +24,84 @@ Consider disjoint node sets $X$, $Y$ and $Z$ in a CPDAG $G$. Then, $Z$ is a vali
 2. $\text{forb}_G(X, Y) \cap Z = \emptyset$ and
 3. all proper definite-status non-causal paths from $X$ to $Y$ are blocked by $Z$ in $G$.
 
-Now, we are able to define the parent adjustment distance for two graphs. 
+This criterion gives a precise graphical characterization of adjustment sets $Z$ relative to $X$ and $Y$ in a CPDAG $G$, which enables us to define the parent adjustment distance formally. As we have discussed this criterion and its conditions in detail [before](/applications/cpdag-adjustment-check/), we will not go into more details here. Moreover, in the algorithm below, we build on an equivalent characterization introduced by <Reference id="henckelAID" format="author(year)"/>. Before that, let us first properly introduce the parent adjustment distance.
 
 **Definition 1** (Parent adjustment distance)    
-Consider two graphs $G_{\text{guess}}$ and $G_{\text{true}}$. Then, the *parent adjustment distance* corresponds to the number of node pairs $x$
-and $y$ such that 
+Consider two graphs $G_{\text{guess}} = (V, E_{\text{guess}})$ and $G_{\text{true}} = (V, E_{\text{true}})$. Then, the *parent adjustment distance* corresponds to the number of node pairs $x$ and $y$ such that 
 1. Condition 1 of Theorem 1 is violated relative to $(x,y)$ in $G_{\text{guess}}$ but not in $G_{\text{true}}$,
-2. $y$ is a parent of $x$ in $G_{\text{guess}}$ which implies a zero causal-effect but $y$ is a descendant of $x$ in $G_{\text{true}}$, or
+2. $y$ is a parent of $x$ in $G_{\text{guess}}$ which implies a causal effect of zero but $y$ is a descendant of $x$ in $G_{\text{true}}$ contradicting this, or
 3.  the parents of $x$ in $G_{\text{guess}}$ are a valid adjustment set in $G_{\text{guess}}$ but not a valid adjustment set relative to $x$ and $y$ in $G_{\text{true}}$.
 
-Directly evaluating this definition, by iterating over all node pairs $x, y$ and checking adjustment as discussed, e.g., in our [earlier article](/application/cpdag-adjustment-check/), would yield a $p^2 \cdot (p + m)$ time algorithm for graphs with $p$ nodes and $m$ edges. As proposed by TODO:Henckel, this can be improved further by checking all $y$ at once, for a given $x$. 
+Directly evaluating this definition, by iterating over all node pairs $x, y$ and checking the relevant conditions of the adjustment criterion as discussed, e.g., in our [earlier article](/application/cpdag-adjustment-check/), would yield a $p^2 \cdot (p + m)$ time algorithm for graphs with $p$ nodes and $m$ edges. As shown by <Reference id="henckelAID" format="author(year)"/>, this can be improved further by checking, for a given $x$, the status of all $y$ in linear-time at once. 
 
-TODO
+#### Efficient algorithm for the parent adjustment distance
+The algorithm by <Reference id="henckelAID" format="author(year)"/> for computing the parent adjustment distance in time $O(p \cdot (p + m))$ is based on the following lemma.
 
-<ExampleCode id="parentAid.R"/>
+**Lemma 1** [<Reference id="henckelAID" format="author(year)"/>]    
+Consider a CPDAG $G$ and sets of nodes $X$, $Y$ and $Z$. Then, $Z$ satisfies the adjustment criterion if, and only if,
 
-It relies on the following ruletables...
+1. every proper possibly directed walk from $X$ to $Y$ begins with a directed edge out of $X$, 
+2. no proper possibly directed walk from $X$ to $Y$ contains a node in $Z$ and
+3. every proper definite-status walk from $X$ to $Y$ that contains a backwards-facing edge is blocked by $Z$. 
 
-<Ruletable id="possible_descendants_cpdag"/>
+Algorithmically, it is easier to check the complements of the first and the third condition, that is, to check that no proper possibly directed walk from $X$ to $Y$ begins with an *undirected* edge and that no proper definite-status walk from $X$ to $Y$ that contains a backwards-facing edge is *open* given $Z$. 
 
-TODO
+To implement the above lemma, it is first necessary to recall the definitions of proper, possibly directed, definite-status as well as blocked and open walks. A walk is conceptually similar to a path with the difference that the same nodes and edges can be traversed multiply times. It is called
 
+- *proper* if it contains at most one node from $X$ and $Y$,
+- *possibly directed* if all edges are either undirected or point towards $Y$ on the path,
+- *definite-status* if every non-endpoint node is a
+collider or a definite-status non-collider (a definite-status non-collider is a node $v$ with left neighbor $u$ and right neighbor $w$ such that $u \leftarrow v$, $v \rightarrow w$ or $u - v - w$),
+- *open* if every collider is in $Z$ and every non-collider is not in $Z$ and
+- *blocked* if it is not open.
+
+We are now able to formulate rule tables for the three conditions of Lemma 1 above. As we have already given the table for the first condition (non-amenability) in the [article on checking the CPDAG adjustment criterion](/applications/cpdag-adjustment-check/), we focus on the other two conditions here. 
+
+For the second condition, we need to track proper possibly directed walks from $X$ that contain a node in $Z$. 
+
+<Ruletable id="forbidden_path_connected_cpdag" withHeader={true}/>
+
+For properness, we always check that the ```next``` node is not in $X$. Moreover, we switch to color ```yield``` once we find a node that is in $Z$ while only tracking possibly directed paths. Hence, the set of nodes of color ```yield``` that is returned contains all nodes reachable from $X$ via walks prescribed by Condition 2 of Lemma 1.
+
+Tracking the paths in Condition 3 is a bit more complex. We leave the ```init``` color with the first edge. Afterwards, open paths are tracked, which may become non-causal if a backwards facing edge is traversed. For every rule, properness is ensured by checking that ```next``` is not in $X$. The further logic in the rules stems from verifying that the walk is open and definite-status. The nodes visited with color ```non-causal``` are returned. 
+
+<Ruletable id="non_causal_connected_cpdag" withHeader={true}/>
+
+#### CIfly-based computation of the parent adjustment distance
+The general idea of the algorithm is to go through all $x$ (in the following, we write $t$ standing for *treatment* instead of $x$), look up its parents in $G_{\text{guess}}$ (denoted by $\text{pa}_{G_{\text{guess}}}(t)$) and then compute the following sets in linear-time:
+
+- all $y$ such that the pair $t$ and $y$ is not amenable (violates Condition 1 of the adjustment criterion) in $G_{\text{guess}}$
+- all $y$ such that $y$ is a proper possible descendant of $t$
+- all $y$ such that the pair $t$ and $y$ is not amenable in $G_{\text{true}}$
+- all $y$ such that $\text{pa}_{G_{\text{guess}}}(x)$ is not a valid adjustment set relative to $t$ and $y$ in $G_{\text{true}}$. 
+
+Based on these information the parent adjustment distance can be computed directly based on Definition 1. For this, we iterate over all $y$ and check whether the parent adjustment distances increases for pair $t$ and $y$ in constant time per $y$. Overall, this yields run-time $O(p \cdot (p + m))$. 
+
+The only functionality we have not discussed yet is how to compute the set of parents for each node in the CIfly graph. Again, this can be done easily in Python and R directly, based on the CIfly graph representation. Of course, you can also rely on your favorite graph library or format for this task (and translate it into CIfly format only for performing the ```reach``` calls). 
+
+As in our R example, we defer this code to the ```utils.R``` source file, we show it here for completeness. The code avoids loops for better performance. 
+
+```r
+# p is the number of nodes and g the CIfly graph
+parents <- function(p, g) {
+	dirEdges <- g[["-->"]]
+	grouped <- split(dirEdges[, 1], dirEdges[, 2])
+	result <- replicate(p, integer(0), simplify = FALSE)
+	names(result) <- as.character(1:p)
+	result[names(grouped)] <- grouped
+	return (result)
+}
+```
+
+Generally, in this application we put more focus than usual on practical efficiency. More precisely,
+
+- we parse the graphs into CIfly objects outside of the loop over all $t$,
+- we have a *single* function which returns not-amenable $y$ and all $y$ for which the adjustment set is not valid in $G_{\text{guess}}$ to avoid computing non-amenable $y$ twice and
+- we make sure that testing membership in the sets of $y$ nodes by using the ```set``` data structure in Python and Boolean indicator vectors in R (there is no native set data structure in R).
+
+We do this to achieve comparable performance with the optimized [gadjid](https://github.com/CausalDisco/gadjid) library written in Rust and accessible from Python. In particular, parsing the graphs into CIfly objects is an effective trick for better practical performance if ```reach``` is called often with the same graph. 
+
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="parent_aid.py"/>
+	<ExampleCode slot="r-code" id="parentAid.R"/>
+</CodeSwitcher>
