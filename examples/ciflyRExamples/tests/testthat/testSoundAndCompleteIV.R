@@ -10,8 +10,8 @@ test_that("Figure 5b", {
 	y <- 5
 
 	iv <- soundAndCompleteInstrument(p, g, x, y)
-	expect_equal(iv[[1]]$Z, c(1))
-	expect_equal(iv[[1]]$W, numeric(0))
+	expect_equal(iv$Z, c(1))
+	expect_equal(iv$W, numeric(0))
 })
 
 test_that("CIS Paper Appendix Figure 2", {
@@ -23,8 +23,8 @@ test_that("CIS Paper Appendix Figure 2", {
 	y <- 5
 
 	iv <- soundAndCompleteInstrument(p, g, x, y)
-	expect_equal(iv[[1]]$Z, c(1))
-	expect_equal(iv[[1]]$W, c(2, 3))
+	expect_equal(iv$Z, c(1))
+	expect_equal(iv$W, c(2, 3))
 })
 
 test_that("CIS Paper Appendix Figure 2 With Mediator and Children", {
@@ -36,8 +36,8 @@ test_that("CIS Paper Appendix Figure 2 With Mediator and Children", {
 	y <- 5
 
 	iv <- soundAndCompleteInstrument(p, g, x, y)
-	expect_equal(iv[[1]]$Z, c(1))
-	expect_equal(iv[[1]]$W, c(2, 3))
+	expect_equal(iv$Z, c(1))
+	expect_equal(iv$W, c(2, 3))
 
 })
 
@@ -51,8 +51,8 @@ test_that("CIS Paper Figure 3a", {
 	y <- 4
 
 	iv <- soundAndCompleteInstrument(p, g, x, y)
-	expect_equal(iv[[1]]$Z, c(1))
-	expect_equal(iv[[1]]$W, numeric(0))
+	expect_equal(iv$Z, c(1))
+	expect_equal(iv$W, numeric(0))
 })
 
 test_that("CIS Paper Figure 3b", {
@@ -65,6 +65,6 @@ test_that("CIS Paper Figure 3b", {
 	y <- 5
 
 	iv <- soundAndCompleteInstrument(p, g, x, y)
-	expect_equal(iv[[2]]$Z, c(3))
-	expect_equal(iv[[2]]$W, numeric(0))
+	expect_equal(iv$Z, c(2))
+	expect_equal(iv$W, numeric(0))
 })

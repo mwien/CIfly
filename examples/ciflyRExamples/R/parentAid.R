@@ -44,8 +44,6 @@ notAmenablenotAdjustment <- function(p, g, t, Z) {
 	return (list("nam" = nam, "nad" = nad))
 }
 
-# This implementation is focused on performance and not clarity 
-# It aims to achieve run-time comparable to parent_aid in Python and gadjid
 parentAid <- function(p, gTrue, gGuess) {
 	gTrueParsed <- parseGraph(gTrue, possDescendants)
 	gGuessParsed <- parseGraph(gGuess, possDescendants)
@@ -57,9 +55,7 @@ parentAid <- function(p, gTrue, gGuess) {
 		pa <- vectorToIndicator(p, paList[[t]])
 		namGuess <- reachNotAmenable(p, gGuessParsed, t)
 		desTrue <- reachPossDescendants(p, gTrueParsed, t)
-		namnad <- notAmenablenotAdjustment(p, gTrueParsed, t, paList[[t]])
-		namTrue <- namnad$nam
-		nadTrue <- namnad$nad
+		namnadTrue <- notAmenablenotAdjustment(p, gTrueParsed, t, paList[[t]])
 
 		for (y in seq(p)) {
 			if (y == t) {
@@ -70,11 +66,11 @@ parentAid <- function(p, gTrue, gGuess) {
 					mistakes <- mistakes + 1
 				}
 			} else if (namGuess[y]) {
-				if (!namTrue[y]) {
+				if (!namnadTrue$nam[y]) {
 					mistakes <- mistakes + 1
 				}
 			} else {
-				if (nadTrue[y]) {
+				if (namnadTrue$nad[y]) {
 					mistakes <- mistakes + 1
 				}
 			}

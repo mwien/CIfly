@@ -51,4 +51,4 @@ def parent_aid(p, g_true, g_guess):
                 if y in not_adjustment_true:
                     mistakes += 1
 
-    return (mistakes / ((p - 1) * p), mistakes)
+    return mistakes

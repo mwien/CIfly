@@ -33,10 +33,10 @@ highestNodeId <- function(g) {
 	}
 }
 
-# vectorized function to remove edges from a CIfly graph
-removeEdges <- function(g, fromVars, toVars, edgeType) {
+# vectorized function to remove certain ordered edges from a CIfly graph
+removeOrderedEdges <- function(g, fromVars, toVars, edgeType) {
 	p <- highestNodeId(g)
-	if (p == 0) {
+	if (p == 0 || !(edgeType %in% names(g))) {
 		return (g)
 	}
 

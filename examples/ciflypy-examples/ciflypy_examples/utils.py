@@ -8,8 +8,8 @@ def get_ruletable_path():
     # this is only done here to showcase the ruletables at the root of the repo
     return Path(__file__).parent.parent.parent.parent.resolve() / "ruletables"
     
-# an example function for removing certain edges from a CIfly graph
-def removed_edges(g, from_vars, to_vars, edge_type):
+# an example function for removing certain ordered edges from a CIfly graph
+def removed_ordered_edges(g, from_vars, to_vars, edge_type):
     if edge_type not in g:
         return g
 
