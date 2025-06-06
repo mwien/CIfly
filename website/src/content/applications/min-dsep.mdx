@@ -14,14 +14,14 @@ import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
-In this article, we implement the algorithm developed by <Reference id="vanderzanderNearest" format="author(year)"/> for finding a minimal d-separator using CIfly. The concept of d-separation lies at the center of graphical causality as a bridge between graphs and conditional independencies. We have already seen an simple CIfly algorithm for *testing* d-separation on the [home page](/#dsep-example). However, now we consider the task of *finding* d-separators and, more precisely, *minimal* ones. A d-separator $Z$ for sets of nodes $X$ and $Y$ is minimal if no subset of $Z$ d-separates $X$ and $Y$. 
+In this article, we implement the algorithm developed by <Reference id="vanderzanderNearest" format="author(year)"/> for finding a minimal d-separator using CIfly. The concept of d-separation lies at the center of graphical causality as a bridge between graphs and conditional independencies. We have already seen an simple CIfly algorithm for *testing* d-separation on the [home page](/#section-example). However, now we consider the task of *finding* d-separators and, more precisely, *minimal* ones. A d-separator $Z$ for sets of nodes $X$ and $Y$ is minimal if no subset of $Z$ d-separates $X$ and $Y$. 
 
 For our implementation, we follow the algorithmic techniques presented in Section 5 in (<Reference id="vanderzanderNearest" format="author year"/>) which apply to quite general classes of causal graph including CPDAGs and MAGs, both popular in the context of causal structure learning. However, here we only focus on *acyclic directed mixed graphs* (ADMGs). At the core of the algorithm lies the notion of a *closure* of a set of nodes in a causal graph. It is used to find a *nearest d-separator* that, in turn, can be used to find a minimal d-separator. We also use nearest d-separators later when implementing a sound-and-complete algorithm for [finding conditional instrumental sets](/applications/sound-and-complete-iv/). Let us now discuss these concepts in more detail.
 
-#### Preliminaries
+### Preliminaries
 Acyclic directed mixed graphs, or ADMGs for short, are graphs that include directed as well as bidirected edges and do not contain a directed cycle. A node $u$ is an *ancestor* of a node $v$ if there exists a directed path from $u$ to $v$. The set of all ancestors of $v$ in a graph $G$ is denoted by $\text{an}_{G}(v)$. This can be generalized to sets of nodes $Z$, for which we define $\text{an}_G(Z)$ as the union of the ancestors of the individual nodes, that is $\bigcup_{z \in Z} \text{an}_G(z)$. Moreover, a *collider* on a path is a node where the incident edges point towards it (for example $\rightarrow v \leftrightarrow$) and a *non-collider* is a node for which this does not hold.
 
-#### Closure
+### Closure
 Based on these notions, the closure of a set of nodes can be defined as follows.
 
 **Definition** [<Reference id="vanderzanderNearest" format="author(year)"/>]    
@@ -31,7 +31,7 @@ The closure can be directly encoded into a CIfly rule table that tracks paths ov
 
 <Ruletable id="closure_admg" withHeader={true}/>
 
-#### Nearest d-separators
+### Nearest d-separators
 As <Reference id="vanderzanderNearest" format="author(year)"/> show, *nearest separators* can be used to compute minimal ones. We will follow this strategy, in particular because we will re-use the concept of nearest separators in a [later article](/applications/sound-and-complete-iv/). Roughly speaking, a *nearest separator* relative to $X$ and $Y$ d-separates these sets using nodes closer to $X$ than $Y$ whenever possible. For a more precise definition, we refer to <Reference id="vanderzanderNearest" format="author(year)"/>. 
 
 The strategy for computing the nearest separator works as follows:
@@ -49,7 +49,7 @@ This algorithm can be implemented as follows using CIfly and the rule table for 
 	<ExampleCode slot="r-code" id="nearestDsep.R"/>
 </CodeSwitcher>
 
-#### Minimal d-separators
+### Minimal d-separators
 
 Using the algorithm for finding nearest separators as a primitive, it is possible to compute a *minimal d-separator* with the following strategy:
 

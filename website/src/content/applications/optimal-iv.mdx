@@ -23,7 +23,7 @@ Let $x$ and $y$ be distinct nodes in an acyclic directed mixed graph (ADMG) $G$ 
 
 The criterion is stated for *acyclic directed mixed graph*, from now on abbreviated as ADMGs, which are graphs with both directed and bidirected edges that do not contain a directed cycle. $\text{pa}_G(x)$ are the parents of $x$ in $G$, i.e., nodes $p$ with $p \rightarrow x$, and $\text{sib}_G(x)$ are the siblings of $x$ in $G$, i.e., the nodes with $p \leftrightarrow x$. Further, $\text{dis}_{G, W}(x)$ contains all nodes connected to $x$ via a path of bidirected edges, with all nodes on the path not being in $W$, and $\text{dis}_{G, W}^+(x) = (\text{dis}_{G, W}(x) \cup \text{pa}_G(\text{dis}_{G, W}(x))) \setminus W$. 
 
-The criterion assumes that $y$ is the only descendant of $x$, which may appear like a strong restriction. However, one may consider the *latent projection* over all other descendants of $x$ to satisfy this condition (for more details on the latent projection, see TODO or Section TODO of our paper). The only consequence of this, is that no descendants of $x$ in the original graph can be part of the instrumental set. However, this is a mild assumption because if such variables could be used as part of the instrument, then the causal effect would also be identifiable using adjustment. One way to deal with it, is to first search for an adjustment set (a task that can also be solved using CIfly) and if none exists proceed with the methodology described in this article. Hence, in the following, we will always assume that the causal effect *cannot* be identified by adjustment. 
+The criterion assumes that $y$ is the only descendant of $x$, which may appear like a strong restriction. However, one may consider the *latent projection* over all other descendants of $x$ to satisfy this condition (for more details on the latent projection, we refer to the CIfly paper). The only consequence of this, is that no descendants of $x$ in the original graph can be part of the instrumental set. However, this is a mild assumption because if such variables could be used as part of the instrument, then the causal effect would also be identifiable using adjustment. One way to deal with it, is to first search for an adjustment set (a task that can also be solved using CIfly) and if none exists proceed with the methodology described in this article. Hence, in the following, we will always assume that the causal effect *cannot* be identified by adjustment. 
 
 While using the latent projection over all descendants of $x$ (apart from $y$) is correct under this assumption, algorithmically, computing the latent projection is more expensive than CIfly reachability algorithms. Hence, we would like to avoid this operation here. To this aim, we use the following graphical formulation for $W^\text{opt}$ and $Z^\text{opt}$ in the CIfly paper. 
 
@@ -39,7 +39,7 @@ Using this theorem, we proceed as follows:
 
 This will guarantee that the resulting sets $W^{\text{opt}}$ and $Z^{\text{opt}}$ constitute graphical optimal instrumental sets, assuming that there is no adjustment set relative to $x$ and $y$ in $G$. Now, let us consider the three steps one-by-one.
 
-#### Descendant check
+### Descendant check
 Of course, the task of checking whether $y$ is a descendant of $x$ in $G$ is obvious and available in many off-the-shelf graph packages. Still, we show how it can be easily done in CIfly as well. For this, we use the following rule table. 
 
 <Ruletable id="descendants_admg" withHeader={true}/>
@@ -57,7 +57,7 @@ isDescendant <- y %in% descendants`
 } lang="r" title="" />
 </CodeSwitcher>
 
-#### Compute $W^{\text{opt}}$ and $Z^{\text{opt}}$
+### Compute $W^{\text{opt}}$ and $Z^{\text{opt}}$
 We will compute both $W^{\text{opt}}$ and $Z^{\text{opt}}$ using the same underlying ruletable. Let us begin with $W^{\text{opt}}$. Here, we want to start at $y$ and track paths that, first, follow edges $\leftarrow$ (assuming the respective nodes are in $D \setminus \{x\}$) until at some point it is switched to bidirected edges for edges in $A$. The path may end with final directed edge $\leftarrow$ to a node in $A$. To do this consider the following rule table. 
 
 <Ruletable id="optimal_iv_admg" withHeader={true}/>
@@ -75,7 +75,7 @@ Z <- setdiff(reach(g, list("S" = x, "D" = des, "F" = c()), "./optimal_iv_admg.tx
 } lang="r" title="" />
 </CodeSwitcher>
 
-#### Checking the optimality condition
+### Checking the optimality condition
 The resulting sets $Z$ and $W$ are valid, provided $Z$ is non-empty, which is trivial to check outside of CIfly. The second condition is that $Z$ contains a parent or sibling of $x$. While this could  be checked using a CIfly algorithm, clearly it is easier to do this directly in Python or R as well. Here, we do this based on the CIfly graph representation, but you may prefer to do this using your favorite graph library or format instead.
 
 Recall that a CIfly graph is stored as one edge list per edge type. In Python, each edge is given as a pair of node IDs. Hence, we may use the following helper functions to check whether $Z$ contains a parent or sibling of $x$. 
@@ -136,7 +136,7 @@ containsNeighborCifly(g, x, Z, edgeType, orderedEdge=TRUE)
 ```
 may prove useful, which abstracts this code for different edge types including an argument that indicates whether the edge type is ordered.  
 
-#### Full implementation
+### Full implementation
 Hence, we obtain the following implementation for finding graphically optimal instrumental sets $Z$ and $W$ assuming that the causal effect of $x$ on $y$ cannot be identified with adjustment. 
 
 The functions for checking parents and siblings are loaded from ```utils```. As [before](/applications/cpdag-adjustment-check/), we also rely on a simple function ```get_ruletable_path()```, respectively ```getRuletablePath()```, that returns a path to the rule-table folder. 

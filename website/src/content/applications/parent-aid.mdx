@@ -34,7 +34,7 @@ Consider two graphs $G_{\text{guess}} = (V, E_{\text{guess}})$ and $G_{\text{tru
 
 Directly evaluating this definition, by iterating over all node pairs $x, y$ and checking the relevant conditions of the adjustment criterion as discussed, e.g., in our [earlier article](/application/cpdag-adjustment-check/), would yield a $p^2 \cdot (p + m)$ time algorithm for graphs with $p$ nodes and $m$ edges. As shown by <Reference id="henckelAID" format="author(year)"/>, this can be improved further by checking, for a given $x$, the status of all $y$ in linear-time at once. 
 
-#### Efficient algorithm for the parent adjustment distance
+### Efficient algorithm for the parent adjustment distance
 The algorithm by <Reference id="henckelAID" format="author(year)"/> for computing the parent adjustment distance in time $O(p \cdot (p + m))$ is based on the following lemma.
 
 **Lemma 1** [<Reference id="henckelAID" format="author(year)"/>]    
@@ -67,7 +67,7 @@ Tracking the paths in Condition 3 is a bit more complex. We leave the ```init```
 
 <Ruletable id="non_causal_connected_cpdag" withHeader={true}/>
 
-#### CIfly-based computation of the parent adjustment distance
+### CIfly-based computation of the parent adjustment distance
 The general idea of the algorithm is to go through all $x$ (in the following, we write $t$ standing for *treatment* instead of $x$), look up its parents in $G_{\text{guess}}$ (denoted by $\text{pa}_{G_{\text{guess}}}(t)$) and then compute the following sets in linear-time:
 
 - all $y$ such that the pair $t$ and $y$ is not amenable (violates Condition 1 of the adjustment criterion) in $G_{\text{guess}}$

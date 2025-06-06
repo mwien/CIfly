@@ -25,7 +25,10 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
 
 <Layout>
   <div class="w-full md:w-17/18 flex flex-col gap-10 md:gap-14 my-4 md:mb-10">
-    <section class="flex flex-col items-center mt-2 md:mt-8 mb-1">
+    <section
+      id="section-slogan"
+      class="flex flex-col items-center mt-2 md:mt-8 mb-1"
+    >
       <h2
         class="text-gray-900 text-lg md:text-2xl text-center font-bold font-sans mb-2"
       >
@@ -40,7 +43,7 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
       </a>
     </section>
 
-    <Box>
+    <Box id="section-features">
       <Fragment slot="title">What is CIfly?</Fragment>
       <p class="text-center text-gray-800 md:text-xl my-6 md:my-8">
         CIfly is a framework for developing and writing causal inference
@@ -82,7 +85,7 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
       </div>
     </Box>
 
-    <Box>
+    <Box id="section-installation">
       <Fragment slot="title">Installation</Fragment>
 
       <div class="mb-2 md:mx-4">
@@ -124,7 +127,7 @@ install.packages("ciflyR")`}
       </div>
     </Box>
 
-    <Box id="dsep-example">
+    <Box id="section-example">
       <Fragment slot="title">Example</Fragment>
 
       <div class="mb-2 md:mx-4">
@@ -193,7 +196,7 @@ test_dsep <- function(G, x, y, Z) {
       </div>
     </Box>
 
-    <Box>
+    <Box id="section-applications">
       <Fragment slot="title">Applications</Fragment>
 
       <div class="md:mx-4">
@@ -217,7 +220,7 @@ test_dsep <- function(G, x, y, Z) {
       </div>
     </Box>
 
-    <Box>
+    <Box id="section-ruletables">
       <Fragment slot="title">Ruletables</Fragment>
 
       <div class="md:mx-4">
@@ -241,7 +244,7 @@ test_dsep <- function(G, x, y, Z) {
       </div>
     </Box>
 
-    <Box>
+    <Box id="section-foundations">
       <Fragment slot="title">Theoretical Foundations</Fragment>
 
       <div class="md:mx-4">

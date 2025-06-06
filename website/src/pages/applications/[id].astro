@@ -20,12 +20,12 @@ const { Content } = await render(application);
 <Layout>
   <div class="w-full md:w-7/10 md:my-4">
     <div
-      class="flex font-bold text-gray-900 text-lg justify-between w-full mb-4"
+      class="flex font-bold text-gray-900 text-lg md:text-xl justify-between w-full mb-4"
     >
       <h1>
         {application.data.title}
       </h1>
-      <div>
+      <div class="hidden md:block">
         {application.data.graph}
       </div>
     </div>
