@@ -1,0 +1,33 @@
+---
+const { id } = Astro.props;
+import { getEntry } from "astro:content";
+const reference = await getEntry("references", id);
+---
+
+<div>
+  <div>
+    {
+      reference.data.authors.map((author, index) => (
+        <>
+          {author
+            .split(",")
+            .map((s) => s.trim())
+            .reverse()
+            .join(" ")}
+          {index < reference.data.authors.length - 1 && ", "}
+        </>
+      ))
+    }.
+  </div>
+  <div>
+    <a href={reference.data.url}>
+      {reference.data.title}.
+    </a>
+    <span>
+      {reference.data.venue},
+    </span>
+    <span>
+      {reference.data.year.replace(/[a-zA-Z]/g, "")}.
+    </span>
+  </div>
+</div>
