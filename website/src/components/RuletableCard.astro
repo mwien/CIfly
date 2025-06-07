@@ -3,7 +3,7 @@ import "../styles/global.css";
 import Ruletable from "./Ruletable.astro";
 import ReferenceList from "./ReferenceList.astro";
 import ApplicationList from "./ApplicationList.astro";
-import ArrowButton from "./ArrowButton.astro";
+import RightArrowSvg from "./RightArrowSvg.astro";
 const { ruletable, applications } = Astro.props;
 ---
 
@@ -17,7 +17,7 @@ const { ruletable, applications } = Astro.props;
     <h1 class="text-sm md:text-lg font-bold">
       {ruletable.data.title}
     </h1>
-    <ArrowButton />
+    <RightArrowSvg class="hover:text-gray-500 cursor-pointer" />
   </a>
   <Ruletable
     id={ruletable.data.source.id}

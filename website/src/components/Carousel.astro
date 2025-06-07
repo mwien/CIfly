@@ -1,3 +1,8 @@
+---
+import LeftArrowSvg from "./LeftArrowSvg.astro";
+import RightArrowSvg from "./RightArrowSvg.astro";
+---
+
 <div
   class="w-full md:w-3/4 mx-auto relative bg-white overflow-hidden carousel mt-1 mb-2"
 >
@@ -10,38 +15,14 @@
       <button
         class="prev bg-transparent px-1 md:px-3 h-full hover:text-gray-500 cursor-pointer flex items-center justify-center"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="size-5 md:size-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"></path>
-        </svg>
+        <LeftArrowSvg />
       </button>
     </div>
     <div class="flex items-center">
       <button
         class="next bg-transparent px-1 md:px-3 h-full hover:text-gray-500 cursor-pointer flex items-center justify-center"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="size-5 md:size-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"></path>
-        </svg>
+        <RightArrowSvg />
       </button>
     </div>
   </div>

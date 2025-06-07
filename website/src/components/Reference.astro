@@ -6,4 +6,4 @@ import Authors from "./Authors.astro";
 ---
 
 <!-- ugly but necessary to avoid extra whitespace --><!-- prettier-ignore -->
-<a href={reference?.data.url} class="no-underline">{format == "author(year)" && (<Authors authors={reference?.data.authors} /><span> ({reference?.data.year})</span>)}{format == "author year" && (<Authors authors={reference?.data.authors} /><span> {reference?.data.year}</span>)}</a>
+<a href={reference?.data.url} class="text-blue-700">{format == "author(year)" && (<Authors authors={reference?.data.authors} /><span> ({reference?.data.year})</span>)}{format == "author year" && (<Authors authors={reference?.data.authors} /><span> {reference?.data.year}</span>)}</a>

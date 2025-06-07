@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import ReferenceList from "./ReferenceList.astro";
-import ArrowButton from "./ArrowButton.astro";
+import RightArrowSvg from "./RightArrowSvg.astro";
 const { application } = Astro.props;
 ---
 
@@ -15,7 +15,7 @@ const { application } = Astro.props;
     <h1 class="text-sm md:text-lg font-bold">
       {application.data.title}
     </h1>
-    <ArrowButton />
+    <RightArrowSvg class="hover:text-gray-500 cursor-pointer" />
   </a>
   <div class="text-gray-700 mb-3">
     {application.data.summary}
