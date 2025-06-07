@@ -75,6 +75,7 @@ const applications = defineCollection({
   loader: glob({ pattern: "*.{md,mdx}", base: "./src/content/applications" }),
   schema: z.object({
     title: z.string(),
+    shortTitle: z.string(),
     summary: z.string(),
     code: z.array(reference("code_raw")),
     ruletables: z.array(reference("ruletables_raw")),
@@ -99,6 +100,7 @@ const docs = defineCollection({
   loader: glob({ pattern: "*.{md,mdx}", base: "./src/content/docs" }),
   schema: z.object({
     title: z.string(),
+    shortTitle: z.string(),
     summary: z.string(),
     number: z.number(),
   }),

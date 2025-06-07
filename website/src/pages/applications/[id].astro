@@ -17,7 +17,7 @@ const { application } = Astro.props;
 const { Content } = await render(application);
 ---
 
-<Layout>
+<Layout title={application.data.shortTitle}>
   <div class="w-full md:w-7/10 md:my-4">
     <div
       class="flex font-bold text-gray-900 text-lg md:text-xl justify-between w-full mb-4"

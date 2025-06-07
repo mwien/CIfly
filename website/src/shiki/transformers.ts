@@ -34,7 +34,7 @@ export function addCopyButton() {
   };
 }
 
-export function addHeader(title: String) {
+export function addHeader(title: String, truncate: Boolean) {
   return {
     name: "add-header",
     root(root: Root) {
@@ -51,7 +51,13 @@ export function addHeader(title: String) {
           class:
             "bg-gray-50 font-mono border-b border-gray-200 px-2 py-2 flex items-center h-10.25",
         },
-        [{ type: "text", value: title } as Text],
+        h(
+          "span",
+          {
+            class: "max-w-1/2 md:max-w-3/4" + (truncate ? " truncate" : ""),
+          },
+          [{ type: "text", value: title } as Text],
+        ),
       );
 
       const wrapper: Element = h(

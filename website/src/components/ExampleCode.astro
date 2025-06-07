@@ -13,7 +13,7 @@ import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
     code={code_raw.data.raw}
     lang={lang}
     theme={customCatppucinLatte}
-    transformers={[addHeader("")]}
+    transformers={[addHeader(id, true)]}
     class:list={[
       "font-mono p-2 w-full text-sm/6",
       { "md:text-base": largeText },

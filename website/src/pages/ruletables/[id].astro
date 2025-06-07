@@ -30,7 +30,7 @@ applications.forEach((application) => {
 });
 ---
 
-<Layout>
+<Layout title={ruletable.data.title}>
   <div class="w-full md:w-7/10 md:my-4">
     <div
       class="flex font-bold text-gray-900 text-xl justify-between w-full mb-4"
@@ -46,7 +46,11 @@ applications.forEach((application) => {
       <Prose>
         <Content />
       </Prose>
-      <Ruletable id={ruletable.data.source.id} wrapperClass="my-4" />
+      <Ruletable
+        id={ruletable.data.source.id}
+        wrapperClass="my-4"
+        codeClass="rounded-lg shadow-sm"
+      />
       <div class="grid grid-cols-[100px_1fr] md:grid-cols-[112px_1fr] w-full">
         <div class="font-bold mr-1 text-sm md:text-base">Graph type:</div>
         <div class="text-gray-800 text-sm md:text-base">

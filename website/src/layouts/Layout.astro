@@ -1,6 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -9,7 +10,7 @@ import Footer from "../components/Footer.astro";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>CIfly</title>
+    <title>{title && title + " ·"} CIfly</title>
   </head>
   <body class="min-h-screen text-gray-700">
     <Header />
