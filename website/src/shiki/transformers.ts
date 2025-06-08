@@ -4,7 +4,10 @@ import type { Element, Root, Text } from "hast";
 export function addCopyButton() {
   return {
     name: "add-copy-button",
-    pre(node: Element) {
+    root(root: Root) {
+      if (root.children.length === 0) {
+        return root; // Return unchanged if no children
+      }
       const button: Element = h(
         "button",
         {
@@ -28,8 +31,20 @@ export function addCopyButton() {
           }),
         ),
       );
-      node.properties.class += " relative";
-      node.children.push(button);
+      // assume first child contains code
+      const childElement = root.children[0] as Element;
+      const wrapper: Element = h(
+        "div",
+        {
+          class: "relative",
+        },
+        childElement,
+      );
+      childElement.children.push(button);
+      return {
+        type: "root",
+        children: [wrapper],
+      };
     },
   };
 }
@@ -42,8 +57,8 @@ export function addHeader(title: String, truncate: Boolean) {
         return root; // Return unchanged if no children
       }
 
-      // assume first child is pre
-      const preElement = root.children[0] as Element;
+      // assume first child contains code
+      const childElement = root.children[0] as Element;
 
       const headerDiv: Element = h(
         "div",
@@ -66,7 +81,7 @@ export function addHeader(title: String, truncate: Boolean) {
           class:
             "not-prose rounded-lg shadow-sm border border-gray-200 overflow-hidden",
         },
-        [headerDiv, preElement],
+        [headerDiv, childElement],
       );
 
       return {
