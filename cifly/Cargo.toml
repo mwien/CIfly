@@ -1,6 +1,14 @@
 [package]
 name = "cifly"
 version = "0.1.0"
+authors = ["Marcel Wienöbst <marcel.wienoebst@gmx.de>", "Sebastian Weichwald", "Leonard Henckel"]
+description = "cifly is the Rust core that powers the CIfly declarative framework for efficient causal inference algorithms."
+homepage = "https://cifly.pages.dev"
+repository = "https://github.com/mwien/CIfly"
+readme = "README.md"
+categories = ["science", "algorithms"]
+keywords = ["causal inference", "graph algorithms", "reachability"]
+license = "MIT"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
