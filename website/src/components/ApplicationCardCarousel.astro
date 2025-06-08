@@ -23,7 +23,7 @@ const { application } = Astro.props;
     >
       {application.data.summary}
     </div>
-    <div class="grid grid-cols-[90px_1fr] md:grid-cols-[102px_1fr] w-full">
+    <div class="grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr] w-full">
       <ReferenceList
         references={application.data.references}
         small={true}
