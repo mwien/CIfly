@@ -7,7 +7,7 @@ homepage = "https://cifly.pages.dev"
 repository = "https://github.com/mwien/CIfly"
 readme = "README.md"
 categories = ["science", "algorithms", "parser-implementations"]
-keywords = ["causal inference", "graph algorithms", "reachability"]
+keywords = ["causality", "algorithms", "graphs", "reachability"]
 license = "MIT"
 edition = "2021"
 
