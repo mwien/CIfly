@@ -10,5 +10,5 @@ crate-type = [ 'staticlib' ]
 name = 'ciflyR'
 
 [dependencies]
-cifly = { path = "../../../cifly" }
+cifly = "0.1.0"
 extendr-api = '*'
