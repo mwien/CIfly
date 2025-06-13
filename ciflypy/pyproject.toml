@@ -10,6 +10,10 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+authors= [{name = "Marcel Wienöbst", email = "marcel.wienoebst@gmx.de"}, {name = "Sebastian Weichwald"}, {name = "Leonard Henckel"}]
+description = "Python package for the CIfly framework for designing efficient causal inference algorithms"
+keywords = ["causality", "graphs", "algorithms"]
 dynamic = ["version"]
+
 [tool.maturin]
 features = ["pyo3/extension-module"]

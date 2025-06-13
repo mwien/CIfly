@@ -4,10 +4,10 @@
 
 #
 # This file was created with the following call:
-#   .Call("wrap__make_ciflyR_wrappers", use_symbols = TRUE, package_name = "ciflyR")
+#   .Call("wrap__make_ciflyr_wrappers", use_symbols = TRUE, package_name = "ciflyr")
 
 #' @usage NULL
-#' @useDynLib ciflyR, .registration = TRUE
+#' @useDynLib ciflyr, .registration = TRUE
 NULL
 
 #' Perform the CIfly algorithm specified in the passed ruletable.

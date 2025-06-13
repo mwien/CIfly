@@ -1,7 +1,7 @@
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/@LIBDIR@
-STATLIB = $(LIBDIR)/libciflyR.a
-PKG_LIBS = -L$(LIBDIR) -lciflyR
+STATLIB = $(LIBDIR)/libciflyr.a
+PKG_LIBS = -L$(LIBDIR) -lciflyr
 
 all: $(SHLIB) rust_clean
 	rm -f $(CURDIR)/Makevars

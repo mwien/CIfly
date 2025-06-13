@@ -41,7 +41,7 @@ const code_raw = defineCollection({
   loader: async () => {
     const dirPaths = [
       "../examples/ciflypy-examples/ciflypy_examples/",
-      "../examples/ciflyRExamples/R/",
+      "../examples/ciflyr-examples/R/",
     ];
 
     const tables = await Promise.all(

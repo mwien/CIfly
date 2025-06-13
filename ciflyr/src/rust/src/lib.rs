@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use extendr_api::prelude::*;
 
 extendr_module! {
-    mod ciflyR;
+    mod ciflyr;
     fn reach;
     fn parseRuletable;
     fn parseGraph;

@@ -1,4 +1,4 @@
-library("ciflyR") 
+library("ciflyr") 
 library("here")
 
 source(here("R", "utils.R"))

@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(ciflyRExamples)
+library(ciflyr)
 
-test_check("ciflyRExamples")
+test_check("ciflyr")

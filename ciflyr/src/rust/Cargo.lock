@@ -15,7 +15,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "034ba88c1be357f09874357f10893db9780442d79e0ee50cc8f0e8eab22a1c8a"
 
 [[package]]
-name = "ciflyR"
+name = "ciflyr"
 version = "0.1.0"
 dependencies = [
  "cifly",

@@ -1,14 +1,14 @@
 ---
-title: The ciflyR package
-shortTitle: ciflyR
+title: The ciflyr package
+shortTitle: ciflyr
 summary: "Explains how to use CIfly from R"
 number: 3
 ---
 
-In this article, we discuss how CIfly can be used from R with the ```ciflyR``` package. We plan to make it available on CRAN so that it can be installed with ```install.packages("ciflyR")```. At its core, the package provides a single function ```reach``` that performs a CIfly algorithm for an input graph and input sets according to a specified rule table. As a simple example, consider the code below that tests amenability using the table for finding non-amenable nodes discussed in the [previous article](/docs/ruletables/) introducing rule tables. 
+In this article, we discuss how CIfly can be used from R with the ```ciflyr``` package. We plan to make it available on CRAN so that it can be installed with ```install.packages("ciflyr")```. At its core, the package provides a single function ```reach``` that performs a CIfly algorithm for an input graph and input sets according to a specified rule table. As a simple example, consider the code below that tests amenability using the table for finding non-amenable nodes discussed in the [previous article](/docs/ruletables/) introducing rule tables. 
 
 ```r
-library("ciflyR")
+library("ciflyr")
 
 # it is assumed that X and Y are disjoint
 isAmenable <- function(g, X, Y) {
@@ -29,7 +29,7 @@ Here, ```reach``` is called with a graph ```g``` (as a list mapping edge types t
 #### Graph
 The graph is represented by a list with each name describing an edge type and containing another list of vectors with two positive integers each — the edges of this type. For example, the graph which has edges $1 \rightarrow 2 \leftarrow 3 - 4$ would be represented as ```list("-->" = list(c(1, 2), c(3, 2)), "---" = list(c(3, 4)))```. This is equivalent to ```list("-->" = list(c(1,2)), "<--" = list(c(2, 3)), "---" = list(c(3,4)))``` provided the rule table contains the edge description ```edges: --> <--, ---``` specifying ```-->``` and ```<--``` to be reciprocal. 
 
-For the node IDs, we strongly recommend to use the numbers $1, 2, \dots, p$ for a graph with $p$ nodes. Generally, any positive integers can used, however, the memory requirements of ```ciflyR``` are linear in the largest node ID because of the internal representation of graphs and sets. Hence, unnecessarily large node numbers lead to slower run times and potential memory problems. 
+For the node IDs, we strongly recommend to use the numbers $1, 2, \dots, p$ for a graph with $p$ nodes. Generally, any positive integers can used, however, the memory requirements of ```ciflyr``` are linear in the largest node ID because of the internal representation of graphs and sets. Hence, unnecessarily large node numbers lead to slower run times and potential memory problems. 
 
 #### Sets
 The sets are represented by a list as well with the names of the respective node sets as strings mapping to their instantiation represented as vector of positive integers. As an example, ```list("X" = c(1), "Z" = c(3, 4))``` would represent the two sets $X = \{1\}$ and $Z = \{3, 4\}$. The names of the sets must match the names specified in the rule table. 
@@ -38,7 +38,7 @@ The sets are represented by a list as well with the names of the respective node
 In its basic version, the rule table is passed to ```reach``` by its file path as string. If used outside of simple scripts, make sure that the rule table file is included within the package and that its path is specified relative to the project root and not the current working directory. Better code compared to the example above would be to use the ```here``` package to achieve this.
 
 ```r
-library("ciflyR")
+library("ciflyr")
 library("here")
 
 # path to the file "not_amenable_cpdag.txt" relative to the project root
@@ -73,14 +73,14 @@ reach(g, sets, notAmenableTable, tableAsString=TRUE)
 To help with debugging, it is possible to pass the keyword argument ```verbose=TRUE``` to ```reach```. This logs the steps the reachability algorithm takes during its execution. 
 
 #### Advanced Usage
-In every ```reach``` call, the implementation needs to parse the graph, sets and rule table. This can introduce unnecessary overhead in the case that *the same* graph, sets or rule table are used repeatedly. To address this, ```ciflyR``` offers the option to parse these objects outside of the ```reach``` function with the functions ```parseGraph```, ```parseSets``` and ```parseRuletable``` that, respectively, return a ```Graph```, ```Sets``` and ```Ruletable``` object. 
+In every ```reach``` call, the implementation needs to parse the graph, sets and rule table. This can introduce unnecessary overhead in the case that *the same* graph, sets or rule table are used repeatedly. To address this, ```ciflyr``` offers the option to parse these objects outside of the ```reach``` function with the functions ```parseGraph```, ```parseSets``` and ```parseRuletable``` that, respectively, return a ```Graph```, ```Sets``` and ```Ruletable``` object. 
 
 ```parseRuletable``` can be called as ```parseRuletable(tablePath)``` or ```parseRuletable(tableString, tableAsString=TRUE)```. The first argument of ```parseGraph``` and ```parseSets``` are also in the same encoding as the respective ```reach``` arguments. However, it is necessary to pass a rule table as second argument (this can be done via file path, as a multi-line string with ```tableAsString``` set to ```TRUE``` or by passing a ```Ruletable``` object). Afterwards, these objects must be used in combination with rule tables that have the same ```EDGES```, respectively ```SETS``` specification as the passed rule table. All three objects are internal CIfly representations and can *only* be passed as their respective arguments into ```reach```. We offer no further methods on these classes. 
 
 As an example, consider the code below that computes all amenable nodes for every possible $x$. Here, the same rule table and the same graph are used repeatedly. Hence, parsing them once outside of ```reach``` avoids unnecessary overhead. We also parse ```sets``` outside of ```reach```. As this is done once per ```reach``` call it, however, offers no performance advantage in this setting. 
 
 ```r
-library("ciflyR")
+library("ciflyr")
 
 table = parseRuletable("./not_amenable_cpdag.txt")
 

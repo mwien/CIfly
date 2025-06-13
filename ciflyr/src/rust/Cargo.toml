@@ -1,5 +1,5 @@
 [package]
-name = 'ciflyR'
+name = 'ciflyr'
 publish = false
 version = '0.1.0'
 edition = '2021'
@@ -7,7 +7,7 @@ rust-version = '1.65'
 
 [lib]
 crate-type = [ 'staticlib' ]
-name = 'ciflyR'
+name = 'ciflyr'
 
 [dependencies]
 cifly = "0.1.0"
