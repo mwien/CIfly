@@ -30,7 +30,7 @@ The first condition of the Theorem is called *amenability*, the second *forbidde
 ### Amenability condition
 Let us first revisit the notion of a proper possibly directed path. A *proper* path between $X$ and $Y$ is one which contains exactly one node from $X$ and one node from $Y$ (the endpoints of the path). A path is *possibly directed* from $X$ to $Y$ if every edge on it is either undirected or points towards the node in $Y$. For example, $x \rightarrow u - v \rightarrow y$ is, for $X = \{x\}$ and $Y = \{y\}$, a possibly directed path from $X$ to $Y$. The condition refers to those proper possibly directed paths that start with an undirected edge out of $X$, for example $x - u - v \rightarrow y$ would be such a path. 
 
-In our [documentation](/docs/python-wrapper/), we already used the rule table below for finding all non-amenable nodes as a running example. It finds all nodes $v$ for which there exists a proper possibly directed path starting with an undirected edge from a node $x \in X$ to $v$. Effectively, these are the nodes that cannot be in set $Y$. 
+In our [documentation](/docs/ciflypy/), we already used the rule table below for finding all non-amenable nodes as a running example. It finds all nodes $v$ for which there exists a proper possibly directed path starting with an undirected edge from a node $x \in X$ to $v$. Effectively, these are the nodes that cannot be in set $Y$. 
 
 <Ruletable id="not_amenable_cpdag" withHeader={true}/>
 
