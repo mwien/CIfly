@@ -18,10 +18,10 @@ import Reference from "../../components/Reference.astro"
 In this article, we show how to implement a CPDAG adjustment checker using CIfly. We directly rely on the graphical criterion derived by <Reference id="perkovicComplete" format="author(year)"/>. Adjustment is a fundamental technique for identifying causal effects. Utilizing this technique in combination with CPDAGs (certain causal graphs that can be learned from data), enables the possibility of combining causal discovery and causal effect estimation. As we will be purely focused on implementing an algorithm checking this criterion and refer the reader to the paper for additional background on CPDAGs and adjustment. 
 
 **Theorem** [<Reference id="perkovicComplete" format="author(year)"/>]    
-Consider disjoint node sets $X$, $Y$ and $Z$ in a CPDAG $G$. Then, $Z$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,
+Consider disjoint node sets $X$, $Y$ and $W$ in a CPDAG $G$. Then, $W$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,
 1. all proper possibly directed paths from $X$ to $Y$ begin with a directed edge,
-2. $\text{forb}_G(X, Y) \cap Z = \emptyset$ and
-3. all proper definite-status non-causal paths from $X$ to $Y$ are blocked by $Z$ in $G$.
+2. $\text{forb}_G(X, Y) \cap W = \emptyset$ and
+3. all proper definite-status non-causal paths from $X$ to $Y$ are blocked by $W$ in $G$.
 
 The criterion is formulated for CPDAGs, which are graphs with both directed and undirected edges. They do not contain directed cycles and satisfy additional properties, which we, however, do not discuss in this article. The graphical terminology in the criterion is introduced below. 
 
@@ -68,11 +68,11 @@ forb <- reach(cpdag, list("X" = cn), "./possible_descendants_cpdag.txt")`
 ### Blocking condition
 The blocking condition concerns itself with proper definite-status non-causal paths. Again, let us briefly introduce this terminology. A path from $X$ to $Y$ is called *non-causal* if it is not possibly directed from $X$ to $Y$. Further, a path is *definite-status* if every non-endpoint node on it is either a collider or a definite non-collider on the path. A *collider* is a node $w$ such that it is connected to its neighbors on the path as $u \rightarrow w \leftarrow v$. A *definite non-collider* is a node $w$ where the edge to its neighbor $u$ or to its neighbor $v$ points towards $u$, respectively $v$, or where both edges are undirected. 
 
-To check the condition, it should be verified that proper definite-status non-causal paths are blocked given $Z$. For this, it has hold that there exists a collider $w$ on the path such $w \not\in Z$ or a definite-status non-colllider $w$ such that $w \in Z$. We again verify this by finding all reachable nodes and checking that $Y$ contains no such nodes. To do this, we use the following table. 
+To check the condition, it should be verified that proper definite-status non-causal paths are blocked given $W$. For this, it has hold that there exists a collider $w$ on the path such $w \not\in W$ or a definite-status non-colllider $w$ such that $w \in W$. We again verify this by finding all reachable nodes and checking that $Y$ contains no such nodes. To do this, we use the following table. 
 
 <Ruletable id="backdoor_connected_cpdag" withHeader={true}/>
 
-This table tracks definite-status paths open given $Z$ exactly as discussed above. To ensure that they are non-causal, any transition from $X$ to a node in $C$ (a set containing all nodes on a possible directed path from $X$ to $Y$) is excluded in the table. For this, it is explicitly used that the amenability condition ensures that only directed edges from $X$ to $C$ may exist (else the exclusion of transitions from $X$ to $C$ would need to be added to the second and fourth rule as well). 
+This table tracks definite-status paths open given $W$ exactly as discussed above. To ensure that they are non-causal, any transition from $X$ to a node in $C$ (a set containing all nodes on a possible directed path from $X$ to $Y$) is excluded in the table. For this, it is explicitly used that the amenability condition ensures that only directed edges from $X$ to $C$ may exist (else the exclusion of transitions from $X$ to $C$ would need to be added to the second and fourth rule as well). 
 
 ### Full implementation
 The implementation uses the four tables introduced above to check the conditions one-by-one. We note that it would be possible to return early if the first or second condition is violated. This is omitted here for sake of a clearer presentation. 

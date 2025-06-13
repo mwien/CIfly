@@ -15,26 +15,26 @@ vectorToIndicator <- function(p, l) {
 	return (b)
 }
 
-reachPossDescendants <- function(p, g, t) {
-	return (vectorToIndicator(p, reach(g, list("X" = t, "W" = c()), possDescendants)))
+reachPossDescendants <- function(p, g, x) {
+	return (vectorToIndicator(p, reach(g, list("X" = x, "W" = c()), possDescendants)))
 }
 
-reachNotAmenable <- function(p, g, t) {
-	return (vectorToIndicator(p, reach(g, list("X" = t), notAmenable)))
+reachNotAmenable <- function(p, g, x) {
+	return (vectorToIndicator(p, reach(g, list("X" = x), notAmenable)))
 }
 
-reachForbiddenPath <- function(p, g, t, Z) {
-	return (vectorToIndicator(p, reach(g, list("X" = t, "Z" = Z), forbiddenPath)))
+reachForbiddenPath <- function(p, g, x, W) {
+	return (vectorToIndicator(p, reach(g, list("X" = x, "W" = W), forbiddenPath)))
 }
 
-reachNonCausal <- function(p, g, t, Z) {
-	return (vectorToIndicator(p, reach(g, list("X" = t, "Z" = Z), nonCausal)))
+reachNonCausal <- function(p, g, x, W) {
+	return (vectorToIndicator(p, reach(g, list("X" = x, "W" = W), nonCausal)))
 }
 
-notAmenablenotAdjustment <- function(p, g, t, Z) {
-	nam <- reachNotAmenable(p, g, t)
-	forb <- reachForbiddenPath(p, g, t, Z)
-	ncau <- reachNonCausal(p, g, t, Z)
+notAmenablenotAdjustment <- function(p, g, x, W) {
+	nam <- reachNotAmenable(p, g, x)
+	forb <- reachForbiddenPath(p, g, x, W)
+	ncau <- reachNonCausal(p, g, x, W)
 
 	nad <- rep(FALSE, p)
 	nad[nam] <- TRUE
@@ -51,14 +51,14 @@ parentAid <- function(p, gTrue, gGuess) {
 	paList <- parents(p, gGuess)
 
 	mistakes <- 0
-	for (t in seq(p)) {
-		pa <- vectorToIndicator(p, paList[[t]])
-		namGuess <- reachNotAmenable(p, gGuessParsed, t)
-		desTrue <- reachPossDescendants(p, gTrueParsed, t)
-		namnadTrue <- notAmenablenotAdjustment(p, gTrueParsed, t, paList[[t]])
+	for (x in seq(p)) {
+		pa <- vectorToIndicator(p, paList[[x]])
+		namGuess <- reachNotAmenable(p, gGuessParsed, x)
+		desTrue <- reachPossDescendants(p, gTrueParsed, x)
+		namnadTrue <- notAmenablenotAdjustment(p, gTrueParsed, x, paList[[x]])
 
 		for (y in seq(p)) {
-			if (y == t) {
+			if (y == x) {
 				next
 			}
 			if (pa[y]) {

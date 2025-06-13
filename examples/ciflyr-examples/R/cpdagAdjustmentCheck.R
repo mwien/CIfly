@@ -9,7 +9,7 @@ possibleAncestors <- parseRuletable(file.path(ruletables, "possible_ancestors_cp
 possibleDescendants <- parseRuletable(file.path(ruletables, "possible_descendants_cpdag.txt"))
 backdoorConnected <- parseRuletable(file.path(ruletables, "backdoor_connected_cpdag.txt"))
 
-isCpdagAdjustment <- function(cpdag, X, Y, Z) {
+isCpdagAdjustment <- function(cpdag, X, Y, W) {
 	nam <- reach(cpdag, list("X" = X), notAmenable)
 
 	anc <- reach(cpdag, list("X" = Y, "W" = X), possibleAncestors)
@@ -17,7 +17,7 @@ isCpdagAdjustment <- function(cpdag, X, Y, Z) {
 	cn <- intersect(anc, des)
 	forb <- reach(cpdag, list("X" = cn), possibleDescendants)
 
-	bconn <- reach(cpdag, list("X" = X, "C" = cn, "Z" = Z), backdoorConnected)
+	bconn <- reach(cpdag, list("X" = X, "C" = cn, "W" = W), backdoorConnected)
 
-	return  (length(intersect(nam, Y)) == 0 && length(intersect(forb, Z)) == 0 && length(intersect(bconn, Y)) == 0)
+	return  (length(intersect(nam, Y)) == 0 && length(intersect(forb, W)) == 0 && length(intersect(bconn, Y)) == 0)
 }

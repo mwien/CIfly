@@ -1,14 +1,14 @@
 EDGES --> <--, ---
-SETS X, Z
+SETS X, W
 COLORS init, poss-causal, non-causal
 START ... [init] AT X
 OUTPUT ... [non-causal]
 
 ... [init]        | ---, --> [poss-causal] | next not in X
 ... [init]        | <--      [non-causal]  | next not in X
---> [...]         | <--      [non-causal]  | next not in X and current in Z 
---- [poss-causal] | ---      [poss-causal] | next not in X and current not in Z 
-... [poss-causal] | -->      [poss-causal] | next not in X and current not in Z 
---- [non-causal]  | ---      [non-causal]  | next not in X and current not in Z 
-<-- [non-causal]  | ...      [non-causal]  | next not in X and current not in Z 
-... [non-causal]  | -->      [non-causal]  | next not in X and current not in Z 
+--> [...]         | <--      [non-causal]  | next not in X and current in W
+--- [poss-causal] | ---      [poss-causal] | next not in X and current not in W
+... [poss-causal] | -->      [poss-causal] | next not in X and current not in W
+--- [non-causal]  | ---      [non-causal]  | next not in X and current not in W
+<-- [non-causal]  | ...      [non-causal]  | next not in X and current not in W
+... [non-causal]  | -->      [non-causal]  | next not in X and current not in W
