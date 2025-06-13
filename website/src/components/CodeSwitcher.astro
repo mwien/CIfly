@@ -31,19 +31,39 @@ const { class: className, ...rest } = Astro.props;
 </div>
 
 <script>
+  function debounce(fn, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+
   document.querySelectorAll(".code-switcher").forEach((container) => {
     const tabs = container.querySelectorAll("[code-tab]");
     const contents = container.querySelectorAll("[code-content]");
 
-    const height = contents[0]
-      .querySelector("pre")
-      .getBoundingClientRect().height;
+    function heightUpdate() {
+      const firstPreElement = contents[0].querySelector("pre");
 
-    // set height according to first tab element
-    contents.forEach((content) => {
-      const preElement = content.querySelector("pre");
-      preElement.style.height = `${height}px`;
-    });
+      firstPreElement.style.height = "auto";
+      const isHidden = contents[0].classList.contains("hidden");
+      contents[0].classList.toggle("hidden", false);
+      const height = firstPreElement.getBoundingClientRect().height;
+      if (isHidden) {
+        contents[0].classList.toggle("hidden", true);
+      }
+
+      // set height according to first tab element
+      contents.forEach((content) => {
+        const preElement = content.querySelector("pre");
+        preElement.style.height = `${height}px`;
+      });
+    }
+
+    heightUpdate();
+
+    window.addEventListener("resize", debounce(heightUpdate, 50));
 
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
