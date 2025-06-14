@@ -31,6 +31,6 @@ dsepTable <- "
 sets <- list("X" = c(1), "Z" = c(4))
 
 s <- parseSets(sets, dsepTable, tableAsString=TRUE)
-edgelist <- list("-->" = list(c(1, 2), c(3, 2), c(2, 4)))
+edgelist <- list("-->" = rbind(c(1, 2), c(3, 2), c(2, 4)))
 reach(edgelist, s, dsepTable, tableAsString=TRUE)
 }
