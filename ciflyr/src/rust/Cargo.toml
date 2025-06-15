@@ -12,3 +12,7 @@ name = 'ciflyr'
 [dependencies]
 cifly = "0.1.0"
 extendr-api = '*'
+
+[profile.release]
+opt-level = 3
+lto = true
