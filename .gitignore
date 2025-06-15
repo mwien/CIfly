@@ -7,5 +7,3 @@ __pycache__/
 
 target/
 .env/
-
-*.tar.xz
