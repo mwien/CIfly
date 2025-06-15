@@ -1,6 +1,6 @@
 Package: ciflyr
 Title: Flexible Reachability Framework for Causal Inference
-Version: 0.1.0
+Version: 0.1.1
 Maintainer: Marcel Wienöbst <marcel.wienoebst@gmx.de>
 Author: Marcel Wienöbst [aut, cre]
 Authors@R: 

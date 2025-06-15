@@ -11,8 +11,13 @@ name = 'ciflyr'
 
 [dependencies]
 cifly = "0.1.0"
-extendr-api = '*'
+extendr-api = '0.8.0'
+
+[profile.dev]
+lto = true
+codegen-units = 1
 
 [profile.release]
 opt-level = 3
 lto = true
+codegen-units = 1
