@@ -33,15 +33,15 @@ def parent_aid(p, g_true, g_guess):
     mistakes = 0
 
     for x in range(p):
-        pt = set(parents[x])
+        pa = set(parents[x])
         not_amenable_guess = not_amenable(g_guess_parsed, x)
         desc_true = poss_desc(g_true_parsed, x)
-        not_amenable_true, not_adjustment_true = not_amenable_not_adjustment(g_true_parsed, x, pt)
+        not_amenable_true, not_adjustment_true = not_amenable_not_adjustment(g_true_parsed, x, pa)
 
         for y in range(p):
             if y == x:
                 continue
-            if y in pt:
+            if y in pa:
                 if y in desc_true:
                     mistakes += 1
             elif y in not_amenable_guess:

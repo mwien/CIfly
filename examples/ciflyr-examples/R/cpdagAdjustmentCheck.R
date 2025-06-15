@@ -13,7 +13,7 @@ isCpdagAdjustment <- function(cpdag, X, Y, W) {
 	nam <- reach(cpdag, list("X" = X), notAmenable)
 
 	anc <- reach(cpdag, list("X" = Y, "W" = X), possibleAncestors)
-	des <- reach(cpdag, list("X" = X, "W" = c()), possibleDescendants)
+	des <- reach(cpdag, list("X" = X), possibleDescendants)
 	cn <- intersect(anc, des)
 	forb <- reach(cpdag, list("X" = cn), possibleDescendants)
 
