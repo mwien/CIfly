@@ -94,3 +94,24 @@ for (x in seq(p)) {
     print(paste0("amenable for ", x, ": ", paste(setdiff(seq(p), notAmenable), collapse = ", ")))
 }
 ```
+
+#### Conversion to the ciflyr graph format
+The ```ciflyr``` graph format is based on edge lists represented by $2 \times m$ matrices. Graphs can usually converted to this format with little effort. For example, consider a directed graph in ```igraph```:
+```r
+# construct graph
+g <- igraph::make_graph(edges = c(1, 2, 2, 3), n = 3, directed = TRUE)
+
+# convert to ciflyr format
+ciflyGraph <- list("-->" = as_edgelist(g))
+```
+
+This assumes that the directed edges are referred to by the string `"-->"` in the rule tables.
+
+Adjacency matrices can be converted just as easily. Consider the following matrix representing the same directed graph:
+```r
+# construct graph
+g <- matrix(c(0, 0, 0, 1, 0, 0, 0, 1, 0), nrow = 3, ncol = 3)
+
+# convert to ciflyr format
+ciflyGraph <- list("-->" = which(g == 1, arr.ind = TRUE))
+```
