@@ -38,48 +38,56 @@ const { class: className, ...rest } = Astro.props;
       timeout = setTimeout(() => fn(...args), delay);
     };
   }
+  function heightUpdate() {
+    const firstPreElement = contents[0].querySelector("pre");
 
-  document.querySelectorAll(".code-switcher").forEach((container) => {
-    const tabs = container.querySelectorAll("[code-tab]");
-    const contents = container.querySelectorAll("[code-content]");
-
-    function heightUpdate() {
-      const firstPreElement = contents[0].querySelector("pre");
-
-      firstPreElement.style.height = "auto";
-      const isHidden = contents[0].classList.contains("hidden");
-      contents[0].classList.toggle("hidden", false);
-      const height = firstPreElement.getBoundingClientRect().height;
-      if (isHidden) {
-        contents[0].classList.toggle("hidden", true);
-      }
-
-      // set height according to first tab element
-      contents.forEach((content) => {
-        const preElement = content.querySelector("pre");
-        preElement.style.height = `${height}px`;
-      });
+    firstPreElement.style.height = "auto";
+    const isHidden = contents[0].classList.contains("hidden");
+    contents[0].classList.toggle("hidden", false);
+    const height = firstPreElement.getBoundingClientRect().height;
+    if (isHidden) {
+      contents[0].classList.toggle("hidden", true);
     }
 
-    document.addEventListener("DOMContentLoaded", heightUpdate);
+    // set height according to first tab element
+    contents.forEach((content) => {
+      const preElement = content.querySelector("pre");
+      preElement.style.height = `${height}px`;
+    });
+  }
 
-    window.addEventListener("resize", debounce(heightUpdate, 50));
+  function hydrateCodeSwitcher() {
+    document.querySelectorAll(".code-switcher").forEach((container) => {
+      const tabs = container.querySelectorAll("[code-tab]");
+      const contents = container.querySelectorAll("[code-content]");
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        const target = tab.getAttribute("code-tab");
+      heightUpdate();
 
-        tabs.forEach((t) => {
-          const isTarget = t.getAttribute("code-tab") === target;
-          t.classList.toggle("bg-gray-50", isTarget);
-          t.classList.toggle("shadow-sm", isTarget);
-        });
+      window.addEventListener("resize", debounce(heightUpdate, 50));
 
-        contents.forEach((content) => {
-          const isMatch = content.getAttribute("code-content") === target;
-          content.classList.toggle("hidden", !isMatch);
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.getAttribute("code-tab");
+
+          tabs.forEach((t) => {
+            const isTarget = t.getAttribute("code-tab") === target;
+            t.classList.toggle("bg-gray-50", isTarget);
+            t.classList.toggle("shadow-sm", isTarget);
+          });
+
+          contents.forEach((content) => {
+            const isMatch = content.getAttribute("code-content") === target;
+            content.classList.toggle("hidden", !isMatch);
+          });
         });
       });
     });
-  });
+  }
+  if (document.readyState !== "loading") {
+    hydrateCodeSwitcher();
+  } else {
+    document.addEventListener("DOMContentLoaded", function () {
+      hydrateCodeSwitcher();
+    });
+  }
 </script>
