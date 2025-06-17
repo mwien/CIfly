@@ -97,3 +97,36 @@ for x in range(p):
     not_amenable.append(x)
     print("amenable for", x, set(range(p)).difference(not_amenable))
 ```
+
+#### Conversion to the ciflypy graph format
+The ```ciflypy``` graph format is based on edge lists for different edge types. Graphs can usually be converted to this format with little effort. For example, consider a directed graph in ```networkx```:
+```py
+import networkx as nx
+
+# construct graph
+g = nx.DiGraph()
+g.add_edge(1, 2)
+g.add_edge(2, 3)
+
+# convert to ciflypy format
+cifly_graph = {"-->": list(g.edges)}
+print(cifly_graph)
+```
+
+This assumes that the directed edges are referred to by the string `"-->"` in the rule tables. 
+
+NumPy adjacency matrices can be converted just as easily. Consider the following matrix representing the same directed graph:
+```py
+import numpy as np
+
+# construct graph
+g = np.zeros((3, 3), dtype=int)
+g[(0, 1)] = 1
+g[(1, 2)] = 1
+
+# convert to ciflypy format
+nonzeros = np.nonzero(g)
+edges = list(zip(nonzeros[0], nonzeros[1]))
+cifly_graph = {"-->": edges}
+print(cifly_graph)
+```
