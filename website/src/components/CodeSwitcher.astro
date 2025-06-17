@@ -45,23 +45,19 @@ const { class: className, ...rest } = Astro.props;
       const contents = container.querySelectorAll("[code-content]");
 
       function heightUpdate() {
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            const firstPreElement = contents[0].querySelector("pre");
-            const wasHidden = contents[0].classList.contains("hidden");
-            if (wasHidden) contents[0].classList.remove("hidden");
+        setTimeout(() => {
+          const firstPreElement = contents[0].querySelector("pre");
+          firstPreElement.style.height = "auto";
+          const wasHidden = contents[0].classList.contains("hidden");
+          if (wasHidden) contents[0].classList.remove("hidden");
+          const height = firstPreElement.getBoundingClientRect().height;
+          if (wasHidden) contents[0].classList.add("hidden");
 
-            firstPreElement.offsetHeight;
-
-            const height = firstPreElement.getBoundingClientRect().height;
-            if (wasHidden) contents[0].classList.add("hidden");
-
-            contents.forEach((content) => {
-              const preElement = content.querySelector("pre");
-              preElement.style.height = `${height}px`;
-            });
-          }, 10);
-        });
+          contents.forEach((content) => {
+            const preElement = content.querySelector("pre");
+            preElement.style.height = `${height}px`;
+          });
+        }, 10);
       }
 
       heightUpdate();
