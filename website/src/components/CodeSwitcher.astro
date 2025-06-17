@@ -61,7 +61,7 @@ const { class: className, ...rest } = Astro.props;
       });
     }
 
-    heightUpdate();
+    document.addEventListener("DOMContentLoaded", heightUpdate);
 
     window.addEventListener("resize", debounce(heightUpdate, 50));
 
