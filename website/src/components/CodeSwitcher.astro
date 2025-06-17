@@ -38,28 +38,31 @@ const { class: className, ...rest } = Astro.props;
       timeout = setTimeout(() => fn(...args), delay);
     };
   }
-  function heightUpdate() {
-    const firstPreElement = contents[0].querySelector("pre");
-
-    firstPreElement.style.height = "auto";
-    const isHidden = contents[0].classList.contains("hidden");
-    contents[0].classList.toggle("hidden", false);
-    const height = firstPreElement.getBoundingClientRect().height;
-    if (isHidden) {
-      contents[0].classList.toggle("hidden", true);
-    }
-
-    // set height according to first tab element
-    contents.forEach((content) => {
-      const preElement = content.querySelector("pre");
-      preElement.style.height = `${height}px`;
-    });
-  }
 
   function hydrateCodeSwitcher() {
     document.querySelectorAll(".code-switcher").forEach((container) => {
       const tabs = container.querySelectorAll("[code-tab]");
       const contents = container.querySelectorAll("[code-content]");
+
+      function heightUpdate() {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            const firstPreElement = contents[0].querySelector("pre");
+            const wasHidden = contents[0].classList.contains("hidden");
+            if (wasHidden) contents[0].classList.remove("hidden");
+
+            firstPreElement.offsetHeight;
+
+            const height = firstPreElement.getBoundingClientRect().height;
+            if (wasHidden) contents[0].classList.add("hidden");
+
+            contents.forEach((content) => {
+              const preElement = content.querySelector("pre");
+              preElement.style.height = `${height}px`;
+            });
+          }, 10);
+        });
+      }
 
       heightUpdate();
 
