@@ -1,5 +1,8 @@
 from ciflypy_examples.sound_and_complete_iv import sound_and_complete_instrument
 
+# In many tests below there are other valid conditional instruments.
+# The checked ones are which our algorithm should find in its current implementation.
+# On unexpected test failure, please recheck manually or with an IV verifier.
 
 def test_figure_5b():
     # labels = ["a", "b", "c", "x", "y"]

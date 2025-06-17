@@ -1,6 +1,10 @@
 library("here")
 source(here("R", "soundAndCompleteIV.R"))
 
+# In many tests below there are other valid conditional instruments.
+# The checked ones are which our algorithm should find in its current implementation.
+# On unexpected test failure, please recheck manually or with an IV verifier.
+
 test_that("Figure 5b", {
 	p <- 5
 	dirEdges <- rbind(c(1, 2), c(1, 4), c(2, 3), c(4, 5))
@@ -24,7 +28,7 @@ test_that("CIS Paper Appendix Figure 2", {
 
 	iv <- soundAndCompleteInstrument(p, g, x, y)
 	expect_equal(iv$Z, c(1))
-	expect_equal(iv$W, c(2, 3))
+	expect_equal(sort(iv$W), c(2, 3))
 })
 
 test_that("CIS Paper Appendix Figure 2 With Mediator and Children", {
@@ -37,7 +41,7 @@ test_that("CIS Paper Appendix Figure 2 With Mediator and Children", {
 
 	iv <- soundAndCompleteInstrument(p, g, x, y)
 	expect_equal(iv$Z, c(1))
-	expect_equal(iv$W, c(2, 3))
+	expect_equal(sort(iv$W), c(2, 3))
 
 })
 
