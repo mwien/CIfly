@@ -160,7 +160,7 @@ impl Graph {
             &parsed_ruletable
         } else {
             return Err(PyRuntimeError::new_err(
-                "error reading ruletable: ruletable is neither a Ruletable object nor be converted to a String"
+                "error reading ruletable: ruletable is neither a Ruletable object nor can be converted to a String"
                     .to_owned(),
             ));
         };
