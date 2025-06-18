@@ -17,7 +17,7 @@ import Reference from "../../components/Reference.astro"
 
 In this article, we present an implementation for computing the parent adjustment distance between two CPDAGs as proposed by <Reference id="henckelAID" format="author(year)"/>. CPDAGs are causal graphs made up of directed as well as undirected edges that are learned by causal discovery algorithms. Such algorithms try to recover the graphical structure of the underlying causal model based on, typically, observational data. In the following, we will usually denote the estimated CPDAG as $G_{\text{guess}}$ and the CPDAG representing the true underlying model as $G_{\text{true}}$. 
 
-The parent adjustment distance measures the distance of $G_{\text{guess}}$ from $G_{\text{true}}$. Broadly speaking (we will define this more precisely below), this distance measures the number of node pairs $x$ and $y$ for which the validity of the adjustment set consisting of the parents of $x$ in $G_{\text{guess}}$ differs between the two graphs. E.g., if the parents of $x$ in $G_{\text{guess}}$ are an adjustment set for $G_{\text{guess}}$ but not for $G_{\text{true}}$ the distance increases by one. To make this more precise, let us recall the CPDAG adjustment criterion by <Reference id="perkovicComplete" format="author(year)"/> which we discussed previously in [this article](/applications/cpdag-adjustment-check/). 
+The parent adjustment distance measures the distance of $G_{\text{guess}}$ from $G_{\text{true}}$. Broadly speaking (we will define this more precisely below), this distance measures the number of node pairs $x$ and $y$ for which the validity status the parents of $x$ in $G_{\text{guess}}$ differs between the two graphs. For example, if the parents of $x$ in $G_{\text{guess}}$ are an adjustment set for $G_{\text{guess}}$ but not for $G_{\text{true}}$ the distance increases by one. To make this more precise, let us recall the CPDAG adjustment criterion by <Reference id="perkovicComplete" format="author(year)"/> which we discussed previously in [this article](/applications/cpdag-adjustment-check/). 
 
 **Theorem 1** [<Reference id="perkovicComplete" format="author(year)"/>]    
 Consider disjoint node sets $X$, $Y$ and $W$ in a CPDAG $G$. Then, $W$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,
@@ -53,7 +53,7 @@ To implement the above lemma, it is first necessary to recall the definitions of
 - *possibly directed* if all edges are either undirected or point towards $Y$ on the path,
 - *definite-status* if every non-endpoint node is a
 collider or a definite-status non-collider (a definite-status non-collider is a node $v$ with left neighbor $u$ and right neighbor $w$ such that $u \leftarrow v$, $v \rightarrow w$ or $u - v - w$),
-- *open* if every collider is in $W$ and every non-collider is not in $W$ and
+- *open* if every collider is in $W$ and every non-collider is not in $W$, and
 - *blocked* if it is not open.
 
 We are now able to formulate rule tables for the three conditions of Lemma 1 above. As we have already given the table for the first condition (non-amenability) in the [article on checking the CPDAG adjustment criterion](/applications/cpdag-adjustment-check/), we focus on the other two conditions here. 
@@ -62,21 +62,21 @@ For the second condition, we need to track proper possibly directed walks from $
 
 <Ruletable id="forbidden_path_connected_cpdag" withHeader={true}/>
 
-For properness, we always check that the ```next``` node is not in $X$. Moreover, we switch to color ```yield``` once we find a node that is in $W$ while only tracking possibly directed paths. Hence, the set of nodes of color ```yield``` that is returned contains all nodes reachable from $X$ via walks prescribed by Condition 2 of Lemma 1.
+To ensure properness, we always check that the ```next``` node is not in $X$. Moreover, we switch to color ```yield``` once we find a node that is in $W$ while only tracking possibly directed paths. Hence, the set of nodes of color ```yield``` that is returned contains all nodes reachable from $X$ via walks prescribed by Condition 2 of Lemma 1.
 
-Tracking the paths in Condition 3 is a bit more complex. We leave the ```init``` color with the first edge. Afterwards, open paths are tracked, which may become non-causal if a backwards facing edge is traversed. For every rule, properness is ensured by checking that ```next``` is not in $X$. The further logic in the rules stems from verifying that the walk is open and definite-status. The nodes visited with color ```non-causal``` are returned. 
+Tracking the paths in Condition 3 is a bit more complex. We leave the ```init``` color with the first edge. Afterwards, open paths are tracked, which may become non-causal if a backwards facing edge is traversed. Again we ensure properness by checking that ```next``` is not in $X$ in every rule. Other than that the rules ensure that the walks we track are open and of definite-status. Finally, we return all nodes reached with color ```non-causal```. 
 
 <Ruletable id="non_causal_connected_cpdag" withHeader={true}/>
 
 ### CIfly-based computation of the parent adjustment distance
-The general idea of the algorithm is to go through all $x$, look up its parents in $G_{\text{guess}}$ (denoted by $\text{pa}_{G_{\text{guess}}}(x)$) and then compute the following sets in linear-time:
+The general idea of the algorithm is to go through all $x$, look up its parents in $G_{\text{guess}}$, denoted by $\text{pa}_{G_{\text{guess}}}(x)$, and then compute the following sets in linear-time:
 
-- all $y$ such that the pair $x$ and $y$ is not amenable (violates Condition 1 of the adjustment criterion) in $G_{\text{guess}}$
-- all $y$ such that $y$ is a proper possible descendant of $x$
-- all $y$ such that the pair $x$ and $y$ is not amenable in $G_{\text{true}}$
+- all $y$ such that the pair $x$ and $y$ is not amenable (violates Condition 1 of the adjustment criterion) in $G_{\text{guess}}$,
+- all $y$ such that $y$ is a proper possible descendant of $x$,
+- all $y$ such that the pair $x$ and $y$ is not amenable in $G_{\text{true}}$, and
 - all $y$ such that $\text{pa}_{G_{\text{guess}}}(x)$ is not a valid adjustment set relative to $x$ and $y$ in $G_{\text{true}}$. 
 
-Based on these information the parent adjustment distance can be computed directly based on Definition 1. For this, we iterate over all $y$ and check whether the parent adjustment distances increases for pair $x$ and $y$ in constant time per $y$. Overall, this yields run-time $O(p \cdot (p + m))$. 
+With these sets we can compote the parent adjustment distance directly as defined in Definition 1. For this, we iterate over all $y$ and check whether the parent adjustment distances increases for pair $x$ and $y$ in constant time per $y$. Overall, this yields run-time $O(p \cdot (p + m))$. 
 
 The only functionality we have not discussed yet is how to compute the set of parents for each node in the CIfly graph. Again, this can be done easily in Python and R directly, based on the CIfly graph representation. Of course, you can also rely on your favorite graph library or format for this task (and translate it into CIfly format only for performing the ```reach``` calls). 
 
@@ -97,10 +97,10 @@ parents <- function(p, g) {
 Generally, in this application we put more focus than usual on practical efficiency. More precisely,
 
 - we parse the graphs into CIfly objects outside of the loop over all $x$,
-- we have a *single* function which returns not-amenable $y$ and all $y$ for which the adjustment set is not valid in $G_{\text{guess}}$ to avoid computing non-amenable $y$ twice and
+- we have a *single* function which returns not-amenable $y$ and all $y$ for which the adjustment set is not valid in $G_{\text{guess}}$ to avoid computing non-amenable $y$ twice, and
 - we make sure that testing membership in the sets of $y$ nodes by using the ```set``` data structure in Python and Boolean indicator vectors in R (there is no native set data structure in R).
 
-We do this to achieve comparable performance with the optimized [gadjid](https://github.com/CausalDisco/gadjid) library written in Rust and accessible from Python. In particular, parsing the graphs into CIfly objects is an effective trick for better practical performance if ```reach``` is called often with the same graph. 
+We do this to achieve comparable performance with the optimized [gadjid](https://github.com/CausalDisco/gadjid) library written in Rust and accessible from Python. In particular, parsing the graphs into CIfly objects is an effective trick for better practical performance if ```reach``` is called often with the same graph. Finally, we present the overall code for computing the parent adjustment distance.
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="parent_aid.py"/>

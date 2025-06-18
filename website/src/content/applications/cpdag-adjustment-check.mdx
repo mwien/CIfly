@@ -15,7 +15,7 @@ import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
-In this article, we show how to implement a CPDAG adjustment checker using CIfly. We directly rely on the graphical criterion derived by <Reference id="perkovicComplete" format="author(year)"/>. Adjustment is a fundamental technique for identifying causal effects. Utilizing this technique in combination with CPDAGs (certain causal graphs that can be learned from data), enables the possibility of combining causal discovery and causal effect estimation. As we will be purely focused on implementing an algorithm checking this criterion and refer the reader to the paper for additional background on CPDAGs and adjustment. 
+In this article, we show how to implement an adjustment checker for CPDAGs using CIfly. We directly rely on the complete graphical validity criterion derived by <Reference id="perkovicComplete" format="author(year)"/>. Covariate adjustment is a fundamental technique for identifying causal effects. Applying covariate adjustment to  CPDAGs (a class of causal graphs that can be learned from data), allows us to learn causal effects from observational data by combining causal discovery and causal effect estimation. As we will be purely focused on implementing an algorithm checking this criterion we refer the reader to the paper for additional background on CPDAGs and adjustment. 
 
 **Theorem** [<Reference id="perkovicComplete" format="author(year)"/>]    
 Consider disjoint node sets $X$, $Y$ and $W$ in a CPDAG $G$. Then, $W$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,
@@ -25,7 +25,7 @@ Consider disjoint node sets $X$, $Y$ and $W$ in a CPDAG $G$. Then, $W$ is a vali
 
 The criterion is formulated for CPDAGs, which are graphs with both directed and undirected edges. They do not contain directed cycles and satisfy additional properties, which we, however, do not discuss in this article. The graphical terminology in the criterion is introduced below. 
 
-The first condition of the Theorem is called *amenability*, the second *forbidden set* and the third *blocking*. Our implementation proceeds by checking these conditions one-by-one.
+We call the first condition of the Theorem *amenability*, the second *forbidden set* and the third *blocking*. Our implementation proceeds by checking these conditions one-by-one.
 
 ### Amenability condition
 Let us first revisit the notion of a proper possibly directed path. A *proper* path between $X$ and $Y$ is one which contains exactly one node from $X$ and one node from $Y$ (the endpoints of the path). A path is *possibly directed* from $X$ to $Y$ if every edge on it is either undirected or points towards the node in $Y$. For example, $x \rightarrow u - v \rightarrow y$ is, for $X = \{x\}$ and $Y = \{y\}$, a possibly directed path from $X$ to $Y$. The condition refers to those proper possibly directed paths that start with an undirected edge out of $X$, for example $x - u - v \rightarrow y$ would be such a path. 
@@ -48,7 +48,7 @@ We also need to find the nodes from which there exists a proper possibly directe
 
 <Ruletable id="possible_ancestors_cpdag" withHeader={true}/>
 
-Using these tables, the forbidden set can be computed as follows.
+Using these tables, we can compute the forbidden set as follows.
 
 <CodeSwitcher>
 <CodeHelper slot="python-code" code={
@@ -66,16 +66,16 @@ forb <- reach(cpdag, list("X" = cn), "./possible_descendants_cpdag.txt")`
 </CodeSwitcher>
 
 ### Blocking condition
-The blocking condition concerns itself with proper definite-status non-causal paths. Again, let us briefly introduce this terminology. A path from $X$ to $Y$ is called *non-causal* if it is not possibly directed from $X$ to $Y$. Further, a path is *definite-status* if every non-endpoint node on it is either a collider or a definite non-collider on the path. A *collider* is a node $w$ such that it is connected to its neighbors on the path as $u \rightarrow w \leftarrow v$. A *definite non-collider* is a node $w$ where the edge to its neighbor $u$ or to its neighbor $v$ points towards $u$, respectively $v$, or where both edges are undirected. 
+The blocking condition concerns itself with proper definite-status non-causal paths. Again, let us briefly introduce this terminology. A path from $X$ to $Y$ is called *non-causal* if it is not possibly directed from $X$ to $Y$. Further, a path is *definite-status* if every non-endpoint node on it is either a collider or a definite non-collider on the path. A *collider* is a node $w$ such that it is connected to its neighbors on the path as $u \rightarrow w \leftarrow v$. A *definite non-collider* is a node $w$ where the edge to its neighbor $u$ or to its neighbor $v$ points towards $u$, respectively $v$, or where both edges are undirected, that is, $u \leftarrow w - v,u - w \rightarrow v$ or $u - w - v$. 
 
-To check the condition, it should be verified that proper definite-status non-causal paths are blocked given $W$. For this, it has hold that there exists a collider $w$ on the path such $w \not\in W$ or a definite-status non-colllider $w$ such that $w \in W$. We again verify this by finding all reachable nodes and checking that $Y$ contains no such nodes. To do this, we use the following table. 
+We need to verify that all proper definite-status non-causal paths are blocked given $W$, that is, for each path there exists a collider $w$ on the path such $w \not\in W$ or a definite-status non-colllider $w$ such that $w \in W$. We again verify this by finding all reachable nodes and checking that $Y$ contains no such nodes. To do this, we use the following table. 
 
 <Ruletable id="backdoor_connected_cpdag" withHeader={true}/>
 
-This table tracks definite-status paths open given $W$ exactly as discussed above. To ensure that they are non-causal, any transition from $X$ to a node in $C$ (a set containing all nodes on a possible directed path from $X$ to $Y$) is excluded in the table. For this, it is explicitly used that the amenability condition ensures that only directed edges from $X$ to $C$ may exist (else the exclusion of transitions from $X$ to $C$ would need to be added to the second and fourth rule as well). 
+This table tracks definite-status walks open given $W$ and it is easy to show that tracking walks is equivalent to tracking paths. To ensure that they are non-causal, any transition from $X$ to a node in $C$ (a set containing all nodes on a possible directed path from $X$ to $Y$) is excluded in the table. Here, we use that the amenability condition ensures that only directed edges from $X$ to $C$ may exist (else the exclusion of transitions from $X$ to $C$ would need to be added to the second and fourth rule as well). 
 
 ### Full implementation
-The implementation uses the four tables introduced above to check the conditions one-by-one. We note that it would be possible to return early if the first or second condition is violated. This is omitted here for sake of a clearer presentation. 
+In the final implementation we use the four tables introduced above to check the conditions one-by-one. We note that we could add early returns for when either the first or the second condition is violated. This is omitted here in favor of a clearer presentation. 
 
 We rely on a function in ```utils``` that returns the path to the rule-table folder. In Python, this function returns a ```Path``` object from the ```pathlib``` library. In R, it returns a string holding this path, which is created using the ```here``` library. 
 
