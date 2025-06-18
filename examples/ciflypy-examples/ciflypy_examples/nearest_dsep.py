@@ -2,8 +2,8 @@ import ciflypy as cf
 import ciflypy_examples.utils as utils
 
 ruletables = utils.get_ruletable_path()
-ancestors_table = cf.Ruletable(str(ruletables / "ancestors_admg.txt"))
-closure_table = cf.Ruletable(str(ruletables / "closure_admg.txt"))
+ancestors_table = cf.Ruletable(ruletables / "ancestors_admg.txt")
+closure_table = cf.Ruletable(ruletables / "closure_admg.txt")
 
 def find_nearest_separator(g, X, Y, I, R):
     A = cf.reach(g, {"X": X + Y + I}, ancestors_table)

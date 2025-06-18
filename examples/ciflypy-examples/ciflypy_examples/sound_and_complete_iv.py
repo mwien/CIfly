@@ -3,9 +3,9 @@ import ciflypy_examples.utils as utils
 from ciflypy_examples.nearest_dsep import find_nearest_separator
 
 ruletables = utils.get_ruletable_path()
-anc_table = cf.Ruletable(str(ruletables / "ancestors_admg.txt"))
-desc_table = cf.Ruletable(str(ruletables / "descendants_admg.txt"))
-dsep_table = cf.Ruletable(str(ruletables / "dconnected_admg.txt"))
+anc_table = cf.Ruletable(ruletables / "ancestors_admg.txt")
+desc_table = cf.Ruletable(ruletables / "descendants_admg.txt")
+dsep_table = cf.Ruletable(ruletables / "dconnected_admg.txt")
 
 def sound_and_complete_instrument(p, g, x, y):
     anc = cf.reach(g, {"X": y}, anc_table)

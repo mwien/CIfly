@@ -59,12 +59,12 @@ fn reach(
     let ruletable_ref = if let Ok(rt) = ruletable.downcast::<Ruletable>() {
         borrow_ruletable = rt.borrow();
         &borrow_ruletable.0
-    } else if let Ok(rt) = ruletable.downcast::<PyString>() {
-        parsed_ruletable = to_ruletable(rt, table_as_string)?;
+    } else if let Ok(rt) = ruletable.str() {
+        parsed_ruletable = to_ruletable(&rt, table_as_string)?;
         &parsed_ruletable
     } else {
         return Err(PyRuntimeError::new_err(
-            "error reading ruletable: ruletable is neither a String nor a Ruletable object"
+            "error reading ruletable: ruletable is neither a Ruletable object nor can be converted to a String"
                 .to_owned(),
         ));
     };
@@ -117,9 +117,15 @@ struct Ruletable(cifly::Ruletable);
 impl Ruletable {
     #[pyo3(signature = (ruletable, *, table_as_string=false))]
     #[new]
-    fn new(ruletable: Bound<'_, PyString>, table_as_string: bool) -> PyResult<Self> {
-        let ruletable = to_ruletable(&ruletable, table_as_string)?;
-        Ok(Ruletable(ruletable))
+    fn new(ruletable: Bound<'_, PyAny>, table_as_string: bool) -> PyResult<Self> {
+        if let Ok(ruletable) = ruletable.str() {
+            let ruletable = to_ruletable(&ruletable, table_as_string)?;
+            Ok(Ruletable(ruletable))
+        } else {
+            Err(PyRuntimeError::new_err(
+                "error reading ruletable: ruletable cannot be converted to a String".to_owned(),
+            ))
+        }
     }
 }
 
@@ -149,12 +155,12 @@ impl Graph {
         let ruletable_ref = if let Ok(rt) = ruletable.downcast::<Ruletable>() {
             borrow_ruletable = rt.borrow();
             &borrow_ruletable.0
-        } else if let Ok(rt) = ruletable.downcast::<PyString>() {
-            parsed_ruletable = to_ruletable(rt, table_as_string)?;
+        } else if let Ok(rt) = ruletable.str() {
+            parsed_ruletable = to_ruletable(&rt, table_as_string)?;
             &parsed_ruletable
         } else {
             return Err(PyRuntimeError::new_err(
-                "error reading ruletable: ruletable is neither a String nor a Ruletable object"
+                "error reading ruletable: ruletable is neither a Ruletable object nor be converted to a String"
                     .to_owned(),
             ));
         };
@@ -188,12 +194,12 @@ impl Sets {
         let ruletable_ref = if let Ok(rt) = ruletable.downcast::<Ruletable>() {
             borrow_ruletable = rt.borrow();
             &borrow_ruletable.0
-        } else if let Ok(rt) = ruletable.downcast::<PyString>() {
-            parsed_ruletable = to_ruletable(rt, table_as_string)?;
+        } else if let Ok(rt) = ruletable.str() {
+            parsed_ruletable = to_ruletable(&rt, table_as_string)?;
             &parsed_ruletable
         } else {
             return Err(PyRuntimeError::new_err(
-                "error reading ruletable: ruletable is neither a String nor a Ruletable object"
+                "error reading ruletable: ruletable is neither a Ruletable object nor can be converted to a String"
                     .to_owned(),
             ));
         };

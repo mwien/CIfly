@@ -2,10 +2,10 @@ import ciflypy as cf
 import ciflypy_examples.utils as utils
 
 ruletables = utils.get_ruletable_path()
-not_amenable = cf.Ruletable(str(ruletables / "not_amenable_cpdag.txt"))
-possible_anc = cf.Ruletable(str(ruletables / "possible_ancestors_cpdag.txt"))
-possible_des = cf.Ruletable(str(ruletables / "possible_descendants_cpdag.txt"))
-backdoor_conn = cf.Ruletable(str(ruletables / "backdoor_connected_cpdag.txt"))
+not_amenable = cf.Ruletable(ruletables / "not_amenable_cpdag.txt")
+possible_anc = cf.Ruletable(ruletables / "possible_ancestors_cpdag.txt")
+possible_des = cf.Ruletable(ruletables / "possible_descendants_cpdag.txt")
+backdoor_conn = cf.Ruletable(ruletables / "backdoor_connected_cpdag.txt")
 
 def is_cpdag_adjustment(g, X, Y, W):
     nam = cf.reach(g, {"X": X}, not_amenable)

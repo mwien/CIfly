@@ -2,8 +2,8 @@ import ciflypy as cf
 import ciflypy_examples.utils as utils
 
 ruletables = utils.get_ruletable_path()
-descendants_table = cf.Ruletable(str(ruletables / "descendants_admg.txt"))
-optimal_iv_table = cf.Ruletable(str(ruletables / "optimal_iv_admg.txt"))
+descendants_table = cf.Ruletable(ruletables / "descendants_admg.txt")
+optimal_iv_table = cf.Ruletable(ruletables / "optimal_iv_admg.txt")
 
 # find Z, W according to the criterion given by Henckel et al. (2024)
 # NOTE: the returned instrument is only optimal if there is no adjustment set between x and y
