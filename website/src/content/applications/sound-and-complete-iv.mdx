@@ -34,7 +34,7 @@ Let us begin by saying that *checking* this criterion for given $x$, $y$, $Z$ an
 ### Algorithm for finding conditional instruments
 For *finding* a conditional instrument based on this criterion, one first has to develop a suitable algorithm which can then be implemented with CIfly. This is a non-trivial task and needs some sophistication. In our paper, we derive such an algorithm which is based upon the techniques introduced by <Reference id="vanderzanderNearest" format="author(year)"/>. 
 
-The algorithm is based on the following observations:
+The algorithm is based on the notion of a *nearest separator* that we previously discussed in [this article](/applications/min-dsep/). More precisely, it relies on the following observations:
 
 - if a conditional instrument $Z$, $W$ exists, then there also exists a conditional instrument $z$, $W$, that is one consisting of a single instrument node $z$ instead of a set $Z$,
 - if there exists a set $W$ for a node $z$ such that $z$, $W$ is a conditional instrument, then $z$, $W'$ is also a conditional instrument with $W'$ being a nearest separator between $y$ and $z$ restricted to nodes in $\text{an}_{\tilde{G}}(y, z) \setminus \text{forb}_G(x, y)$.
