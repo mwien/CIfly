@@ -4,12 +4,14 @@ const { class: className, ...rest } = Astro.props;
 
 <section
   class:list={[
-    "w-full bg-white border border-gray-300 rounded-lg shadow-sm p-3",
+    "w-full border border-gray-300 rounded-lg shadow-sm p-3",
     className,
   ]}
   {...rest}
 >
-  <p class="text-blue-700 font-extrabold md:text-xl mb-4 md:ml-1">
+  <p
+    class="text-blue-700 dark:text-blue-400 font-extrabold md:text-xl mb-4 md:ml-1"
+  >
     <slot name="title" />
   </p>
   <slot />

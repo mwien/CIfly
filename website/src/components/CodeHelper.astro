@@ -1,14 +1,16 @@
 ---
-const { code, lang, title } = Astro.props;
+const { code, lang, title, largeText } = Astro.props;
 import { Code } from "astro:components";
 import { addHeader } from "../shiki/transformers.ts";
 import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+import customCatppucinMocha from "../shiki/theme/catppuccin-mocha.json";
 ---
 
 <Code
   code={code}
+  defaultColor={false}
   lang={lang}
-  theme={customCatppucinLatte}
+  themes={{ light: customCatppucinLatte, dark: customCatppucinMocha }}
   transformers={[addHeader(title, true)]}
-  class="text-sm/6 p-2"
+  class:list={["text-sm/6 p-2", { "md:text-base": largeText }]}
 />

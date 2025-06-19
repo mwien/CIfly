@@ -4,11 +4,11 @@ const { class: className, ...rest } = Astro.props;
 
 <div class:list={["code-switcher my-4 relative", className]} {...rest}>
   <div
-    class="absolute top-0 right-0 h-10.25 bg-gray-200 rounded-tr-lg rounded-bl-lg inline-flex"
+    class="absolute top-0 right-0 h-10.25 bg-gray-200 dark:bg-gray-700 rounded-tr-lg rounded-bl-lg inline-flex"
   >
     <button
       code-tab="py"
-      class="flex items-center justify-center cursor-pointer shadow-sm text-sm bg-gray-50 font-bold rounded-lg m-1 p-1 w-16"
+      class="flex items-center justify-center cursor-pointer shadow-sm text-sm bg-gray-50 dark:bg-gray-500 font-bold rounded-lg m-1 p-1 w-16"
     >
       Python
     </button>
@@ -71,6 +71,7 @@ const { class: className, ...rest } = Astro.props;
           tabs.forEach((t) => {
             const isTarget = t.getAttribute("code-tab") === target;
             t.classList.toggle("bg-gray-50", isTarget);
+            t.classList.toggle("dark:bg-gray-500", isTarget);
             t.classList.toggle("shadow-sm", isTarget);
           });
 

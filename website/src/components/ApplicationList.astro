@@ -15,7 +15,7 @@ const { applications, darker, small, truncate } = Astro.props;
     >
       {applications.map((application, index) => (
         <>
-          <a href={`/applications/${application.id}/`} class="text-blue-700">
+          <a href={`/applications/${application.id}/`} class="text-blue-700 dark:text-blue-400">
             {application.data.title}
           </a>
           {index < applications.length - 1 && <span>, </span>}

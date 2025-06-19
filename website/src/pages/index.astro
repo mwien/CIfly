@@ -13,7 +13,7 @@ import ApplicationCardCarousel from "../components/ApplicationCardCarousel.astro
 import ReductionFigure from "../components/ReductionFigure.astro";
 import { getCollection } from "astro:content";
 import { Code } from "astro:components";
-import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+import CodeHelper from "../components/CodeHelper.astro";
 
 let ruletables = await getCollection("ruletables");
 ruletables = ruletables.sort((a, b) =>
@@ -30,14 +30,14 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
       class="flex flex-col items-center mt-2 md:mt-8 mb-1"
     >
       <h2
-        class="text-gray-900 text-lg md:text-2xl text-center font-bold font-sans mb-2"
+        class="text-gray-900 dark:text-gray-100 text-lg md:text-2xl text-center font-bold font-sans mb-2"
       >
         A declarative framework for designing efficient causal inference
         algorithms
       </h2>
       <a
         href="/docs/"
-        class="bg-blue-700 hover:bg-blue-600 rounded-lg shadow-sm shadow-blue-400/50 transition-all text-white md:text-lg font-bold px-4 py-2 mt-4 md:mt-6"
+        class="bg-blue-700 hover:bg-blue-600 rounded-lg shadow-sm shadow-blue-400/50 transition-all text-white dark:text-gray-100 md:text-lg font-bold px-4 py-2 mt-4 md:mt-6"
       >
         Get Started
       </a>
@@ -45,18 +45,20 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
 
     <Box id="section-features">
       <Fragment slot="title">What is CIfly?</Fragment>
-      <p class="text-center text-gray-800 md:text-xl my-6 md:my-8">
+      <p class="text-center md:text-xl my-6 md:my-8">
         CIfly is a framework for developing and writing causal inference
         algorithms.
       </p>
 
-      <hr class="text-blue-700 mb-4" />
+      <hr class="text-blue-700 dark:text-blue-400 mb-4" />
 
       <div
         class="py-2 md:grid md:grid-flow-col md:auto-cols-fr md:gap-4 md:px-3 md:mx-1 md:pt-4"
       >
         <div class="mb-3 md:mb-1">
-          <p class="text-blue-700 md:text-lg font-extrabold mb-1 md:mb-1">
+          <p
+            class="text-blue-700 dark:text-blue-400 md:text-lg font-extrabold mb-1 md:mb-1"
+          >
             Python and R support:
           </p>
           <p class="md:text-lg hyphens-auto">
@@ -65,7 +67,9 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
           </p>
         </div>
         <div class="mb-3 md:mb-0">
-          <p class="text-blue-700 md:text-lg font-extrabold mb-1 md:mb-1">
+          <p
+            class="text-blue-700 dark:text-blue-400 md:text-lg font-extrabold mb-1 md:mb-1"
+          >
             Concise specification:
           </p>
           <p class="md:text-lg hyphens-auto">
@@ -74,7 +78,9 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
           </p>
         </div>
         <div>
-          <p class="text-blue-700 md:text-lg font-extrabold mb-1 md:mb-1">
+          <p
+            class="text-blue-700 dark:text-blue-400 md:text-lg font-extrabold mb-1 md:mb-1"
+          >
             Performance:
           </p>
           <p class="md:text-lg hyphens-auto">
@@ -95,24 +101,21 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
         </p>
 
         <CodeSwitcher>
-          <Code
+          <CodeHelper
             slot="python-code"
             code={`# Python installation with pip
 pip install ciflypy`}
             lang="bash"
-            theme={customCatppucinLatte}
-            transformers={[addHeader("")]}
-            class="text-sm md:text-base p-2 w-full"
+            title=""
+            largeText={true}
           />
-
-          <Code
+          <CodeHelper
             slot="r-code"
             code={`# R installation via R-universe
 install.packages("ciflyr", repos = c("https://mwien.r-universe.dev"))`}
             lang="r"
-            theme={customCatppucinLatte}
-            transformers={[addHeader("")]}
-            class="text-sm md:text-base p-2 w-full"
+            title=""
+            largeText={true}
           />
         </CodeSwitcher>
         <p class="md:text-lg mb-2 hyphens-auto">
@@ -120,7 +123,7 @@ install.packages("ciflyr", repos = c("https://mwien.r-universe.dev"))`}
           on any further dependencies. In R, if the package is build on your
           system, as is the case for Linux distributions, the <a
             href="https://rustup.rs/"
-            class="text-blue-700">Rust toolchain</a
+            class="text-blue-700 dark:text-blue-400">Rust toolchain</a
           >
           needs to be installed.
         </p>
@@ -152,7 +155,7 @@ install.packages("ciflyr", repos = c("https://mwien.r-universe.dev"))`}
         </p>
 
         <CodeSwitcher class="text-sm md:text-base">
-          <Code
+          <CodeHelper
             slot="python-code"
             code={`import ciflypy as cf
 
@@ -163,14 +166,12 @@ def test_dsep(G, x, y, Z):
       return y not in R
 
 # for graph 0 -> 1 -> 2, test whether 0 is d-separated from 2 by 1
-print(test_dsep({"-->": [(0, 1), (1, 2)]}, 0, 2, [1]))
-`}
-            lang="python"
-            theme={customCatppucinLatte}
-            transformers={[addHeader("dsep.py")]}
-            class="p-2"
+print(test_dsep({"-->": [(0, 1), (1, 2)]}, 0, 2, [1]))`}
+            lang="py"
+            title=""
+            largeText={true}
           />
-          <Code
+          <CodeHelper
             slot="r-code"
             code={`library("ciflyr")
 
@@ -184,16 +185,15 @@ test_dsep <- function(G, x, y, Z) {
 print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
 `}
             lang="r"
-            theme={customCatppucinLatte}
-            transformers={[addHeader("dsep.R")]}
-            class="p-2"
+            title=""
+            largeText={true}
           />
         </CodeSwitcher>
 
         <p class="md:text-lg mt-4 mb-2 md:mb-3 hyphens-auto">
           Find more details on this example and how to use CIfly <a
             href="/docs/"
-            class="text-blue-700">in our documentation</a
+            class="text-blue-700 dark:text-blue-400">in our documentation</a
           >.
         </p>
       </div>
@@ -206,8 +206,9 @@ print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
         <p class="md:text-lg md:mb-6 hyphens-auto">
           Beyond fundamental tasks such as deciding d-separation, a large class
           of problems in causal inference can be solved flexibly using CIfly. We
-          present a number of <a href="/applications/" class="text-blue-700"
-            >selected applications</a
+          present a number of <a
+            href="/applications/"
+            class="text-blue-700 dark:text-blue-400">selected applications</a
           >.
         </p>
 
@@ -231,8 +232,9 @@ print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
           We believe that causal inference software should be transparent,
           reusable and easy-to-adapt to the users needs. At the core of our
           framework lie ruletables which ensure these properties. We provide
-          <a href="/ruletables/" class="text-blue-700">ruletables</a> for many basic
-          primitives.
+          <a href="/ruletables/" class="text-blue-700 dark:text-blue-400"
+            >ruletables</a
+          > for many basic primitives.
         </p>
 
         <Carousel>
@@ -254,7 +256,7 @@ print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
         <p class="md:text-lg hyphens-auto">
           CIfly is based on causality-specific reductions to reachability, which
           we formally introduce in <a
-            class="text-blue-700"
+            class="text-blue-700 dark:text-blue-400"
             href="https://arxiv.org/">this paper</a
           >. The mapping to the reachability input and back to the causal domain
           is constrained such that the overall algorithm runs in linear time.
