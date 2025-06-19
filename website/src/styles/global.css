@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @theme {
 	--color-code-bg: #eff1f5;
+	--color-code-dark-bg: #1e1e2e;
 }
 @plugin "@tailwindcss/typography";
 @custom-variant prose-inline-code (&.prose :where(:not(pre)>code):not(:where([class~="not-prose"] *)));
