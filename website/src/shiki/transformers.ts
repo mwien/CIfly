@@ -12,7 +12,7 @@ export function addCopyButton() {
         "button",
         {
           class:
-            "absolute top-0 right-0 p-1.5 md:p-2.5 bg-transparent hover:text-gray-500 cursor-pointer",
+            "absolute top-0 right-0 p-1.5 md:p-2.5 bg-transparent hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer",
         },
         h(
           "svg",
@@ -64,7 +64,7 @@ export function addHeader(title: String, truncate: Boolean) {
         "div",
         {
           class:
-            "bg-gray-50 font-mono border-b border-gray-200 px-2 py-2 flex items-center h-10.25",
+            "bg-gray-50 dark:bg-gray-600 font-mono border-b border-gray-200 dark:border-gray-700 px-2 py-2 flex items-center h-10.25",
         },
         h(
           "span",
@@ -79,7 +79,7 @@ export function addHeader(title: String, truncate: Boolean) {
         "div",
         {
           class:
-            "not-prose rounded-lg shadow-sm border border-gray-200 overflow-hidden",
+            "not-prose rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden",
         },
         [headerDiv, childElement],
       );

@@ -14,6 +14,7 @@ import { getEntry } from "astro:content";
 const ruletable_raw = await getEntry("ruletables_raw", id);
 import ciflyGrammar from "../shiki/grammar/cifly.tmLanguage.json";
 import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+import customCatppucinMocha from "../shiki/theme/catppuccin-mocha.json";
 ---
 
 <div
@@ -22,8 +23,9 @@ import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
 >
   <Code
     code={ruletable_raw.data.raw}
+    defaultColor={false}
     lang={ciflyGrammar}
-    theme={customCatppucinLatte}
+    themes={{ light: customCatppucinLatte, dark: customCatppucinMocha }}
     transformers={[
       ...(!suppressButton ? [addCopyButton()] : []),
       ...(withHeader ? [addHeader(id + ".txt")] : []),

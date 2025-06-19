@@ -3,13 +3,13 @@ import HeaderLink from "./HeaderLink.astro";
 ---
 
 <header>
-  <nav class="max-w-screen-lg bg-white mx-auto">
+  <nav class="max-w-screen-lg mx-auto">
     <div
-      class="border-b border-blue-700 flex flex-wrap items-center justify-between py-3 md:py-4 px-2 mx-2"
+      class="border-b border-blue-700 dark:border-blue-400 flex flex-wrap items-center justify-between py-3 md:py-4 px-2 mx-2"
     >
       <a
         href="/"
-        class="text-2xl md:text-3xl font-extrabold whitespace-nowrap text-blue-800 hover:text-blue-700"
+        class="text-2xl md:text-3xl font-extrabold whitespace-nowrap text-blue-800 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
         >CIfly</a
       >
 
@@ -77,7 +77,7 @@ import HeaderLink from "./HeaderLink.astro";
         id="navbar-default"
       >
         <ul
-          class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white"
+          class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:md:bg-gray-900"
         >
           <li>
             <HeaderLink href="/docs/">Documentation</HeaderLink>

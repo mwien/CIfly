@@ -6,13 +6,15 @@ import { getEntry } from "astro:content";
 const code_raw = await getEntry("code_raw", id);
 const lang = id.split(".").pop().toLowerCase();
 import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+import customCatppucinMocha from "../shiki/theme/catppuccin-mocha.json";
 ---
 
 <div class:list={["text-sm", { "md:text-base": largeText }]}>
   <Code
     code={code_raw.data.raw}
+    defaultColor={false}
     lang={lang}
-    theme={customCatppucinLatte}
+    themes={{ light: customCatppucinLatte, dark: customCatppucinMocha }}
     transformers={[addHeader(id, true)]}
     class:list={[
       "font-mono p-2 w-full text-sm/6",

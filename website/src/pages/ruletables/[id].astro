@@ -33,7 +33,7 @@ applications.forEach((application) => {
 <Layout title={ruletable.data.title}>
   <div class="w-full md:w-7/10 md:my-4">
     <div
-      class="flex font-bold text-gray-900 text-xl justify-between w-full mb-4"
+      class="flex font-bold text-gray-900 dark:text-white text-xl justify-between w-full mb-4"
     >
       <h1>
         {ruletable.data.title}
@@ -53,7 +53,7 @@ applications.forEach((application) => {
       />
       <div class="grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr] w-full">
         <div class="font-bold mr-1">Graph type:</div>
-        <div class="text-gray-800">
+        <div>
           {ruletable.data.graph}
         </div>
         <ApplicationList

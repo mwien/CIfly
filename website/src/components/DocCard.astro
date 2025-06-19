@@ -5,7 +5,7 @@ const { doc } = Astro.props;
 ---
 
 <div
-  class="w-full p-3 my-2 md:my-3 bg-white border border-gray-200 rounded-lg shadow-sm mx-auto"
+  class="w-full p-3 my-2 md:my-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm mx-auto"
 >
   <a
     href={`/docs/${doc.id}/`}
@@ -14,7 +14,9 @@ const { doc } = Astro.props;
     <h1 class="text-sm md:text-lg font-bold">
       {doc.data.title}
     </h1>
-    <RightArrowSvg class="hover:text-gray-500 cursor-pointer" />
+    <RightArrowSvg
+      class="hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
+    />
   </a>
   <div>
     {doc.data.summary}

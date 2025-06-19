@@ -7,12 +7,11 @@ const isActive = href === pathname || href === pathname.replace(/\/$/, "");
 <a
   href={href}
   class:list={[
-    "block md:text-xl py-2 px-3 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0",
-    { "text-blue-700": isActive },
+    "block md:text-xl py-2 px-3 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:md:hover:text-blue-400 md:p-0",
+    { "text-blue-700 dark:text-blue-400": isActive },
     { underline: isActive },
     { "underline-offset-4": isActive },
     { "decoration-2": isActive },
-    { "text-gray-800": !isActive },
   ]}
 >
   <slot />

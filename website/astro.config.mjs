@@ -5,7 +5,8 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import tailwindcss from "@tailwindcss/vite";
 import CiflyGrammar from "./src/shiki/grammar/cifly.tmLanguage.json";
-import CustomCatppucinLatte from "./src/shiki/theme/catppuccin-latte.json";
+import customCatppucinLatte from "./src/shiki/theme/catppuccin-latte.json";
+import customCatppucinMocha from "./src/shiki/theme/catppuccin-mocha.json";
 
 // https://astro.build/config
 export default defineConfig({
@@ -13,11 +14,12 @@ export default defineConfig({
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
     shikiConfig: {
+      defaultColor: false,
       langs: [{ ...CiflyGrammar }],
-      theme: { ...CustomCatppucinLatte },
+      themes: { light: customCatppucinLatte, dark: customCatppucinMocha },
     },
   },
-  integrations: [mdx()], // TODO: sitemap?
+  integrations: [mdx()],
   trailingSlash: "always",
   vite: {
     plugins: [tailwindcss()],

@@ -8,7 +8,7 @@ const { ruletable, applications } = Astro.props;
 ---
 
 <div
-  class="w-full px-2.5 pb-2.5 my-2 md:my-3 bg-white border border-gray-200 rounded-lg shadow-sm mx-auto"
+  class="w-full px-2.5 pb-2.5 my-2 md:my-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm mx-auto"
 >
   <a
     href={`/ruletables/${ruletable.id}/`}
@@ -17,7 +17,9 @@ const { ruletable, applications } = Astro.props;
     <h1 class="text-sm md:text-lg font-bold">
       {ruletable.data.title}
     </h1>
-    <RightArrowSvg class="hover:text-gray-500 cursor-pointer" />
+    <RightArrowSvg
+      class="hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
+    />
   </a>
   <Ruletable
     id={ruletable.data.source.id}
@@ -27,7 +29,7 @@ const { ruletable, applications } = Astro.props;
   />
   <div class="grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr] w-full">
     <div class="font-bold mr-1 md:mr-2 text-sm md:text-base">Graph type:</div>
-    <div class="text-sm md:text-base text-gray-800">{ruletable.data.graph}</div>
+    <div class="text-sm md:text-base">{ruletable.data.graph}</div>
     <ApplicationList
       applications={applications.get(ruletable.data.source.id) || []}
       darker={true}
