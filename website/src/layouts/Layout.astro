@@ -10,6 +10,7 @@ const { title, postTitle } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link ref="sitemap" href="/sitemap-index.xml" />
     <title>{title && title + " ·"} CIfly {postTitle && "· " + postTitle}</title>
     <meta
       name="description"

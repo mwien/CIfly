@@ -8,6 +8,8 @@ import CiflyGrammar from "./src/shiki/grammar/cifly.tmLanguage.json";
 import customCatppucinLatte from "./src/shiki/theme/catppuccin-latte.json";
 import customCatppucinMocha from "./src/shiki/theme/catppuccin-mocha.json";
 
+import sitemap from "@astrojs/sitemap";
+
 // https://astro.build/config
 export default defineConfig({
   markdown: {
@@ -19,9 +21,11 @@ export default defineConfig({
       themes: { light: customCatppucinLatte, dark: customCatppucinMocha },
     },
   },
-  integrations: [mdx()],
+  site: "https://cifly.pages.dev",
+  integrations: [mdx(), sitemap()],
   trailingSlash: "always",
   vite: {
     plugins: [tailwindcss()],
   },
 });
+
