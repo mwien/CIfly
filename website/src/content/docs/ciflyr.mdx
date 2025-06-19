@@ -103,15 +103,31 @@ g <- igraph::make_graph(edges = c(1, 2, 2, 3), n = 3, directed = TRUE)
 
 # convert to ciflyr format
 ciflyGraph <- list("-->" = as_edgelist(g))
+print(ciflyGraph)
 ```
 
 This assumes that the directed edges are referred to by the string `"-->"` in the rule tables.
 
-Adjacency matrices can be converted just as easily. Consider the following matrix representing the same directed graph:
+Adjacency matrices can be converted just as easily. We use the same example graph and offer a function that works for both possible matrix orientations, ```i --> j``` if ```g[i, j] = 1``` or if ```g[j, i]```, as specified by the ```edgeDirection``` argument.
 ```r
+# function for conversion to ciflyr graph format
+adjacencymatrix2cifly <- function(g, edgeDirection) {
+    edges <- which(g == 1, arr.ind = TRUE)
+    if (edgeDirection == "from row to column") {
+        return (list("-->" = edges))
+    } else if (edgeDirection == "from column to row") {
+        return (list("<--" = edges))
+    } else {
+        stop("Invalid edgeDirection")
+    }
+}
+
 # construct graph
 g <- matrix(c(0, 0, 0, 1, 0, 0, 0, 1, 0), nrow = 3, ncol = 3)
 
-# convert to ciflyr format
-ciflyGraph <- list("-->" = which(g == 1, arr.ind = TRUE))
+# convert to ciflyr format using the option "from row to column"
+# thus, the matrix orientation is specified as i --> j if g[i, j] = 1
+# conversely, "from column to row" would imply i --> j if g[j, i] = 1
+ciflyGraph <- adjacencymatrix2cifly(g, "from row to column")
+print(ciflyGraph)
 ```
