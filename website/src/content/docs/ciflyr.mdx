@@ -69,8 +69,18 @@ reach(g, sets, notAmenableTable, tableAsString=TRUE)
 #### Output
 ```reach``` returns a vector of positive integers, representing the vertices that are reached in an output state (as specified in the rule table) when running the search on the given graph with the provided sets. 
 
-#### Logging
-To help with debugging, it is possible to pass the keyword argument ```verbose=TRUE``` to ```reach```. This logs the steps the reachability algorithm takes during its execution. 
+#### Debugging
+Currently, the ```ciflyr``` error messages are quite verbose (due to limitations of the R-to-Rust interface) and look roughly as follows:
+
+```
+thread '<unnamed>' panicked at /path/to/ciflyr/src/vendor/extendr-api/src/robj/into_robj.rs:74:13:
+called `Result::unwrap()` on an `Err` value: Other("Error: expected a string as ruletable argument.")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace`
+```
+
+The relevant information here is the string ```"Error: expected a string as ruletable argument."``` in the second line. This message gives a hint what went wrong (in this case that a string was expected for the argument passing the rule table). 
+
+In case your CIfly algorithms runs without error but returns an unexpected result, it is possible to pass the keyword argument ```verbose=TRUE``` to ```reach``` for debugging purposes. This logs the steps the reachability algorithm takes during its execution.
 
 #### Advanced Usage
 In every ```reach``` call, the implementation needs to parse the graph, sets and rule table. This can introduce unnecessary overhead in the case that *the same* graph, sets or rule table are used repeatedly. To address this, ```ciflyr``` offers the option to parse these objects outside of the ```reach``` function with the functions ```parseGraph```, ```parseSets``` and ```parseRuletable``` that, respectively, return a ```Graph```, ```Sets``` and ```Ruletable``` object. 
