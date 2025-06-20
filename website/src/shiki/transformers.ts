@@ -13,6 +13,7 @@ export function addCopyButton() {
         {
           class:
             "absolute top-0 right-0 p-1.5 md:p-2.5 bg-transparent hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer",
+          aria_label: "Copy code",
         },
         h(
           "svg",

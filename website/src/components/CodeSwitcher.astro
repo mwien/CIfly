@@ -9,12 +9,14 @@ const { class: className, ...rest } = Astro.props;
     <button
       code-tab="py"
       class="flex items-center justify-center cursor-pointer shadow-sm text-sm bg-gray-50 dark:bg-gray-500 font-bold rounded-lg m-1 p-1 w-16"
+      aria-label="Show Python code tab"
     >
       Python
     </button>
     <button
       code-tab="r"
       class="flex items-center justify-center cursor-pointer text-sm font-bold rounded-lg m-1 p-1 w-16"
+      aria-label="Show R code tab"
     >
       R
     </button>
@@ -45,19 +47,21 @@ const { class: className, ...rest } = Astro.props;
       const contents = container.querySelectorAll("[code-content]");
 
       function heightUpdate() {
-        setTimeout(() => {
-          const firstPreElement = contents[0].querySelector("pre");
-          firstPreElement.style.height = "auto";
-          const wasHidden = contents[0].classList.contains("hidden");
-          if (wasHidden) contents[0].classList.remove("hidden");
-          const height = firstPreElement.getBoundingClientRect().height;
-          if (wasHidden) contents[0].classList.add("hidden");
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            const firstPreElement = contents[0].querySelector("pre");
+            firstPreElement.style.height = "auto";
+            const wasHidden = contents[0].classList.contains("hidden");
+            if (wasHidden) contents[0].classList.remove("hidden");
+            const height = firstPreElement.getBoundingClientRect().height;
+            if (wasHidden) contents[0].classList.add("hidden");
 
-          contents.forEach((content) => {
-            const preElement = content.querySelector("pre");
-            preElement.style.height = `${height}px`;
-          });
-        }, 10);
+            contents.forEach((content) => {
+              const preElement = content.querySelector("pre");
+              preElement.style.height = `${height}px`;
+            });
+          }, 10);
+        });
       }
 
       heightUpdate();
