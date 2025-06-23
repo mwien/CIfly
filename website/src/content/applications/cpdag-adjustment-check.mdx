@@ -15,7 +15,7 @@ import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
 import Reference from "../../components/Reference.astro"
 
-In this article, we show how to implement an adjustment checker for CPDAGs using CIfly. We directly rely on the complete graphical validity criterion derived by <Reference id="perkovicComplete" format="author(year)"/>. Covariate adjustment is a fundamental technique for identifying causal effects. Applying covariate adjustment to  CPDAGs (a class of causal graphs that can be learned from data), allows us to learn causal effects from observational data by combining causal discovery and causal effect estimation. As we will be purely focused on implementing an algorithm checking this criterion we refer the reader to the paper for additional background on CPDAGs and adjustment. 
+In this article, we show how to implement an adjustment checker for CPDAGs using CIfly. We directly rely on the complete graphical validity criterion derived by <Reference id="perkovicComplete" format="author(year)"/>. Covariate adjustment is a fundamental technique for identifying causal effects. Applying covariate adjustment to  CPDAGs (a class of causal graphs that can be learned from data), allows us to learn causal effects from observational data by combining causal discovery and causal effect estimation. As we will be purely focused on implementing an algorithm checking this criterion, we refer the reader to the paper for additional background on CPDAGs and adjustment. 
 
 **Theorem** [<Reference id="perkovicComplete" format="author(year)"/>]    
 Consider disjoint node sets $X$, $Y$ and $W$ in a CPDAG $G$. Then, $W$ is a valid adjustment set relative to $(X, Y)$ in $G$ if, and only if,
@@ -75,7 +75,7 @@ We need to verify that all proper definite-status non-causal paths are blocked g
 This table tracks definite-status walks open given $W$ and it is easy to show that tracking walks is equivalent to tracking paths. To ensure that they are non-causal, any transition from $X$ to a node in $C$ (a set containing all nodes on a possible directed path from $X$ to $Y$) is excluded in the table. Here, we use that the amenability condition ensures that only directed edges from $X$ to $C$ may exist (else the exclusion of transitions from $X$ to $C$ would need to be added to the second and fourth rule as well). 
 
 ### Full implementation
-In the final implementation we use the four tables introduced above to check the conditions one-by-one. We note that we could add early returns for when either the first or the second condition is violated. This is omitted here in favor of a clearer presentation. 
+In the final implementation, we use the four tables introduced above to check the conditions one-by-one. We note that we could add early returns for when either the first or the second condition is violated. This is omitted here in favor of a clearer presentation. 
 
 We rely on a function in ```utils``` that returns the path to the rule-table folder. In Python, this function returns a ```Path``` object from the ```pathlib``` library. In R, it returns a string holding this path, which is created using the ```here``` library. 
 
