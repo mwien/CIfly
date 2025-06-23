@@ -4,7 +4,8 @@ Version: 0.1.1
 Authors@R: c(
     person("Marcel", "Wienöbst", email = "marcel.wienoebst@gmx.de", role = c("aut", "cre", "cph")),
     person("Sebastian", "Weichwald", role = "aut"),
-    person("Leonard", "Henckel", role = "aut"))
+    person("Leonard", "Henckel", role = "aut"),
+    person("Authors of the dependency Rust crates", role = c("ctb"), comment = "see inst/AUTHORS file for details"))
 Description: Provides a framework for specifying and running flexible
     linear-time reachability-based algorithms for graphical causal inference. Rule
     tables are used to encode and customize the reachability algorithm to typical
