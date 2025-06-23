@@ -9,7 +9,7 @@ import Ruletable from "../../components/Ruletable.astro"
 import ReductionFigure from "../../components/ReductionFigure.astro"
 import StateSpaceGraphFigure from "../../components/StateSpaceGraphFigure.astro"
 
-In this article, we explore the main ideas underlying the CIfly framework. This will lay the groundwork for introducing the precise CIfly syntax afterwards. For a more detailed exposition, we refer to the [paper](https://arxiv.org) which thoroughly develops these theoretical foundations. 
+In this article, we explore the main ideas underlying the CIfly framework. This will lay the groundwork for introducing the precise CIfly syntax afterwards. For a more detailed exposition, we refer to the [paper](https://arxiv.org/abs/2506.15758) which thoroughly develops these theoretical foundations. 
 The central principle of CIfly is to solve tasks from graphical causal inference with reachability algorithms. The following illustration gives a overview of what we call a *causal-to-reach reduction*.
 
 <ReductionFigure/>
@@ -51,4 +51,4 @@ effectively prescribes that there is a transition $(\text{current}, \rightarrow,
 
 In the DAG on the left, the nodes $v_1$ and $v_4$ are d-connected given $v_5$ due to the walk $v_1 \rightarrow v_2 \rightarrow v_5 \leftarrow v_2 \leftarrow v_3 \rightarrow v_4$. On the right, the path corresponding to this walk is highlighted in color. There are two copies of every node from the original graph, one for each neighbor-type (this is marked at the top left of the boxes). This neighbor-type encodes the type (and direction) of the last edge on the walk. Hence, the states that are visited on the path are, in this order, $(v_1, \leftarrow, \cdot)$, $(v_2, \rightarrow, \cdot)$, $(v_5, \rightarrow, \cdot)$, $(v_2, \leftarrow, \cdot)$, $(v_3, \leftarrow, \cdot)$, $(v_4, \rightarrow, \cdot)$. 
 
-For more details on this example, see our [paper](https://arxiv.org). In the next articles, we will focus on the syntax of CIfly rule tables and the ```ciflypy``` and ```ciflyr``` packages for using CIfly in your Python or R code. 
+For more details on this example, see our [paper](https://arxiv.org/abs/2506.15758). In the next articles, we will focus on the syntax of CIfly rule tables and the ```ciflypy``` and ```ciflyr``` packages for using CIfly in your Python or R code. 

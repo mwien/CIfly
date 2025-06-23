@@ -16,8 +16,11 @@ import HeaderLink from "./HeaderLink.astro";
       <div
         class="flex flex-row items-center md:order-2 space-x-3 rtl:space-x-reverse"
       >
-        <a href="https://github.com/mwien/CIfly" target="_blank">
-          <span class="sr-only">CIfly source code on Github</span>
+        <a
+          href="https://github.com/mwien/CIfly"
+          target="_blank"
+          aria-label="CIfly source code on Github"
+        >
           <svg class="w-6 h-6 md:w-8 md:h-8" viewBox="0 0 16 16">
             <path
               fill="currentColor"
@@ -25,8 +28,11 @@ import HeaderLink from "./HeaderLink.astro";
             ></path>
           </svg>
         </a>
-        <a href="https://arxiv.org/" target="_blank">
-          <span class="sr-only">CIfly paper on arXiv</span>
+        <a
+          href="https://arxiv.org/abs/2506.15758"
+          target="_blank"
+          aria-label="CIfly paper on arXiv"
+        >
           <svg
             class="w-6 h-6 md:w-8 md:h-8"
             id="logomark"

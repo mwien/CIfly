@@ -32,14 +32,14 @@ Let us introduce some of the terminology of this criterion more precisely. An ac
 Let us begin by saying that *checking* this criterion for given $x$, $y$, $Z$ and $W$ can be done straightforwardly with CIfly by verifying the conditions one-by-one. Conditions 2 and 3 are d-separation checks that we have already seen on the [home page](/#section-example). The first condition can be checked by computing $\text{forb}$ which amounts to chaining descendant and ancestor computations similar to what we have done in the [CPDAG adjustment criterion verifier](/applications/cpdag-adjustment-check/). We discuss this in more detail below.
 
 ### Algorithm for finding conditional instruments
-For *finding* a conditional instrument based on this criterion, one first has to develop a suitable algorithm which can then be implemented with CIfly. This is a non-trivial task and needs some sophistication. In our paper, we derive such an algorithm which is based upon the techniques introduced by <Reference id="vanderzanderNearest" format="author(year)"/>. 
+For *finding* a conditional instrument based on this criterion, one first has to develop a suitable algorithm which can then be implemented with CIfly. This is a non-trivial task and needs some sophistication. In our [paper](https://arxiv.org/abs/2506.15758), we derive such an algorithm which is based upon the techniques introduced by <Reference id="vanderzanderNearest" format="author(year)"/>. 
 
 The algorithm is based on the notion of a *nearest separator* that we previously discussed in [this article](/applications/min-dsep/). More precisely, it relies on the following observations:
 
 - if a conditional instrument $Z$, $W$ exists, then there also exists a conditional instrument $z$, $W$, that is one consisting of a single instrument node $z$ instead of a set $Z$,
 - if there exists a set $W$ for a node $z$ such that $z$, $W$ is a conditional instrument, then $z$, $W'$ is also a conditional instrument with $W'$ being a nearest separator between $y$ and $z$ restricted to nodes in $\text{an}_{\tilde{G}}(y, z) \setminus \text{forb}_G(x, y)$.
 
-While the first observation is straightforward, it would go beyond the scope of this article to prove the second observation. For more details, we refer to the appendix of the CIfly paper. 
+While the first observation is straightforward, it would go beyond the scope of this article to prove the second observation. For more details, we refer to the appendix of the [CIfly paper](https://arxiv.org/abs/2506.15758). 
 
 These observations enable the following algorithmic strategy:
 - iterate over all $z \in V$ that are not in $\text{forb}_G(x, y) \cup \{x, y\}$,
