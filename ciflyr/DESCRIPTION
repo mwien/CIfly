@@ -5,7 +5,12 @@ Authors@R: c(
     person("Marcel", "Wienöbst", email = "marcel.wienoebst@gmx.de", role = c("aut", "cre", "cph")),
     person("Sebastian", "Weichwald", role = "aut"),
     person("Leonard", "Henckel", role = "aut"))
-Description: Provides a framework for specifying and running flexible linear-time reachability-based algorithms for graphical causal inference. Rule tables are used to encode and customize the reachability algorithm to typical causal and probabilistic reasoning tasks such as finding d-connected nodes or more advanced applications.
+Description: Provides a framework for specifying and running flexible
+    linear-time reachability-based algorithms for graphical causal inference. Rule
+    tables are used to encode and customize the reachability algorithm to typical
+    causal and probabilistic reasoning tasks such as finding d-connected nodes or
+    more advanced applications. For more information, see Wienöbst, Weichwald and
+    Henckel (2025) <arXiv:2506.15758>.
 License: MIT + file LICENSE
 URL: https://cifly.pages.dev/, https://github.com/mwien/CIfly
 BugReports: https://github.com/mwien/CIfly/issues
