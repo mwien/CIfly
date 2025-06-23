@@ -1,6 +1,6 @@
 # CIfly
 
-A declarative framework for designing efficient causal inference algorithms based on reductions to graph reachability specified by rule tables. For all information on CIfly, also see our [website](https://cifly.pages.dev/).
+A declarative framework for designing efficient causal inference algorithms based on reductions to graph reachability specified by rule tables. For all information on CIfly, see our [website](https://cifly.pages.dev/).
 
 ## Installation
 
@@ -22,7 +22,18 @@ In Python, the installation should work out-of-the-box without relying on any fu
 
 ## Citing CIfly
 
-TODO: add once arXiv link is up
+If you use CIfly in your scientific work, please cite [this paper](https://arxiv.org/abs/2506.15758) introducing CIfly and its theoretical foundations:
+```bibtex
+@article{cifly2025,
+  author       = {Marcel Wien{\"{o}}bst and Sebastian Weichwald and Leonard Henckel},
+  title        = {Linear-Time Primitives for Algorithm Development in Graphical Causal Inference},
+  journal      = {CoRR},
+  volume       = {abs/2506.15758},
+  year         = {2025},
+  eprinttype   = {arXiv},
+  eprint       = {2506.15758},
+}
+```
 
 ## Example
 
@@ -69,3 +80,7 @@ print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
 ```
 
 Find more details on this example and how to use CIfly [in our documentation](https://cifly.pages.dev/docs/).
+
+## Support for other languages
+
+Currently, CIfly is available in Python and R. Both [ciflypy](./ciflypy/) and [ciflyr](./ciflyr/) are wrappers for the [cifly](./cifly/) Rust library that implements the rule-table parser and the reachability algorithm. Thus, packages for other languages can be based on the same Rust core. If you are interested in support for a particular language or want to contribute a wrapper package, please open an issue or contact us directly. 
