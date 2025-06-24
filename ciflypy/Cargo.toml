@@ -9,5 +9,5 @@ name = "ciflypy"
 crate-type = ["cdylib"]
 
 [dependencies]
-cifly = "0.1.0"
+cifly = "0.1.1"
 pyo3 = "0.25.0"
