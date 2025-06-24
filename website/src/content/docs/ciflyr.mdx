@@ -130,7 +130,7 @@ adjList[[2]] <- list(edges=3)
 g <- graph::graphNEL(nodes=nodeNames, edgeL=adjList, edgemode="directed")
 
 # convert to ciflyr format
-ciflyGraph <- list("-->" = t(edgeMatrix(g)))
+ciflyGraph <- list("-->" = t(graph::edgeMatrix(g)))
 print(ciflyGraph)
 ```
 
