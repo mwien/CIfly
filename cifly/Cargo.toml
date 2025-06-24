@@ -1,6 +1,6 @@
 [package]
 name = "cifly"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Marcel Wienöbst <marcel.wienoebst@gmx.de>", "Sebastian Weichwald", "Leonard Henckel"]
 description = "cifly is the Rust core that powers the CIfly declarative framework for efficient causal inference algorithms."
 homepage = "https://cifly.pages.dev"
