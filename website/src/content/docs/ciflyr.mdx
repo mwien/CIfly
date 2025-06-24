@@ -27,9 +27,9 @@ print(isAmenable(g, X, Y))
 Here, ```reach``` is called with a graph ```g``` (as a list mapping edge types to lists of of edges), a list of sets (mapping the set names specified in the rule table to node vectors) and a path to the text file containing the rule table (in this case assuming it lies in the current working directory; for better options, see below). This function returns a vector of nodes, the output of the CIfly algorithm specified by the rule table. In the example above, these are all non-amenable nodes with respect to $X$ which we can use to test amenability of a pair $X$ and $Y$. We now discuss how the arguments should be passed to ```reach```.
 
 #### Graph
-The graph is represented by a list with each name describing an edge type and containing another list of vectors with two positive integers each — the edges of this type. For example, the graph which has edges $1 \rightarrow 2 \leftarrow 3 - 4$ would be represented as ```list("-->" = rbind(c(1, 2), c(3, 2)), "---" = rbind(c(3, 4)))```. This is equivalent to ```list("-->" = rbind(c(1,2)), "<--" = rbind(c(2, 3)), "---" = rbind(c(3,4)))``` provided the rule table contains the edge description ```edges: --> <--, ---``` specifying ```-->``` and ```<--``` to be reciprocal. 
+The graph is represented by a list with each name describing an edge type and containing a $r \times 2$ matrix whose rows represent the edges of this type. For example, the graph which has edges $1 \rightarrow 2 \leftarrow 3 - 4$ would be represented as ```list("-->" = rbind(c(1, 2), c(3, 2)), "---" = rbind(c(3, 4)))```. This is equivalent to ```list("-->" = rbind(c(1,2)), "<--" = rbind(c(2, 3)), "---" = rbind(c(3,4)))``` provided the rule table contains the edge description ```edges: --> <--, ---``` specifying ```-->``` and ```<--``` to be reciprocal. 
 
-For the node IDs, we strongly recommend to use the numbers $1, 2, \dots, p$ for a graph with $p$ nodes. Generally, any positive integers can used, however, the memory requirements of ```ciflyr``` are linear in the largest node ID because of the internal representation of graphs and sets. Hence, unnecessarily large node numbers lead to slower run times and potential memory problems. 
+For the node IDs, we strongly recommend to use the numbers $1, 2, \dots, p$ for a graph with $p$ nodes. Generally, any positive integers can be used, however, the memory demand of ```ciflyr``` is linear in the largest node ID because of the internal representation of graphs and sets. Hence, unnecessarily large node numbers lead to slower run times and potential memory problems. Non-integer node names have to be stored outside of the ```ciflyr``` graph format, e.g., in a vector indexed by the node IDs.
 
 #### Sets
 The sets are represented by a list as well with the names of the respective node sets as strings mapping to their instantiation represented as vector of positive integers. As an example, ```list("X" = c(1), "Z" = c(3, 4))``` would represent the two sets $X = \{1\}$ and $Z = \{3, 4\}$. The names of the sets must match the names specified in the rule table. 
@@ -106,7 +106,7 @@ for (x in seq(p)) {
 ```
 
 #### Conversion to the ciflyr graph format
-The ```ciflyr``` graph format is based on edge lists represented by $2 \times m$ matrices. Graphs can usually converted to this format with little effort. For example, consider a directed graph in ```igraph```:
+The ```ciflyr``` graph format is based on edge lists represented by $2 \times m$ matrices. Graphs can usually be converted to this format with little effort. For example, consider a directed graph in ```igraph```:
 ```r
 # construct graph
 g <- igraph::make_graph(edges = c(1, 2, 2, 3), n = 3, directed = TRUE)
@@ -117,6 +117,24 @@ print(ciflyGraph)
 ```
 
 This assumes that the directed edges are referred to by the string `"-->"` in the rule tables.
+
+As another example, consider graphs in the ```graph``` package, such as the graphNEL-class:
+
+```r
+# construct graph (node names are required for graphNEL)
+nodeNames <- LETTERS[1:3]
+adjList <- vector("list", length=3)
+names(adjList) <- nodeNames
+adjList[[1]] <- list(edges=2)
+adjList[[2]] <- list(edges=3)
+g <- graph::graphNEL(nodes=nodeNames, edgeL=adjList, edgemode="directed")
+
+# convert to ciflyr format
+ciflyGraph <- list("-->" = t(edgeMatrix(g)))
+print(ciflyGraph)
+```
+
+Note that the node names are not part of the ```ciflyr``` format and have to be stored separately.
 
 Adjacency matrices can be converted just as easily. We use the same example graph and offer a function that works for both possible matrix orientations, ```i --> j``` if ```g[i, j] = 1``` or if ```g[j, i]```, as specified by the ```edgeDirection``` argument.
 ```r
