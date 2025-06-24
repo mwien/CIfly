@@ -1,6 +1,7 @@
 use std::{cmp, collections::VecDeque};
 
 use crate::{
+    array_nd::{Array2D, Array3D},
     instance::{Graph, Sets},
     ruletable::Ruletable,
 };
@@ -36,7 +37,7 @@ impl Settings {
 /// A `Vec<usize>` containing the node indices that are reachable and satisfy output constraints.
 pub fn reach(graph: &Graph, sets: &Sets, ruletable: &Ruletable, settings: &Settings) -> Vec<usize> {
     let n = cmp::max(graph.num_vertices(), sets.max_size());
-    let mut visited = Store::new(n, ruletable.num_edges(), ruletable.num_colors());
+    let mut visited = Array3D::new(n, ruletable.num_edges(), ruletable.num_colors(), false);
     let mut queue = VecDeque::new();
 
     if settings.verbose {
@@ -56,9 +57,9 @@ pub fn reach(graph: &Graph, sets: &Sets, ruletable: &Ruletable, settings: &Setti
 
     let mut added = vec![false; n];
 
-    let mut is_output = vec![vec![false; ruletable.num_colors()]; ruletable.num_edges()];
+    let mut is_output = Array2D::new(ruletable.num_edges(), ruletable.num_colors(), false);
     for &(e, c) in ruletable.outputs() {
-        is_output[e][c] = true;
+        *is_output.get_mut(e, c) = true;
     }
     let mut res = Vec::new();
 
@@ -69,24 +70,25 @@ pub fn reach(graph: &Graph, sets: &Sets, ruletable: &Ruletable, settings: &Setti
                 edge: e,
                 color: c,
             };
-            if visited.contains(s) {
+            if *visited.get(s.node, s.edge, s.color) {
                 continue;
             }
-            visited.set(s);
-            let pre_res = if s.node >= graph.num_vertices() {
-                // initial sets may contain isolated vertices not present in the graph
-                vec![s]
+            *visited.get_mut(s.node, s.edge, s.color) = true;
+            if s.node >= graph.num_vertices() {
+                if !added[s.node] && *is_output.get(s.edge, s.color) {
+                    res.push(s.node);
+                    added[s.node] = true;
+                }
             } else {
                 queue.push_back(s);
-                bfs(graph, sets, ruletable, settings, &mut visited, &mut queue)
             };
-            for s in pre_res {
-                if added[s.node] || !is_output[s.edge][s.color] {
-                    continue;
-                }
-                res.push(s.node);
-                added[s.node] = true;
-            }
+        }
+    }
+    let reached = bfs(graph, sets, ruletable, settings, &mut visited, &mut queue);
+    for s in reached.iter() {
+        if !added[s.node] && *is_output.get(s.edge, s.color) {
+            res.push(s.node);
+            added[s.node] = true;
         }
     }
     res
@@ -97,7 +99,7 @@ fn bfs(
     sets: &Sets,
     ruletable: &Ruletable,
     settings: &Settings,
-    visited: &mut Store,
+    visited: &mut Array3D<bool>,
     queue: &mut VecDeque<State>,
 ) -> Vec<State> {
     let mut reached = Vec::new();
@@ -109,18 +111,15 @@ fn bfs(
                 s1.convert_to_string(ruletable, settings)
             );
         }
-        for (u2, t) in graph.neighbors(s1.node).iter().copied() {
+        for &(u2, t) in graph.neighbors(s1.node).iter() {
             for &c2 in ruletable.possible_colors(s1.edge, s1.color, t).iter() {
                 let s2 = State {
                     node: u2,
                     edge: t,
                     color: c2,
                 };
-                if visited.contains(s2) {
-                    continue;
-                }
-                if ruletable.pass(sets, s1, s2) {
-                    visited.set(s2);
+                if !*visited.get(s2.node, s2.edge, s2.color) && ruletable.pass(sets, s1, s2) {
+                    *visited.get_mut(s2.node, s2.edge, s2.color) = true;
                     queue.push_back(s2);
                     if settings.verbose {
                         println!(
@@ -197,29 +196,5 @@ impl State {
         } else {
             u.to_string()
         }
-    }
-}
-
-struct Store {
-    v: Vec<bool>,
-    num_edge_color: usize,
-    num_colors: usize,
-}
-
-impl Store {
-    fn new(num_vertices: usize, num_edges: usize, num_colors: usize) -> Store {
-        Store {
-            v: vec![false; num_vertices * num_colors * num_edges],
-            num_edge_color: num_edges * num_colors,
-            num_colors,
-        }
-    }
-
-    fn contains(&self, s: State) -> bool {
-        self.v[s.node * self.num_edge_color + s.edge * self.num_colors + s.color]
-    }
-
-    fn set(&mut self, s: State) {
-        self.v[s.node * self.num_edge_color + s.edge * self.num_colors + s.color] = true;
     }
 }
