@@ -11,7 +11,7 @@ Description: Provides a framework for specifying and running flexible
     tables are used to encode and customize the reachability algorithm to typical
     causal and probabilistic reasoning tasks such as finding d-connected nodes or
     more advanced applications. For more information, see Wienöbst, Weichwald and
-    Henckel (2025) <arXiv:2506.15758>.
+    Henckel (2025) <doi:10.48550/arXiv.2506.15758>.
 License: MIT + file LICENSE
 URL: https://cifly.pages.dev/, https://github.com/mwien/CIfly
 BugReports: https://github.com/mwien/CIfly/issues

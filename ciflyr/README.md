@@ -31,7 +31,7 @@ membership in a vector.
 ``` r
 library(ciflyr)
 
-dsepTablePath <- "
+dsepTable <- "
 EDGES --> <--
 SETS X, Z
 START <-- AT X
@@ -42,7 +42,7 @@ OUTPUT ...
 "
 
 test_dsep <- function(G, x, y, Z) {
-      R <- reach(G, list("X" = x, "Z" = Z), dsepTablePath, tableAsString=TRUE)
+      R <- reach(G, list("X" = x, "Z" = Z), dsepTable, tableAsString=TRUE)
       return (!(y %in% R))
 }
 # for graph 1 -> 2 -> 3, test whether 1 is d-separated from 3 by 2
