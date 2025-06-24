@@ -6,7 +6,7 @@ use crate::{
     ruletable::Ruletable,
 };
 
-/// Configuration settings for running the reachability analysis.
+/// Configuration settings for running the reachability algorithm.
 #[derive(Debug, Default)]
 pub struct Settings {
     /// Enables verbose output if true.
