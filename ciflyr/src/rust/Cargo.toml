@@ -10,7 +10,7 @@ crate-type = [ 'staticlib' ]
 name = 'ciflyr'
 
 [dependencies]
-cifly = "0.1"
+cifly = "0.1.0"
 extendr-api = '0.8.0'
 
 [profile.release]
