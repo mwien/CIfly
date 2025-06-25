@@ -74,6 +74,8 @@ pub fn reach(graph: &Graph, sets: &Sets, ruletable: &Ruletable, settings: &Setti
                 continue;
             }
             *visited.get_mut(s.node, s.edge, s.color) = true;
+
+            // isolated nodes with high node id are handled separately
             if s.node >= graph.num_vertices() {
                 if !added[s.node] && *is_output.get(s.edge, s.color) {
                     res.push(s.node);
@@ -84,27 +86,13 @@ pub fn reach(graph: &Graph, sets: &Sets, ruletable: &Ruletable, settings: &Setti
             };
         }
     }
-    let reached = bfs(graph, sets, ruletable, settings, &mut visited, &mut queue);
-    for s in reached.iter() {
-        if !added[s.node] && *is_output.get(s.edge, s.color) {
-            res.push(s.node);
-            added[s.node] = true;
-        }
-    }
-    res
-}
 
-fn bfs(
-    graph: &Graph,
-    sets: &Sets,
-    ruletable: &Ruletable,
-    settings: &Settings,
-    visited: &mut Array3D<bool>,
-    queue: &mut VecDeque<State>,
-) -> Vec<State> {
-    let mut reached = Vec::new();
+    // perform BFS
     while let Some(s1) = queue.pop_front() {
-        reached.push(s1);
+        if !added[s1.node] && *is_output.get(s1.edge, s1.color) {
+            res.push(s1.node);
+            added[s1.node] = true;
+        }
         if settings.verbose {
             println!(
                 "Processing state {}",
@@ -132,7 +120,7 @@ fn bfs(
             }
         }
     }
-    reached
+    res
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
