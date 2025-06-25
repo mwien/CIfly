@@ -55,13 +55,12 @@ pub fn reach(graph: &Graph, sets: &Sets, ruletable: &Ruletable, settings: &Setti
         println!("Initial States: {}", initial_states.join(", "));
     }
 
-    let mut added = vec![false; n];
-
     let mut is_output = Array2D::new(ruletable.num_edges(), ruletable.num_colors(), false);
     for &(e, c) in ruletable.outputs() {
         *is_output.get_mut(e, c) = true;
     }
     let mut res = Vec::new();
+    let mut added = vec![false; n];
 
     for (set, e, c) in ruletable.starts().iter().copied() {
         for v in sets.elements(set) {
