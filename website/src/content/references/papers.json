@@ -62,5 +62,16 @@
         "year": "1998",
         "venue": "UAI",
         "url": "https://arxiv.org/abs/1301.7412"
+    },
+    "henckelOptimal": {
+        "authors": [
+            "Henckel, Leonard",
+            "Perković, Emilija",
+            "Maathuis, Marloes H."
+        ],
+        "title": "Bayes-Ball: The Rational Pastime (for Determining Irrelevance and Requisite Information in Belief Networks and Influence Diagrams)",
+        "year": "2022",
+        "venue": "JRSS-B",
+        "url": "https://academic.oup.com/jrsssb/article/84/2/579/7056108"
     }
 }
