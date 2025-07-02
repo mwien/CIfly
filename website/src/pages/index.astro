@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
 import "katex/dist/katex.min.css";
+import { Code } from "astro:components";
+import { addCopyButton } from "../shiki/transformers.ts";
 import Layout from "../layouts/Layout.astro";
 import Box from "../components/Box.astro";
 import Ruletable from "../components/Ruletable.astro";
@@ -14,6 +16,8 @@ import ReductionFigure from "../components/ReductionFigure.astro";
 import { getCollection } from "astro:content";
 import { Code } from "astro:components";
 import CodeHelper from "../components/CodeHelper.astro";
+import customCatppucinLatte from "../shiki/theme/catppuccin-latte.json";
+import customCatppucinMocha from "../shiki/theme/catppuccin-mocha.json";
 
 let ruletables = await getCollection("ruletables");
 ruletables = ruletables.sort((a, b) =>
@@ -254,20 +258,64 @@ print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
 
       <div class="md:mx-4">
         <p class="md:text-lg hyphens-auto">
-          CIfly is based on causality-specific reductions to reachability, which
-          we formally introduce in <a
-            class="text-blue-700 dark:text-blue-400"
-            href="https://arxiv.org/abs/2506.15758">this paper</a
-          >. The mapping to the reachability input and back to the causal domain
-          is constrained such that the overall algorithm runs in linear time.
+          CIfly is based on causality-specific reductions to reachability
+          instances. The mapping to reachability and back to the causal domain
+          is constrained such that the overall algorithm runs in linear time. We
+          give an overview of this concept in this <a
+            href="/docs/foundations/"
+            class="text-blue-700 dark:text-blue-400">article</a
+          >.
         </p>
 
         <div
-          class="w-full md:w-3/4 mx-auto mt-6 md:mt-8 mb-4 md:mb-6 border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm p-1"
+          class="w-full md:w-3/4 mx-auto mt-6 md:mt-8 mb-6 md:mb-8 border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm p-1"
         >
           <ReductionFigure />
         </div>
       </div>
     </Box>
-  </div>
-</Layout>
+
+    <Box id="citation">
+      <Fragment slot="title">Citing CIfly</Fragment>
+
+      <div class="md:mx-4">
+        <p class="md:text-lg hyphens-auto">
+          A formal introduction to CIfly is given in <a
+            href="https://arxiv.org/abs/2506.15758"
+            class="text-blue-700 dark:text-blue-400">this paper</a
+          >. Consider citing it if you use CIfly in your research.
+          <Code
+            code={`@article{cifly2025,
+  author     = {Marcel Wien{\"{o}}bst and Sebastian Weichwald and Leonard Henckel},
+  title      = {Linear-Time Primitives for Algorithm Development in Graphical Causal Inference},
+  journal    = {CoRR},
+  volume     = {abs/2506.15758},
+  year       = {2025},
+  eprinttype = {arXiv},
+  eprint     = {2506.15758},
+}`}
+            lang="bibtex"
+            themes={{ light: customCatppucinLatte, dark: customCatppucinMocha }}
+            defaultColor={false}
+            transformers={[addCopyButton()]}
+            class="text-sm/6 p-2 md:text-base mt-4 md:mt-6 mb-2 md:mb-4 rounded-lg shadow-sm"
+          />
+        </p>
+      </div>
+    </Box>
+
+    <Box id="contact">
+      <Fragment slot="title">Contact</Fragment>
+
+      <div class="md:mx-4">
+        <p class="md:text-lg hyphens-auto">
+          If you encounter any problems with CIfly, feel free to open an <a
+            href="https://github.com/mwien/CIfly/issues"
+            class="text-blue-700 dark:text-blue-400">issue on Github</a
+          > or write an e-mail to <em>m.wienoebst (AT) uni-luebeck.de</em>.
+          We're happy to help!
+        </p>
+      </div>
+    </Box>
+  </div></Layout
+>

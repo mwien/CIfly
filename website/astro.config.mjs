@@ -17,7 +17,7 @@ export default defineConfig({
     rehypePlugins: [rehypeKatex],
     shikiConfig: {
       defaultColor: false,
-      langs: [{ ...CiflyGrammar }],
+      langs: [{ ...CiflyGrammar }, "r", "python", "bibtex"],
       themes: { light: customCatppucinLatte, dark: customCatppucinMocha },
     },
   },
@@ -28,4 +28,3 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 });
-
