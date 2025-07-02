@@ -25,15 +25,16 @@ impl Graph {
         edge_lists: &HashMap<String, Vec<(usize, usize)>>,
         ruletable: &Ruletable,
     ) -> Result<Graph, ParseGraphError> {
-        let n = edge_lists
-            .values()
-            .map(|es| es.iter().map(|&(u, v)| cmp::max(u, v)).max().unwrap_or(0))
-            .max()
-            .unwrap_or(0)
-            + 1;
+        let mut n = 0;
+        for edges in edge_lists.values() {
+            for &(u, v) in edges.iter() {
+                n = cmp::max(n, cmp::max(u, v));
+            }
+        }
+        n += 1;
 
         let mut degree = vec![0_usize; n];
-        for (_, edges) in edge_lists.iter() {
+        for edges in edge_lists.values() {
             for &(u, v) in edges.iter() {
                 degree[u] += 1;
                 degree[v] += 1;
