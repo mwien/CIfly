@@ -100,8 +100,7 @@ applications = applications.sort((a, b) => (a.id < b.id ? -1 : 1));
 
       <div class="mb-2 md:mx-4">
         <p class="md:text-lg hyphens-auto">
-          CIfly can be installed via pip in Python and from R-universe in R (a
-          CRAN submission is planned).
+          CIfly can be installed via pip in Python and from CRAN in R.
         </p>
 
         <CodeSwitcher>
@@ -115,8 +114,8 @@ pip install ciflypy`}
           />
           <CodeHelper
             slot="r-code"
-            code={`# R installation via R-universe
-install.packages("ciflyr", repos = c("https://mwien.r-universe.dev"))`}
+            code={`# R installation from CRAN
+install.packages("ciflyr")`}
             lang="r"
             title=""
             largeText={true}
