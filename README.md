@@ -11,14 +11,14 @@ CIfly can be installed via pip in Python
 pip install ciflypy
 ```
 
-and from R-universe in R (a CRAN submission is planned). 
+and from CRAN in R.
 
 ```r
-# R installation via R-universe
-install.packages("ciflyr", repos = c("https://mwien.r-universe.dev"))
+# R installation via CRAN
+install.packages("ciflyr")
 ```
 
-In Python, the installation should work out-of-the-box without relying on any further dependencies. In R, if the package is build on your system, as is the case for Linux distributions, the [Rust toolchain](https://rustup.rs/) needs to be installed. 
+In Python, the installation should work out-of-the-box without relying on any further dependencies. In R, if the package is build on your system, as is the case for Linux distributions, the [Rust toolchain](https://rustup.rs/) needs to be installed.
 
 ## Citing CIfly
 

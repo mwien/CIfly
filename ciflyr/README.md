@@ -20,6 +20,10 @@ specified by rule tables. For more information on CIfly, see our
 install.packages("ciflyr")
 ```
 
+Note that if the package is build from source on your system, as is the
+case for Linux distributions, the [Rust toolchain](https://rustup.rs/)
+needs to be installed.
+
 ## Usage
 
 As a basic example, we show how to test d-separation with CIfly. The
