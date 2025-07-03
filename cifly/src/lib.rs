@@ -4,6 +4,7 @@
 //! Best used through the wrapper packages ciflypy and ciflyr for Python and R.
 //! Find more information on the [CIfly website](https://cifly.pages.dev).
 
+mod array_nd;
 mod expression;
 pub mod instance;
 pub mod reach;

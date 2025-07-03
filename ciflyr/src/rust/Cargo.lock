@@ -10,13 +10,13 @@ checksum = "4a2128d00b7061b82b72844a351e80acd29e05afc60e9261e2ac90dca9ecc2ac"
 
 [[package]]
 name = "cifly"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "034ba88c1be357f09874357f10893db9780442d79e0ee50cc8f0e8eab22a1c8a"
+checksum = "86f894f592efc9b21a0c2e21b7c90a4778dc5773b0b6d3df33ec03732d98d022"
 
 [[package]]
 name = "ciflyr"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "cifly",
  "extendr-api",
@@ -86,9 +86,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.101"
+version = "2.0.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ce2b7fc941b3a24138a0a7cf8e858bfc6a992e7978a068a5c760deb0ed43caf"
+checksum = "17b6f705963418cdb9927482fa304bc562ece2fdd4f616084c50b7023b435a40"
 dependencies = [
  "proc-macro2",
  "quote",

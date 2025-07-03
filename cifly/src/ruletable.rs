@@ -1,6 +1,7 @@
 use std::{cmp, collections::HashMap, error::Error, fmt, fs};
 
 use crate::{
+    array_nd::{Array3D, Array4D},
     expression::{Expression, ParseExpressionError},
     instance::Sets,
     reach::State,
@@ -18,8 +19,8 @@ pub struct Ruletable {
     start: Vec<(usize, usize, usize)>,
     output: Vec<(usize, usize)>,
     rules: Vec<Rule>,
-    to_rulenum: Vec<Vec<Vec<Vec<usize>>>>,
-    to_color: Vec<Vec<Vec<Vec<usize>>>>,
+    to_rulenum: Array4D<usize>,
+    to_color: Array3D<Vec<usize>>,
 }
 
 impl Ruletable {
@@ -44,7 +45,7 @@ impl Ruletable {
     }
 
     pub(crate) fn possible_colors(&self, e1: usize, c1: usize, e2: usize) -> &Vec<usize> {
-        &self.to_color[e1][c1][e2]
+        self.to_color.get(e1, c1, e2)
     }
 
     pub(crate) fn get_edge_ids(&self, s: &str) -> Option<(usize, usize)> {
@@ -60,7 +61,7 @@ impl Ruletable {
     }
 
     pub(crate) fn pass(&self, sets: &Sets, s1: State, s2: State) -> bool {
-        let rule_num = self.to_rulenum[s1.edge][s1.color][s2.edge][s2.color];
+        let rule_num = *self.to_rulenum.get(s1.edge, s1.color, s2.edge, s2.color);
         self.rules[rule_num]
             .expression
             .evaluate(sets, s1.node, s2.node)
@@ -127,8 +128,8 @@ impl Ruletable {
             start: Vec::new(),
             output: Vec::new(),
             rules: Vec::new(),
-            to_rulenum: Vec::new(),
-            to_color: Vec::new(),
+            to_rulenum: Array4D::new(0, 0, 0, 0, 0_usize),
+            to_color: Array3D::new(0, 0, 0, Vec::new()),
         }
     }
 
@@ -455,15 +456,19 @@ impl Ruletable {
     fn precompute(&mut self) {
         // usize::MAX is overwritten for all colors that will ever get queried
         // choosing usize:MAX ensures panic in case this doesn't hold
-        self.to_rulenum = vec![
-            vec![
-                vec![vec![usize::MAX; self.num_colors()]; self.num_edges()];
-                self.num_colors()
-            ];
-            self.num_edges()
-        ];
-        self.to_color =
-            vec![vec![vec![Vec::new(); self.num_edges()]; self.num_colors()]; self.num_edges()];
+        self.to_rulenum = Array4D::new(
+            self.num_edges(),
+            self.num_colors(),
+            self.num_edges(),
+            self.num_colors(),
+            usize::MAX,
+        );
+        self.to_color = Array3D::new(
+            self.num_edges(),
+            self.num_colors(),
+            self.num_edges(),
+            Vec::new(),
+        );
         for e1 in 0..self.num_edges() {
             for c1 in 0..self.num_colors() {
                 for e2 in 0..self.num_edges() {
@@ -480,8 +485,8 @@ impl Ruletable {
                         };
                         for (i, rule) in self.rules.iter().enumerate() {
                             if rule.case.is_matched(s1, s2) {
-                                self.to_rulenum[e1][c1][e2][c2] = i;
-                                self.to_color[e1][c1][e2].push(c2);
+                                *self.to_rulenum.get_mut(e1, c1, e2, c2) = i;
+                                self.to_color.get_mut(e1, c1, e2).push(c2);
                                 break;
                             }
                         }

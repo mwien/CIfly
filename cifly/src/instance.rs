@@ -10,7 +10,8 @@ use crate::ruletable::Ruletable;
 /// Can be constructed using [`Graph::new`] and then passed to `reach`.
 pub struct Graph {
     n: usize,
-    g: Vec<Vec<(usize, usize)>>,
+    seps: Vec<usize>,
+    vals: Vec<(usize, usize)>,
 }
 
 impl Graph {
@@ -24,13 +25,30 @@ impl Graph {
         edge_lists: &HashMap<String, Vec<(usize, usize)>>,
         ruletable: &Ruletable,
     ) -> Result<Graph, ParseGraphError> {
-        let n = edge_lists
-            .values()
-            .map(|es| es.iter().map(|&(u, v)| cmp::max(u, v)).max().unwrap_or(0))
-            .max()
-            .unwrap_or(0)
-            + 1;
-        let mut g = vec![Vec::new(); n];
+        let mut n = 0;
+        for edges in edge_lists.values() {
+            for &(u, v) in edges.iter() {
+                n = cmp::max(n, cmp::max(u, v));
+            }
+        }
+        n += 1;
+
+        let mut degree = vec![0_usize; n];
+        for edges in edge_lists.values() {
+            for &(u, v) in edges.iter() {
+                degree[u] += 1;
+                degree[v] += 1;
+            }
+        }
+
+        let mut seps = vec![0_usize; n + 1];
+        for i in 0..n {
+            seps[i + 1] = seps[i] + degree[i];
+        }
+
+        let mut vals = vec![(0_usize, 0_usize); seps[n]];
+        let mut cursor = seps[..n].to_vec();
+
         for (edge_string, edges) in edge_lists.iter() {
             let (edge_num, edge_rev_num) = ruletable
                 .get_edge_ids(edge_string)
@@ -38,20 +56,28 @@ impl Graph {
                     "edge {edge_string} was not specified in rule table"
                 )))
                 .unwrap();
+
             for &(u, v) in edges.iter() {
-                g[u].push((v, edge_num));
-                g[v].push((u, edge_rev_num));
+                let pos_u = cursor[u];
+                vals[pos_u] = (v, edge_num);
+                cursor[u] += 1;
+
+                let pos_v = cursor[v];
+                vals[pos_v] = (u, edge_rev_num);
+                cursor[v] += 1;
             }
         }
-        Ok(Graph { g, n })
+        Ok(Graph { n, seps, vals })
     }
 
     pub(crate) fn num_vertices(&self) -> usize {
         self.n
     }
 
-    pub(crate) fn neighbors(&self, u: usize) -> &Vec<(usize, usize)> {
-        &self.g[u]
+    pub(crate) fn neighbors(&self, u: usize) -> &[(usize, usize)] {
+        let start = self.seps[u];
+        let end = self.seps[u + 1];
+        &self.vals[start..end]
     }
 }
 
