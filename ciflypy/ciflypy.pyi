@@ -1,7 +1,12 @@
-from typing import List, Mapping, Set, Tuple
+from typing import List, Mapping, Set, Tuple, Protocol
+
+class SupportsStr(Protocol):
+    def __str__(self) -> str: ...
 
 class Ruletable:
-    def __init__(self, ruletable: str, *, table_as_string: bool = False) -> None:
+    def __init__(
+        self, ruletable: SupportsStr, *, table_as_string: bool = False
+    ) -> None:
         """
         Reads ruletable into CIfly outside of reach. Mostly recommended for improving performance if the same ruletable is used multiple times.
 
@@ -21,9 +26,9 @@ class Graph:
     def __init__(
         self,
         graph: Mapping[str, List[Tuple[int, int]] | Set[Tuple[int, int]]],
-        ruletable: str | Ruletable,
+        ruletable: SupportsStr | Ruletable,
         *,
-        table_as_string: bool = False
+        table_as_string: bool = False,
     ) -> None:
         """
         Reads graph into CIfly outside of reach. The parsed graph can be used in combination with all ruletables that have the same `EDGES ...` line as the passed ruletable argument. This method is mostly recommended for improving performance if the same graph is used multiple times.
@@ -44,10 +49,10 @@ class Sets:
     def __init__(
         self,
         sets: Mapping[str, int | List[int] | Set[int]],
-        ruletable: str | Ruletable,
+        ruletable: SupportsStr | Ruletable,
         *,
-        table_as_string: bool = False
-    ) -> None: 
+        table_as_string: bool = False,
+    ) -> None:
         """
         Reads sets into CIfly outside of reach. The parsed sets can be used in combination with all ruletables that have the same `SETS ...` line as the passed ruletable argument. This method is mostly recommended for improving performance if the same sets are used multiple times.
 
@@ -66,7 +71,7 @@ class Sets:
 def reach(
     graph: Mapping[str, List[Tuple[int, int]] | Set[Tuple[int, int]]] | Graph,
     sets: Mapping[str, int | List[int] | Set[int]] | Sets,
-    ruletable: str | Ruletable,
+    ruletable: SupportsStr | Ruletable,
     *,
     table_as_string: bool = False,
     verbose: bool = False,
