@@ -19,5 +19,5 @@ isCpdagAdjustment <- function(cpdag, X, Y, W) {
 
 	bconn <- reach(cpdag, list("X" = X, "C" = cn, "W" = W), backdoorConnected)
 
-	return  (length(intersect(nam, Y)) == 0 && length(intersect(forb, W)) == 0 && length(intersect(bconn, Y)) == 0)
+	return (length(intersect(nam, Y)) == 0 && length(intersect(forb, W)) == 0 && length(intersect(bconn, Y)) == 0)
 }

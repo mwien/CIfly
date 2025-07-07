@@ -7,6 +7,7 @@ possible_anc = cf.Ruletable(ruletables / "possible_ancestors_cpdag.txt")
 possible_des = cf.Ruletable(ruletables / "possible_descendants_cpdag.txt")
 backdoor_conn = cf.Ruletable(ruletables / "backdoor_connected_cpdag.txt")
 
+
 def is_cpdag_adjustment(g, X, Y, W):
     nam = cf.reach(g, {"X": X}, not_amenable)
 
@@ -17,6 +18,8 @@ def is_cpdag_adjustment(g, X, Y, W):
 
     bconn = cf.reach(g, {"X": X, "C": cn, "W": W}, backdoor_conn)
 
-    return (not set(nam).intersection(Y) 
-            and not set(forb).intersection(W)
-            and not set(bconn).intersection(Y))
+    return (
+        not set(nam).intersection(Y)
+        and not set(forb).intersection(W)
+        and not set(bconn).intersection(Y)
+    )
