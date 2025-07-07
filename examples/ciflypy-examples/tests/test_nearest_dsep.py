@@ -1,9 +1,10 @@
 from ciflypy_examples.nearest_dsep import find_nearest_separator
 
+
 # figure from van der Zander (2019) dissertation
 def test_figure_6dot2_1():
     # labels = ["Y", "V1", "V2", "V3", "Z"]
-    admg = {"-->": [(0, 2), (1, 0), (1, 2), (2, 3), (3, 4)]} 
+    admg = {"-->": [(0, 2), (1, 0), (1, 2), (2, 3), (3, 4)]}
     x = 0
     y = 4
 
@@ -11,9 +12,10 @@ def test_figure_6dot2_1():
     assert nearest_dsep is not None
     assert set(nearest_dsep) == {1, 2} or set(nearest_dsep) == {2}
 
+
 def test_figure_6dot2_2():
     # labels = ["Y", "V1", "V2", "Z"]
-    admg = {"-->": [(1, 2), (1, 3), (2, 3)], "<->": [(0, 2)]} 
+    admg = {"-->": [(1, 2), (1, 3), (2, 3)], "<->": [(0, 2)]}
     x = 0
     y = 3
 
@@ -21,9 +23,13 @@ def test_figure_6dot2_2():
     assert nearest_dsep is not None
     assert set(nearest_dsep) == {1, 2}
 
+
 def test_figure_6dot2_3():
     # labels = ["Y", "V1", "V2", "V3", "V4", "V5", "Z"]
-    admg = {"-->": [(1, 2), (2, 5), (2, 6), (3, 2), (4, 3), (4, 0)], "<->": [(0, 1), (0, 5)]} 
+    admg = {
+        "-->": [(1, 2), (2, 5), (2, 6), (3, 2), (4, 3), (4, 0)],
+        "<->": [(0, 1), (0, 5)],
+    }
     x = 0
     y = 6
 
