@@ -5,23 +5,33 @@ summary: "A brief introduction to CIfly"
 number: 0
 ---
 
-Welcome to CIfly! In this article, we will informally discuss the main features and ideas behind CIfly. Subsequent articles will make this more precise and fill in the gaps. So what is CIfly? Essentially, it is a way of specifying reachability algorithms that are particularly useful for many tasks in causal inference on DAGs (or related graph classes), but in itself the framework is not limited to this domain. Let's get right into it!
+Welcome to CIfly! In this article, we will informally discuss the main motivation, features and ideas behind CIfly. Subsequent articles will make this more precise and fill in the gaps. So what is CIfly? Essentially, it is a way of specifying reachability algorithms that are particularly useful for many tasks in causal inference on DAGs (or related graph classes), but in itself the framework is not limited to this domain. Let's get right into it!
 
 ### Reachability
 
-Graph reachability refers to the question whether there is a way to get from node $a$ to node $b$ in a graph. Consider the following example:
-
-$$a \rightarrow b \rightarrow c \leftarrow d$$
+Graph reachability refers to the question whether there is a way to get from node $a$ to node $b$ in a graph. Consider the following example: $$a \rightarrow b \rightarrow c \leftarrow d$$
 
 Here, $c$ is reachable from $a$ because there is a directed path $a \rightarrow b \rightarrow c$. However, the reverse is not true in standard reachability, there is no way to follow arrows to go from $c$ to $a$. Neither is it possible to go from $a$ to $d$ in this graph.
 
 Graph reachability has been studied for ages and its algorithmic aspects are also well-understood. It is possible to check whether $b$ is reachable from $a$ by algorithms whose run-time grows linearly in the size of the graph. To be more precise, such algorithms usually find all reachable nodes from $a$ in this run-time. The most well-known algorithm are depth-first search (DFS) and breadth-first search (BFS) and they are usually the first graph algorithms taught to undergraduates in a class on algorithms and data structures. Hence, these algorithms are also a central part of graph libraries like ```networkx``` in Python or ```igraph``` in R. 
 
-### Graph algorithms for causal inference
+### Graph Algorithms in Causal Inference
 
 Standard reachability can be used in causal inference to find the ancestors and descendants of nodes in causal graphs. However, many tasks in this context go beyond the *standard* setting in two ways:
 
-- reachability is considered with respect to non-standard paths or walks, such as in d-separation where one may switch between traversing edges the normal way $\rightarrow$ to the opposite direction $\leftarrow$ depending on a set of nodes $Z$
-- graphs often have multiple edge types such as directed, undirected or bidirected edges, with quite specific notions of reachability in these graphs, for example, one may traverse collider paths (TODO: explain) in ADMGs
+- reachability is considered with respect to non-standard paths or walks, such as in *d-separation* where one may switch between traversing edges the usual way $\rightarrow$ to the opposite direction $\leftarrow$ depending on a set of nodes $Z$
+- graphs often have multiple edge types such as directed, undirected or bidirected edges, again with quite specific notions of paths in these graphs, for example, one may traverse *collider* paths, where each non end-point has two meeting arrowheads in graphs with directed and bidirected edges, such as $a \rightarrow b \leftrightarrow c \leftrightarrow d \leftarrow e$. 
+
+Often, these reachability notions cannot (or at least not easily) be expressed or tackled with standard graph libraries. Effectively, it is necessary to hand-write custom BFS or DFS modifications, as done in packages such as [dagitty](https://www.dagitty.net/) or [pcalg](https://cran.r-project.org/web/packages/pcalg/index.html) for many common tasks. CIfly positions itself complementary and more low-level compared to these packages. It aims to provide a flexible language for expressing causal and probabilistic reachability notions with interfaces in Python and R.
+
+### Computing Ancestors and Descendants with CIfly
+
+
+### Computing Non-Amenable Nodes with CIfly
+
+
+### Computing d-Connected Nodes with CIfly
+
+
 
 
