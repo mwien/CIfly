@@ -163,7 +163,7 @@ The table has two rules. The first one tracks colliders $\rightarrow \text{curre
 Note that here ```START <-- AT X``` sets the (imaginary) previous edge in the initial step to be $\leftarrow$. This matches the non-collider rule which always triggers for the first transition because $Z$ is disjoint from $X$. As we have seen above, one could be more explicit here by distinguish the first transition with an ```init``` color. 
 
 Using this rule table, testing d-separation in Python and R can be done as follows:
-<CodeSwitcher class="text-sm md:text-base">
+<CodeSwitcher>
   <CodeHelper
     slot="python-code"
     code={`import ciflypy as cf
@@ -178,7 +178,6 @@ def test_dsep(G, x, y, Z):
 print(test_dsep({"-->": [(0, 1), (1, 2)]}, 0, 2, [1]))`}
     lang="py"
     title=""
-    largeText={true}
   />
   <CodeHelper
     slot="r-code"
@@ -195,7 +194,6 @@ print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
 `}
     lang="r"
     title=""
-    largeText={true}
   />
 </CodeSwitcher>
 
