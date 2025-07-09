@@ -1,6 +1,8 @@
 library("ciflyr") 
 library("here")
 
+source(here("R", "utils.R"))
+
 ruletables <- getRuletablePath()
 notAmenable <- parseRuletable(file.path(ruletables, "not_amenable_cpdag.txt"))
 possibleAncestors <- parseRuletable(file.path(ruletables, "possible_ancestors_cpdag.txt"))

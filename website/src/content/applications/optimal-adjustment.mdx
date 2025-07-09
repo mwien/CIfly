@@ -68,28 +68,28 @@ Using these tables, we can compute the forbidden set (and the causal set) as fol
 
 <CodeSwitcher>
 <CodeHelper slot="python-code" code={
-`anc = cf.reach(g, {"X": Y, "W": X}, "./possible_ancestors_cpdag.txt")
-des = cf.reach(g, {"X": X, "W": []}, "./possible_descendants_cpdag.txt")
+`anc = cf.reach(cpdag, {"X": Y, "W": X}, "./possible_ancestors_cpdag.txt")
+des = cf.reach(cpdag, {"X": X, "W": []}, "./possible_descendants_cpdag.txt")
 cn = set(anc).intersection(des)
-forb = cf.reach(g, {"X": cn}, "./possible_descendants_cpdag.txt")`
+forb = cf.reach(cpdag, {"X": cn}, "./possible_descendants_cpdag.txt")`
 } lang="py" title="" />
 <CodeHelper slot="r-code" code={
-`anc <- reach(g, list("X" = Y, "W" = X), "./possible_ancestors_cpdag.txt")
-des <- reach(g, list("X" = X, "W" = c()), "./possible_descendants_cpdag.txt")
+`anc <- reach(cpdag, list("X" = Y, "W" = X), "./possible_ancestors_cpdag.txt")
+des <- reach(cpdag, list("X" = X, "W" = c()), "./possible_descendants_cpdag.txt")
 cn <- intersect(anc, des)
-forb <- reach(g, list("X" = cn), "./possible_descendants_cpdag.txt")`
+forb <- reach(cpdag, list("X" = cn), "./possible_descendants_cpdag.txt")`
 } lang="r" title="" />
 </CodeSwitcher>
 
 To check that $X$ does not contain forbidden nodes, we use this code to compute the forbidden set and then check whether the intersection with $X$ is empty. 
 
 ### Constructing the optimal adjustment set
-To construct the optimal set itself we need precisely the causal set and the forbidden set. We have already shown how to obtain those above. The only step that remains is computing the parents of the causal set, i.e., all nodes $v$ such that there exists an edge $v \rightarrow c$ to some causal node $c$. This  is an easy task but it is nonetheless possible to inadvertantly implement a super-linear algorithm for it. In CIfly, however, it is very easy to implement a linear-time algorithm to do so by using the following rule table. 
+To construct the optimal set itself we need precisely the causal set and the forbidden set. We have already shown how to obtain those above. The only step that remains is computing the parents of the causal set, i.e., all nodes $v$ such that there exists an edge $v \rightarrow c$ to some causal node $c$. This  is an easy task but it is nonetheless possible to inadvertantly implement a super-linear algorithm for it. In CIfly, however, it is rather easy to implement a linear-time algorithm by using the following rule table. 
 
 <Ruletable id="parents_cpdag" withHeader={true}/>
 
 ### Full implementation
-In the final implementation, we use the four tables introduced above to check whether $Y$ consists of possible descendants of $X$, to check whether a valid adjustment set exists and finally to construct the optimal set simultanously.
+In the final implementation, we use the four tables introduced above to check whether $Y$ consists of possible descendants of $X$, to verify whether a valid adjustment set exists and finally to construct the optimal set simultanously.
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="optimal_adjustment.py"/>
