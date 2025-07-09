@@ -2,7 +2,7 @@
 title: The ciflyr package
 shortTitle: ciflyr
 summary: "Explains how to use CIfly from R"
-number: 3
+number: 4
 ---
 
 In this article, we discuss how CIfly can be used from R with the ```ciflyr``` package. We plan to make it available on CRAN so that it can be installed with ```install.packages("ciflyr")```. At its core, the package provides a single function ```reach``` that performs a CIfly algorithm for an input graph and input sets according to a specified rule table. As a simple example, consider the code below that tests amenability using the table for finding non-amenable nodes discussed in the [previous article](/docs/ruletables/) introducing rule tables. 
@@ -26,15 +26,15 @@ print(isAmenable(g, X, Y))
 
 Here, ```reach``` is called with a graph ```g``` (as a list mapping edge types to lists of of edges), a list of sets (mapping the set names specified in the rule table to node vectors) and a path to the text file containing the rule table (in this case assuming it lies in the current working directory; for better options, see below). This function returns a vector of nodes, the output of the CIfly algorithm specified by the rule table. In the example above, these are all non-amenable nodes with respect to $X$ which we can use to test amenability of a pair $X$ and $Y$. We now discuss how the arguments should be passed to ```reach```.
 
-#### Graph
+### Graph
 The graph is represented by a list with each name describing an edge type and containing a $r \times 2$ matrix whose rows represent the edges of this type. For example, the graph which has edges $1 \rightarrow 2 \leftarrow 3 - 4$ would be represented as ```list("-->" = rbind(c(1, 2), c(3, 2)), "---" = rbind(c(3, 4)))```. This is equivalent to ```list("-->" = rbind(c(1,2)), "<--" = rbind(c(2, 3)), "---" = rbind(c(3,4)))``` provided the rule table contains the edge description ```edges: --> <--, ---``` specifying ```-->``` and ```<--``` to be reciprocal. 
 
 For the node IDs, we strongly recommend to use the numbers $1, 2, \dots, p$ for a graph with $p$ nodes. Generally, any positive integers can be used, however, the memory demand of ```ciflyr``` is linear in the largest node ID because of the internal representation of graphs and sets. Hence, unnecessarily large node numbers lead to slower run times and potential memory problems. Non-integer node names have to be stored outside of the ```ciflyr``` graph format, e.g., in a vector indexed by the node IDs.
 
-#### Sets
+### Sets
 The sets are represented by a list as well with the names of the respective node sets as strings mapping to their instantiation represented as vector of positive integers. As an example, ```list("X" = c(1), "Z" = c(3, 4))``` would represent the two sets $X = \{1\}$ and $Z = \{3, 4\}$. The names of the sets must match the names specified in the rule table. 
 
-#### Rule Table
+### Rule Table
 In its basic version, the rule table is passed to ```reach``` by its file path as string. If used outside of simple scripts, make sure that the rule table file is included within the package and that its path is specified relative to the project root and not the current working directory. Better code compared to the example above would be to use the ```here``` package to achieve this.
 
 ```r
@@ -66,10 +66,10 @@ OUTPUT ... [yield]
 reach(g, sets, notAmenableTable, tableAsString=TRUE)
 ```
 
-#### Output
+### Output
 ```reach``` returns a vector of positive integers, representing the vertices that are reached in an output state (as specified in the rule table) when running the search on the given graph with the provided sets. 
 
-#### Debugging
+### Debugging
 Currently, the ```ciflyr``` error messages are quite verbose (due to limitations of the R-to-Rust interface) and look roughly as follows:
 
 ```
@@ -82,7 +82,7 @@ The relevant information here is the string ```"Error: expected a string as rule
 
 In case your CIfly algorithms runs without error but returns an unexpected result, it is possible to pass the keyword argument ```verbose=TRUE``` to ```reach``` for debugging purposes. This logs the steps the reachability algorithm takes during its execution.
 
-#### Advanced Usage
+### Advanced Usage
 In every ```reach``` call, the implementation needs to parse the graph, sets and rule table. This can introduce unnecessary overhead in the case that *the same* graph, sets or rule table are used repeatedly. To address this, ```ciflyr``` offers the option to parse these objects outside of the ```reach``` function with the functions ```parseGraph```, ```parseSets``` and ```parseRuletable``` that, respectively, return a ```Graph```, ```Sets``` and ```Ruletable``` object. 
 
 ```parseRuletable``` can be called as ```parseRuletable(tablePath)``` or ```parseRuletable(tableString, tableAsString=TRUE)```. The first argument of ```parseGraph``` and ```parseSets``` are also in the same encoding as the respective ```reach``` arguments. However, it is necessary to pass a rule table as second argument (this can be done via file path, as a multi-line string with ```tableAsString``` set to ```TRUE``` or by passing a ```Ruletable``` object). Afterwards, these objects must be used in combination with rule tables that have the same ```EDGES```, respectively ```SETS``` specification as the passed rule table. All three objects are internal CIfly representations and can *only* be passed as their respective arguments into ```reach```. We offer no further methods on these classes. 
@@ -105,7 +105,7 @@ for (x in seq(p)) {
 }
 ```
 
-#### Conversion to the ciflyr graph format
+### Conversion to the ciflyr graph format
 The ```ciflyr``` graph format is based on edge lists represented by $2 \times m$ matrices. Graphs can usually be converted to this format with little effort. For example, consider a directed graph in ```igraph```:
 ```r
 # construct graph

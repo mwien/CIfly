@@ -1,13 +1,15 @@
 from pathlib import Path
 
+
 # adapt this to the location of ruletables in your project
-# note instead of using file paths, it is possible 
+# note instead of using file paths, it is possible
 # to directly include the rule table as a string in the source file
 def get_ruletable_path():
     # we do NOT recommend having the rule tables outside the project directory
     # this is only done here to showcase the ruletables at the root of the repo
     return Path(__file__).parent.parent.parent.parent.resolve() / "ruletables"
-    
+
+
 # an example function for removing certain ordered edges from a CIfly graph
 def removed_ordered_edges(g, from_vars, to_vars, edge_type):
     if edge_type not in g:
@@ -24,8 +26,15 @@ def removed_ordered_edges(g, from_vars, to_vars, edge_type):
     )
     return gmod
 
+
 def contains_parent(g, x, Z):
     return any(map(lambda uv: uv[0] in Z and uv[1] == x, g["-->"]))
 
+
 def contains_sibling(g, x, Z):
-    return any(map(lambda uv: (uv[0] in Z and uv[1] == x) or (uv[0] == x and uv[1] in Z), g["<->"]))
+    return any(
+        map(
+            lambda uv: (uv[0] in Z and uv[1] == x) or (uv[0] == x and uv[1] in Z),
+            g["<->"],
+        )
+    )

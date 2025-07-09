@@ -1,0 +1,204 @@
+---
+title: Introduction
+shortTitle: Introduction
+summary: "A tutorial for getting started with CIfly"
+number: 0
+---
+
+import CodeHelper from "../../components/CodeHelper.astro"
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
+import Ruletable from "../../components/Ruletable.astro"
+
+In this article, we informally discuss the main motivation, features and ideas behind CIfly. Subsequent articles will make this more precise and fill in the gaps. So what is CIfly? Essentially, it is a way of specifying reachability algorithms that are particularly useful for many tasks in causal inference on directed acyclic graphs (DAGs) and related graph classes, but in itself the framework is not limited to this domain. Let's jump right into it!
+
+### Reachability
+
+Graph reachability refers to the question whether there is a way to get from node $a$ to node $b$ in a graph. Consider the example graph $a \rightarrow b \rightarrow c \leftarrow d$. Here, $c$ is *reachable* from $a$ because there is a directed path $a \rightarrow b \rightarrow c$. However, the reverse is not true in standard reachability, there is no way to follow arrows to go from $c$ to $a$. Neither is it possible to go from $a$ to $d$ in this graph.
+
+Graph reachability is deeply-studied and its algorithmic aspects are well-understood. It is possible to check whether $b$ is reachable from $a$ by algorithms whose run-time grows linearly in the size of the graph. Moreover, such algorithms usually find *all* reachable nodes from $a$ in this run-time. The most well-known algorithms are depth-first search (DFS) and breadth-first search (BFS) and they are usually the first graph algorithms taught to undergraduates in a class on algorithms and data structures. These algorithms are also a central part of graph libraries like ```networkx``` in Python or ```igraph``` in R. 
+
+### Graph Algorithms in Causal Inference
+
+Standard reachability is directly useful in causal inference, for example to find the ancestors and descendants of nodes in causal graphs. However, many tasks in this context go beyond the standard setting in two ways:
+
+- reachability is considered with respect to non-standard paths or walks, such as in *d-separation* (or rather d-connectivity) where one may switch between traversing edges the usual way $\rightarrow$ to the opposite direction $\leftarrow$ depending on a set of nodes $Z$
+- graphs often have multiple edge types such as directed, undirected or bidirected edges, again with specific notions of paths in these graphs, for example, one may traverse *collider* paths, where each non end-point has two meeting arrowheads, in graphs with directed and bidirected edges, such as $a \rightarrow b \leftrightarrow c \leftrightarrow d \leftarrow e$. 
+
+Often, these reachability notions cannot (or at least not easily) be expressed or tackled with functionalities offered by standard graph libraries. Effectively, it is necessary to hand-write custom BFS or DFS modifications, as done in packages such as [dagitty](https://www.dagitty.net/) or [pcalg](https://cran.r-project.org/web/packages/pcalg/index.html) for many fundamental causal inference tasks. CIfly positions itself complementary and more low-level compared to these packages. It aims to provide a flexible language for expressing causal and probabilistic reachability notions with interfaces to Python and R.
+
+### Computing Descendants with CIfly
+It is easiest to explain CIfly using concrete examples. We start with the simplest one, namely computing descendants, which can be solved with standard BFS or DFS as well. In CIfly, one uses *rule tables* to specify reachability algorithms. This allows to express complex notions of reachability and we will see these advanced capabilities in later examples. But let's start with the rule table for computing descendants:
+
+```cifly
+EDGES --> <--
+SETS X
+START --> AT X
+OUTPUT ...
+
+--> | --> | true
+```
+
+The essential part of this table is the last line. It says that in our reachability search, we should continue along paths where the last traversed edge is ```-->``` and the next one is again ```-->```. Thus, we traverse all directed paths. The line ```START --> AT X``` prescribes that we should start the search with the nodes in set ```X```, which has to be provided when running the reachability algorithm, and the search is started as if the last edges was ```-->```. The line ```OUTPUT ...``` states that *all* visited nodes should be returned. Here, ```...``` is a placeholder for all possible types of edges (instead ```-->``` would have specified to return explicitly nodes visited by traversing the edge ```-->```, which in this case amounts to the same result, whereas ```OUTPUT <--``` would imply in this case that no node is returned, as here all nodes are reached by traversing an edge from tail to head). Finally, the line ```EDGES --> <--``` specifies that the graph contains the edges of the type ```-->``` and that the reversal of this edge type is ```<--```. 
+
+While this may seem quite involved for specifying a reachability algorithm, it allows lots of useful modifications. For example, the edges are just user defined strings, allowing generalization to all sorts of graph types. The rules can also be generalized further. Before we get into this, let's see how this reachability algorithm can be run from Python and R. 
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`import ciflypy as cf
+
+# graph 0 --> 1 --> 2 <-- 3
+g = {"-->": [(0, 1), (1, 2), (3, 2)]}
+# starting node 0
+sets = {"X": [0]}
+# last argument contains path to the rule table text file
+descendants = cf.reach(g, sets, "/path/to/ruletable.txt")
+# prints [0, 1, 2]
+print(descendants)`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`library(ciflyr)
+
+# graph 1 --> 2 --> 3 <-- 4
+g <- list("-->" = rbind(c(1, 2), c(2, 3), c(4, 3)))
+# starting node 1
+sets <- list("X" = c(1))
+# last argument contains path to the rule table text file
+descendants <- reach(g, sets, "/path/to/ruletable.txt")
+# prints c(1, 2, 3)
+print(descendants)`
+} lang="r" title="" />
+</CodeSwitcher>
+
+The graph is stored by having an edge list per edge type. The sets (referenced by the rule table) are constructed similarly with one list, respectively vector, per set. The final argument of the ```reach``` function is a path to the rule table text file. Note that the rule table can also be passed directly as a multi-line string, in which case the argument ```table_as_string=True``` in Python or ```tableAsString=TRUE``` in R has to be passed as well.
+
+Observe that this allows to compute descendants of a *set* of nodes $X$. This returns all nodes which are reachable from some node in $X$. Closely related to descendants are *ancestors*, that is, nodes from which a directed path to $X$ exists. For example $a$ is an ancestor of $x \in X$ if we have a path $a \rightarrow \cdots \rightarrow x$. We immediately get the following rule table to obtain the ancestors of a set $X$, where the rule in the final line is modified compared to our previous example.
+
+```cifly
+EDGES --> <--
+SETS X
+START <-- AT X
+OUTPUT ...
+
+<-- | <-- | true
+```
+
+A basic generalization of ancestors and descendants in causal inference are *possible ancestors* and *possible descendants* in graphs that contain both directed and undirected edges. Here, a node $b$ is a possible descendant of node $a$ if there exists a path from $a$ to $b$ containing only directed edges pointing towards $b$ or undirected edges. A simple example for such a *possibly directed* path is $a - x \rightarrow y - b$. Possible ancestors are defined correspondingly. For possible descendants, we can formulate the following CIfly rule table:
+
+```cifly
+EDGES --> <--, ---
+SETS X
+START --> AT X
+OUTPUT ...
+
+-->, --- | -->, --- | true
+```
+
+We changed the rule at the bottom to allow transitions when the previous edge is ```-->``` or ```---``` and the next one is again ```-->``` or ```---```. Moreover, in the first line we add the edge type ```---```. Note that here we don't give the *reverse* direction of this edge, thereby indicating that this is a symmetric edge. A brief intuition why this line contains *three* kinds of edge strings in a graph with two types of edges (directed and undirected) is that there are three kinds of neighbors of a node: children, parents and undirected neighbors. 
+
+Let's add some more complexity on top and ask for all nodes reachable via a possibly directed path from $X$ that never visits nodes in a set $W$ (which we assume to be disjoint from set $X$). This can be achieved by replacing ```true``` with a logical expression that checks the membership of the next node in $W$.
+
+```cifly
+EDGES --> <--, ---
+SETS X
+START --> AT X
+OUTPUT ...
+
+-->, --- | -->, --- | next not in W
+```
+
+Effectively, the expression in our rule can be any logical formula using ```and```, ```or```, ```not``` with the operators ```in``` and ```not in``` for checking set membership. The current node (where the search is at the moment) and the next node (where we would move to if the expression evaluates to true) can be referred to by ```current``` and ```next```. 
+
+One other thing we brushed over thus far is the ```START --> AT X``` line. Sure, we start the reachability algorithm at ```X```. But why do we specify an imaginary previous edge ```-->```? First of all, in this case, we could have also stated ```START ... AT X```, using the placeholder ```...``` that stands for all edge types, to obtain the same result because then the algorithm starts at X with imaginary previous edges ```---```, ```-->```, ```<--``` instead of just ```-->``` (the more the merrier, all possible descendants of ```X``` will still be reached). However, one has to be careful. In our thought experiment above, where we returned all nodes visited through the edge ```<--```, by setting ```OUTPUT <-- X``` (even though that really didn't make much sense and just returned the empty set), if we further specify ```START ... AT X```, then exactly all nodes in ```X``` are returned (and not the empty set) because they are initially visited with imaginary previous edge ```<--``` (if that is confusing don't worry, the [article](/docs/foundations) on the theory behind CIfly gives a better explanation what happens behind the scenes). 
+
+What this shows is that we are currently in the conundrum of not being able to distinguish in our rules between the initial step of the reachability search (where we have not yet seen a previous edge) and subsequent steps where we visited a node through some edge type and continue along another edge type. This makes us try to set the previous edge type (such as ```-->```) in a way that nicely maps our rules (e.g. ```--> | --> | true```). While there is nothing wrong with that per se, sometimes we want more control. In the next section, we introduce *colors* to increase our expressive power. 
+
+### Computing Non-Amenable Nodes with CIfly
+We exemplify this with a reachability notion used to characterize adjustment sets in *CPDAGs* (causal graphs that can be learned from data). Namely, a node $y$ is *non-amenable* if there exists a path from a node $x \in X$ to $y$ that is possibly directed (consists of undirected edges or directed edges pointing towards $y$), with only the first node in $X$ and that *starts with an undirected edge*. Let's focus on that last bit for now. Currently, it's not immediately clear how to encode into our rule tables that the first transition should only follow undirected edges. Well, we could try to set the imaginary previous edge in some (weird) way to distinguish this initial case (we could even invent a non-existing edge-type for it that we name ```init```). But let's not mix up the edge types with our goal of distinguishing the initial step. Instead we do the following:
+
+```cifly
+EDGES --> <--, ---
+SETS X
+COLORS init, yield
+START ... [init] AT X
+OUTPUT ... [yield]
+
+... [init]  | ---      [yield] | next not in X
+... [yield] | ---, --> [yield] | next not in X
+```
+
+Here, we add the ```COLORS``` line which contains a comma-separated list of *colors*. These can be used to store extra information in our search states. For example, here we introduce a color called ```init``` and one called ```yield``` distinguishing the first transition from the remaining ones. Colors can be added basically everywhere by a comma-separated list in square brackets (use ```[...]``` as a placeholder for all colors, or simply don't add the square-bracket color list in those cases). Here, they allow us to remove some of the semantic overloading of the edge types in our rules. 
+
+In the ```START ... [init] AT X``` line, we thus start the search at ```X``` with all possible imaginary previous edges (due to the ```...``` placeholder, as discussed before) but this time with the explicit ```init``` color. When we consider our rules at the bottom, then we can easily distinguish the next transition based on the ```init``` or ```yield``` color. In the former case, we allow transitions to the ```yield``` color for undirected edges and, in the latter case, we follow both undirected edges and directed edges keeping the ```yield``` color. Finally, we restrict our output to those nodes that were reached with color ```yield```. Note how we don't need to be as careful as before about the (imaginary) previous edge, for example, when specifying ```START```, due to having a specific color for the initial transition. This pattern can often be helpful for making a rule table clearer. The use of colors goes beyond this simple example and we showcase further applications [here](/applications/).
+
+The Python and R code for computing non-amenable nodes looks just like before with the colors being internal to the rule table. 
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`import ciflypy as cf
+
+g = {"-->": [(1, 2), (3, 2)], "---": [(0, 1)]}
+sets = {"X": [0]}
+non_amenable = cf.reach(g, sets, "/path/to/ruletable.txt")`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`library(ciflyr)
+
+g <- list("-->" = rbind(c(2, 3), c(4, 3)), "---" = rbind(c(1, 2)))
+sets <- list("X" = c(1))
+nonAmenable <- reach(g, sets, "/path/to/ruletable.txt")`
+} lang="r" title="" />
+</CodeSwitcher>
+
+
+### Computing d-Connected Nodes with CIfly
+
+Let's end this tutorial with the most fundamental example for modified reachability in the context of causal inference: testing d-separation in DAGs. Two set of nodes $X$ and $Y$ are *d-connected* given set $Z$ if there exists a walk from $x$ to $y$ where every collider (a node where two arrowheads meet on the walk) is in $Z$ and every non-collider is not in $Z$. Conversely, $X$ and $Y$ are d-separated if there is no such walk. Note that this definition slightly differs from the typical one that talks about *paths* instead of walks (compared to walks, a path visits each vertex at most once and this leads to a different condition for colliders). This is useful here because CIfly algorithms may visit nodes multiple times (with different previous edges or colors), thus often mapping more directly to walks than paths. 
+
+Let's convert this definition into a CIfly rule table that track d-connecting paths:
+
+<Ruletable id="dsep" suppressButton={true}/>
+
+The table has two rules. The first one tracks colliders $\rightarrow \text{current} \leftarrow \text{next}$ and continues if the current node is in $Z$, exactly as the definition prescribes. The second rule seemingly matches all transitions as it contains the placeholder ```...``` for the previous and next edge. Here, we exploit a feature of CIfly rule tables that, in case there are multiple rows matching a transition, only the first one is considered. Thus, the case of a collider is handled in the first rule and the second rule handles all other cases, namely the non-colliders. For those, we take a transition in case current is not in $Z$, again following the definition above. 
+
+Note that here ```START <-- AT X``` sets the (imaginary) previous edge in the initial step to be $\leftarrow$. This matches the non-collider rule which always triggers for the first transition because $Z$ is disjoint from $X$. As we have seen above, one could be more explicit here by distinguish the first transition with an ```init``` color. 
+
+Using this rule table, testing d-separation in Python and R can be done as follows:
+<CodeSwitcher>
+  <CodeHelper
+    slot="python-code"
+    code={`import ciflypy as cf
+
+dsep_table_path = "./dsep.txt"
+
+def test_dsep(G, x, y, Z):
+    R = cf.reach(G, {"X": x, "Z": Z}, dsep_table_path)
+    return y not in R
+
+# for graph 0 -> 1 -> 2, test whether 0 is d-separated from 2 by 1
+print(test_dsep({"-->": [(0, 1), (1, 2)]}, 0, 2, [1]))`}
+    lang="py"
+    title=""
+  />
+  <CodeHelper
+    slot="r-code"
+    code={`library("ciflyr")
+
+dsepTablePath <- "./dsep.txt"
+
+test_dsep <- function(G, x, y, Z) {
+    R <- reach(G, list("X" = x, "Z" = Z), dsepTablePath)
+    return (!(y %in% R))
+}
+# for graph 1 -> 2 -> 3, test whether 1 is d-separated from 3 by 2
+print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
+`}
+    lang="r"
+    title=""
+  />
+</CodeSwitcher>
+
+Effectively, this rule table and code implements the well-known [Bayes-Ball algorithm](https://arxiv.org/pdf/1301.7412). 
+
+### Next Steps
+
+This tutorial should have given you a basic overview over the features of CIfly. For more details, check out the other [documentation articles](/docs/). The [applications](/applications/) we showcase provide some further examples where CIfly can be effective. Moreover, we also give an overview of the used [rule tables](/ruletables/), which you may take inspiration from.

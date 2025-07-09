@@ -1,0 +1,97 @@
+---
+title: Optimal adjustment sets
+shortTitle: Optimal VAS
+summary: Find the optimal adjustment set for a given CPDAG and sets of treatments and outcome variables. 
+code: [optimalAdjustment.R]
+ruletables: [not_amenable_cpdag, possible_ancestors_cpdag, possible_descendants_cpdag, parents_cpdag]
+graph: CPDAG
+references: [henckelOptimal,perkovicComplete]
+number: 6
+---
+
+import CodeHelper from "../../components/CodeHelper.astro"
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
+import ExampleCode from "../../components/ExampleCode.astro"
+import Ruletable from "../../components/Ruletable.astro"
+import Reference from "../../components/Reference.astro"
+
+In this article, we show how to implement an algorithm for constructing the
+optimal adjustment set using CIfly. Covariate adjustment is a fundamental
+technique for identifying causal effects. Applying covariate adjustment to
+CPDAGs (a class of causal graphs that can be learned from data), allows us to
+learn causal effects from observational data by combining causal discovery and
+causal effect estimation. As there may be many different adjustment sets in a
+causal graph, it is an important question which sets are preferable over
+others. <Reference id="henckelOptimal" format="author(year)"/> provide a
+graphical criterion for an adjustment set guaranteed to be valid if there is a
+valid adjustment set for the target causal effect. Furthermore, the
+corresponding estimator is guaranteed to have the smallest asymptotic variance
+among all estimators corresponding to valid adjustment sets. 
+
+The main result in this regard is stated in the following theorem. Note that we focus here purely on the graphical aspects of this problem, for more statistical and causal background, we refer the reader to the original paper.
+
+
+**Theorem** [<Reference id="henckelOptimal" format="author(year)"/>]    
+Consider disjoint node sets $X$ and $Y$ in a CPDAG $G$ such that $Y \subseteq \mathrm{possde}_G(X)$ and the node set $O=\left(\mathrm{pa}_G(\mathrm{causal}_G(X,Y))\right) \setminus (\mathrm{forb}_G(X,Y) \cup X).$ Then the following three statements hold:
+1. If there exists a valid adjustment set relative to $(X,Y)$ in $G$ than so is $O$.
+2. The causal effect estimator corresponding to $O$ has the smallest asymptotic variance among all estimators corresponding to valid adjustment sets for all causal models with CPDAG $G$.
+3. Any other valid adjustment set with Property 2 is a superset of $O$.
+
+The criterion is formulated for CPDAGs, which may contain both directed and undirected edges. They do not contain directed cycles and satisfy additional properties, which we, however, do not discuss in this article. The graphical terminology in the criterion is introduced below. 
+
+
+### Graphical terminology
+Let us first revisit the notion of possible descendants, causal and forbidden sets. A path is *possibly directed* from $X$ to $Y$ if every edge on it is either undirected or points towards the node in $Y$. For example, $x \rightarrow u - v \rightarrow y$ is, for $X = \{x\}$ and $Y = \{y\}$, a possibly directed path from $X$ to $Y$. We call a node $y$ a possible descendant of $X$ if there exists a possibly directed path from $X$ to $y$. The set $\mathrm{possde}_G(X)$ is the set of all possible descendants. In the criterion above we require that $Y \subseteq \mathrm{possde}_G(X)$. This may seem like a cumbersome requirement but if a node $y$ is not a possible descendant of $X$ then there is no causal effect of $X$ on $y$, which is why we may disregard such nodes. 
+
+The causal set relative to $(X,Y)$ in $G$, denoted $\mathrm{causal}_G(X,Y)$, consists of all nodes lying on possibly directed paths from $X$ to $Y$ excluding $X$ itself. The forbidden set relative to $(X,Y)$ in $G$, denoted $\mathrm{forb}_G(X,Y)$, is the set of all possible descendants of the causal set. 
+
+Finally, we introduce one further notion which we will use to verify whether valid adjustment set relative to $(X,Y)$ in $G$ exists. A *proper* path between $X$ and $Y$ is one which contains exactly one node from $X$ (the starting point of the path). A valid adjustment set relative to $(X,Y)$ in $G$ does not exist if there exists a proper possibly directed path starting with an undirected edge from a node $x \in X$ to $Y$. We call nodes $v$ to which there exists such a path from $X$ non-amenable. In our documentation articles for [ciflypy](/docs/ciflypy/) and [ciflyr](/docs/ciflyr/), we already used the rule table below for finding all non-amenable nodes as a running example.
+
+### Checking whether valid adjustment sets exist
+Since the optimal adjustment set $O$ is only valid if a valid adjustment set exists we first check whether this is the case. To do so we rely on Theorem 5 and Corollary 27 of <Reference id="perkovicComplete" format="author(year)"/> which states that a valid adjustment set exists if no node in $Y$ is non-amenable and no node in $X$ is forbidden. For finding all non-amenable nodes we use the rule table below that already served as a running example in our [documentation](/docs/ruletables/). It finds all nodes $v$ for which there exists a proper possibly directed path starting with an undirected edge from a node $x \in X$ to $v$. Effectively, these are the nodes that cannot be in set $Y$.  
+
+<Ruletable id="not_amenable_cpdag" withHeader={true}/>
+
+To check amenability, we use this ruletable for set $X$ and check whether the intersection of returned nodes with $Y$ is empty. 
+
+For verifying the other condition of the adjustment criterion, we need to compute the forbidden set which we do in multiple steps. First, we find all $w$ on a proper possibly directed path from $X$ to $Y$. Afterwards, we find the possible descendants of these $w$. The first step can be done by finding all nodes on a proper possibly directed path from $X$ that does not contain a node in $Y$ and, vice versa, all nodes from which there exists a proper possibly directed path to $Y$ not containing a node in $X$. By definition, the intersection of these two node sets are precisely the nodes which lie on a proper possibly directed path from $X$ to $Y$, that is, the causal set. 
+
+Hence, we need a table for finding nodes on proper possibly directed paths from $X$ with the option to stop before nodes of a passed set $W$ are reached. Clearly, this table can also be used to find possible descendants. 
+
+<Ruletable id="possible_descendants_cpdag" withHeader={true}/>
+
+We also need to find the nodes from which there exists a proper possibly directed path to $Y$. For this, we can simply start the reachability algorithm at $Y$ and traverse these paths the opposite way. 
+
+<Ruletable id="possible_ancestors_cpdag" withHeader={true}/>
+
+Using these tables, we can compute the forbidden set (and the causal set) as follows.
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`anc = cf.reach(cpdag, {"X": Y, "W": X}, "./possible_ancestors_cpdag.txt")
+des = cf.reach(cpdag, {"X": X, "W": []}, "./possible_descendants_cpdag.txt")
+cn = set(anc).intersection(des)
+forb = cf.reach(cpdag, {"X": cn}, "./possible_descendants_cpdag.txt")`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`anc <- reach(cpdag, list("X" = Y, "W" = X), "./possible_ancestors_cpdag.txt")
+des <- reach(cpdag, list("X" = X, "W" = c()), "./possible_descendants_cpdag.txt")
+cn <- intersect(anc, des)
+forb <- reach(cpdag, list("X" = cn), "./possible_descendants_cpdag.txt")`
+} lang="r" title="" />
+</CodeSwitcher>
+
+To check that $X$ does not contain forbidden nodes, we use this code to compute the forbidden set and then check whether the intersection with $X$ is empty. 
+
+### Constructing the optimal adjustment set
+To construct the optimal set itself we need precisely the causal set and the forbidden set. We have already shown how to obtain those above. The only step that remains is computing the parents of the causal set, i.e., all nodes $v$ such that there exists an edge $v \rightarrow c$ to some causal node $c$. This  is an easy task but it is nonetheless possible to inadvertantly implement a super-linear algorithm for it. In CIfly, however, it is rather easy to implement a linear-time algorithm by using the following rule table. 
+
+<Ruletable id="parents_cpdag" withHeader={true}/>
+
+### Full implementation
+In the final implementation, we use the four tables introduced above to check whether $Y$ consists of possible descendants of $X$, to verify whether a valid adjustment set exists and finally to construct the optimal set simultanously.
+
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="optimal_adjustment.py"/>
+	<ExampleCode slot="r-code" id="optimalAdjustment.R"/>
+</CodeSwitcher>

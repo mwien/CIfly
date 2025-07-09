@@ -165,8 +165,8 @@ install.packages("ciflyr")`}
 dsep_table_path = "./dsep.txt"
 
 def test_dsep(G, x, y, Z):
-      R = cf.reach(G, {"X": x, "Z": Z}, dsep_table_path)
-      return y not in R
+    R = cf.reach(G, {"X": x, "Z": Z}, dsep_table_path)
+    return y not in R
 
 # for graph 0 -> 1 -> 2, test whether 0 is d-separated from 2 by 1
 print(test_dsep({"-->": [(0, 1), (1, 2)]}, 0, 2, [1]))`}
@@ -181,8 +181,8 @@ print(test_dsep({"-->": [(0, 1), (1, 2)]}, 0, 2, [1]))`}
 dsepTablePath <- "./dsep.txt"
 
 test_dsep <- function(G, x, y, Z) {
-      R <- reach(G, list("X" = x, "Z" = Z), dsepTablePath)
-      return (!(y %in% R))
+    R <- reach(G, list("X" = x, "Z" = Z), dsepTablePath)
+    return (!(y %in% R))
 }
 # for graph 1 -> 2 -> 3, test whether 1 is d-separated from 3 by 2
 print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))

@@ -2,7 +2,7 @@
 title: The ciflypy package
 shortTitle: ciflypy
 summary: "Explains how to use CIfly from Python"
-number: 2
+number: 3
 ---
 
 In this article, we discuss how CIfly can be used from Python with the ```ciflypy``` package. It is available on PyPI and can be installed with ```pip install ciflypy```. 
@@ -26,15 +26,15 @@ print(is_amenable(g, X, Y))
 
 Here, ```cf.reach``` is called with a graph ```g``` (as a list of edges per edge type), a dictionary of sets (corresponding to the set names specified in the rule table) and a path to the text file containing the rule table (in this case assuming ```not_amenable_cpdag.txt``` lies in the current working directory; for better options, see below). The ```reach``` function returns a list of nodes, the output of the CIfly algorithm specified by the rule table. In the example above, these are all non-amenable nodes with respect to $X$ which are used to test amenability of a pair $X$ and $Y$. We now discuss how the arguments should be passed to ```reach```.
 
-#### Graph
+### Graph
 The graph is represented by a dictionary with each key describing an edge type, which maps to a list or set containing tuples of non-negative integers — the edges of this type. For example, the graph which has edges $0 \rightarrow 1 \leftarrow 2 - 3$ would be represented as ```{"-->": [(0, 1), (2, 1)], "---": [(2, 3)]}```. This is equivalent to ```{"-->": [(0,1)], "<--": [(1, 2)], "---": [(2,3)]}``` provided the rule table contains the edge description ```edges: --> <--, ---``` specifying ```-->``` and ```<--``` to be reciprocal. 
 
 For the node IDs, we strongly recommend to use the numbers $0, 1, \dots, p-1$ for a graph with $p$ nodes. Generally, any non-negative integers can be used, however, the memory requirements of ```ciflypy``` are linear in the largest node ID because of the internal representation of graphs and sets. Hence, unnecessarily large node numbers lead to slower run times and potential memory problems. Non-integer node names have to be stored outside of the ```ciflypy``` graph format, e.g., in a list indexed by the node IDs.
 
-#### Sets
+### Sets
 The sets are represented by a dictionary as well with keys mapping the name of a node set specified in the rule table to its instantiation as a Python list or set of non-negative integers (a single integer can also be used). As an example, ```{"X": [0, 1], "Z": [3], "W": [2, 4]}``` would represent the three sets $X = \{0, 1\}$, $Z = \{3\}$ and $W = \{2, 4\}$. The same sets could also be stated as ```{"X": {0, 1}, "Z": 3, "W": [2, 4]}```. The names of the sets must match the names specified in the rule table. 
 
-#### Rule table
+### Rule table
 In its basic version, the rule table is passed to ```reach``` by its file path as string. If used outside of simple scripts, make sure that the rule-table text file is included within the package and that its path is specified relative to the source file and not the current working directory. Better code compared to the example above would be to use ```pathlib``` to achieve this.
 
 ```py
@@ -69,13 +69,13 @@ cf.reach(g, sets, not_amenable_table, table_as_string=True)
 
 For this, the keyword argument ```table_as_string``` has to be set to ```True```. 
 
-#### Output
+### Output
 ```reach``` returns a list of non-negative integers, representing the nodes that are reached in an output state (as specified in the rule table) when running the reachablity algorithm on the given graph with the provided sets.
 
-#### Logging
+### Logging
 To help with debugging, it is possible to pass the keyword argument ```verbose=True``` to ```reach```. This logs the steps the reachability algorithm takes during its execution. 
 
-#### Advanced Usage
+### Advanced Usage
 In every ```reach``` call, the implementation needs to parse the graph, sets and rule table. This can introduce unnecessary overhead in the case that *the same* graph, sets or rule table are used repeatedly. To address this, ```ciflypy``` offers the option to parse these objects outside of the ```reach``` function with the constructors for the classes ```Graph```, ```Sets``` and ```Ruletable```. 
 
 The ```Ruletable``` constructor can be called as ```Ruletable(table_path)``` or ```Ruletable(table_string, table_as_string=True)```. The first argument of the ```Graph``` and ```Sets``` constructors are also in the same encoding as the respective ```reach``` arguments. However, it is necessary to pass a rule table as second argument (this can be done via file path, as a multi-line string with ```table_as_string``` set to ```True``` or by passing a ```Ruletable``` object). Afterwards, these objects must be used in combination with rule tables that have the same ```EDGES```, respectively ```SETS``` specification as the passed rule table. All three objects are internal CIfly representations and can *only* be passed as their respective arguments into ```reach```. We offer no further methods on these classes. 
@@ -98,7 +98,7 @@ for x in range(p):
     print("amenable for", x, set(range(p)).difference(not_amenable))
 ```
 
-#### Conversion to the ciflypy graph format
+### Conversion to the ciflypy graph format
 The ```ciflypy``` graph format is based on a dictionary of edge lists for different edge types. Graphs can usually be converted to this format with little effort. For example, consider a directed graph in ```networkx```:
 ```py
 import networkx as nx

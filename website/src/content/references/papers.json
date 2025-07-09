@@ -62,5 +62,16 @@
         "year": "1998",
         "venue": "UAI",
         "url": "https://arxiv.org/abs/1301.7412"
+    },
+    "henckelOptimal": {
+        "authors": [
+            "Henckel, Leonard",
+            "Perković, Emilija",
+            "Maathuis, Marloes H."
+        ],
+        "title": "Graphical criteria for efficient total effect estimation via adjustment in causal linear models",
+        "year": "2022",
+        "venue": "JRSS-B",
+        "url": "https://academic.oup.com/jrsssb/article/84/2/579/7056108"
     }
 }

@@ -1,15 +1,15 @@
 ---
 title: Theoretical foundations
 shortTitle: Foundations
-summary: "Introduces the principles underlying CIfly"
-number: 0
+summary: "Discusses the principles underlying CIfly"
+number: 1
 ---
 
 import Ruletable from "../../components/Ruletable.astro"
 import ReductionFigure from "../../components/ReductionFigure.astro"
 import StateSpaceGraphFigure from "../../components/StateSpaceGraphFigure.astro"
 
-In this article, we explore the main ideas underlying the CIfly framework. This will lay the groundwork for introducing the precise CIfly syntax afterwards. For a more detailed exposition, we refer to the [paper](https://arxiv.org/abs/2506.15758) which thoroughly develops these theoretical foundations. 
+In this article, we explore the main theoretical ideas underlying the CIfly framework. This will lay the groundwork for introducing the precise CIfly syntax afterwards. For a more detailed exposition, we refer to the [paper](https://arxiv.org/abs/2506.15758) which thoroughly develops these foundations. 
 The central principle of CIfly is to solve tasks from graphical causal inference with reachability algorithms. The following illustration gives a overview of what we call a *causal-to-reach reduction*.
 
 <ReductionFigure/>
@@ -26,7 +26,7 @@ To explain CIfly reductions, let us first introduce the structure of the reachab
 
 The directed edges in $G_{\text{dir}}$ follow from a set of rules that given in a rule table. Consider two states $(v_1, n_1, c_1)$ and $(v_2, n_2, c_2)$ in $V_{\text{dir}}$. A *rule* might say: if $n_1 = \; \rightarrow$ and $n_2 = \; \leftarrow$, and moreover $v_2 \in L_2$, then there should be an edge $(v_1, n_1, c_1) \rightarrow (v_2, n_2, c_2)$ in $G_{\text{dir}}$. To connect this to the original graph $G$, this edge will only be present if $v_2$ is an neighbor of type $n_2$ of $v_1$ in $G$. 
 
-This construction may appear quite complicated at first, but essentially this connects *walks* in the graph $G$ to *paths* in $G_{\text{dir}}$ where information about the type of the last traversed edge is stored in the states. By choosing the rules and using colors for added complexity we can control what walks in $G$ correspond to directed paths in $G_{\text{dir}}$. Through this we reduce complex causal walk condition in $G$ to algorithmically simple reachability problems in $G_{\text{dir}}$. We now illustrate this on the example of d-connectivity. 
+This construction may appear quite complicated at first, but essentially this connects *walks* in the graph $G$ to *paths* in $G_{\text{dir}}$ where information about the type of the last traversed edge is stored in the states. By choosing the rules and using colors for added complexity we can control what walks in $G$ correspond to directed paths in $G_{\text{dir}}$. Through this we reduce complex causal walk condition in $G$ to algorithmically simple reachability problems in $G_{\text{dir}}$. We now illustrate this on the example of d-connectivity. Let us first recall the definition. 
 
 **Definition** (d-separation)     
 Let $X$ and $Z$ be two disjoint node sets in a DAG $G = (V, E)$. Then, $Y \subseteq V \setminus (X \cup Z)$ is *d-connected* to $X$ in $G$ if there exists $x \in X$, $y \in Y$ and a walk $w$ from $x$ to $y$ such that

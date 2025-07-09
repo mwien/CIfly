@@ -5,24 +5,34 @@ ruletables = utils.get_ruletable_path()
 
 poss_desc_table = cifly.Ruletable(str(ruletables / "possible_descendants_cpdag.txt"))
 not_amenable_table = cifly.Ruletable(str(ruletables / "not_amenable_cpdag.txt"))
-forb_path_conn_table = cifly.Ruletable(str(ruletables / "forbidden_path_connected_cpdag.txt"))
-non_causal_conn_table = cifly.Ruletable(str(ruletables / "non_causal_connected_cpdag.txt"))
+forb_path_conn_table = cifly.Ruletable(
+    str(ruletables / "forbidden_path_connected_cpdag.txt")
+)
+non_causal_conn_table = cifly.Ruletable(
+    str(ruletables / "non_causal_connected_cpdag.txt")
+)
+
 
 def poss_desc(g, x):
     return set(cifly.reach(g, {"X": x, "W": []}, poss_desc_table))
 
+
 def not_amenable(g, x):
     return set(cifly.reach(g, {"X": x}, not_amenable_table))
+
 
 def forbidden(g, x, W):
     return set(cifly.reach(g, {"X": x, "W": W}, forb_path_conn_table))
 
+
 def non_causal_connected(g, x, W):
     return set(cifly.reach(g, {"X": x, "W": W}, non_causal_conn_table))
+
 
 def not_amenable_not_adjustment(g, x, W):
     nam = not_amenable(g, x)
     return nam, nam.union(forbidden(g, x, W)).union(non_causal_connected(g, x, W))
+
 
 def parent_aid(p, g_true, g_guess):
     parents = [[] for _ in range(p)]
@@ -36,7 +46,9 @@ def parent_aid(p, g_true, g_guess):
         pa = set(parents[x])
         not_amenable_guess = not_amenable(g_guess_parsed, x)
         desc_true = poss_desc(g_true_parsed, x)
-        not_amenable_true, not_adjustment_true = not_amenable_not_adjustment(g_true_parsed, x, pa)
+        not_amenable_true, not_adjustment_true = not_amenable_not_adjustment(
+            g_true_parsed, x, pa
+        )
 
         for y in range(p):
             if y == x:
