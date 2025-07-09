@@ -7,7 +7,6 @@ import { getCollection, render } from "astro:content";
 import Ruletable from "../../components/Ruletable.astro";
 import ReferenceList from "../../components/ReferenceList.astro";
 import ApplicationList from "../../components/ApplicationList.astro";
-import BackButton from "../../components/BackButton.astro";
 export async function getStaticPaths() {
   const ruletables = await getCollection("ruletables");
   return ruletables.map((ruletable) => ({
