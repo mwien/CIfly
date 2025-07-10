@@ -1,7 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-const { title, postTitle } = Astro.props;
+const { title, postTitle, description } = Astro.props;
 ---
 
 <!doctype html>
@@ -10,11 +10,12 @@ const { title, postTitle } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link ref="sitemap" href="/sitemap-index.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <title>{title && title + " ·"} CIfly {postTitle && "· " + postTitle}</title>
     <meta
       name="description"
-      content="CIfly is a declarative framework for designing efficient causal inference algorithms with rule tables that specify reductions to graph reachability."
+      content={description ||
+        "CIfly is a declarative framework for designing efficient causal inference algorithms with rule tables that specify reductions to graph reachability."}
     />
     <meta
       name="google-site-verification"

@@ -4,7 +4,6 @@ import "katex/dist/katex.min.css";
 import Layout from "../../layouts/Layout.astro";
 import Prose from "../../components/Prose.astro";
 import FullReference from "../../components/FullReference.astro";
-import BackButton from "../../components/BackButton.astro";
 import { getCollection, render } from "astro:content";
 export async function getStaticPaths() {
   const applications = await getCollection("applications");
@@ -17,7 +16,10 @@ const { application } = Astro.props;
 const { Content } = await render(application);
 ---
 
-<Layout title={application.data.shortTitle}>
+<Layout
+  title={application.data.shortTitle}
+  description={application.data.summary}
+>
   <div class="w-full md:w-7/10 md:my-4">
     <div
       class="flex font-bold text-gray-900 dark:text-white text-2xl justify-between w-full mb-4"
