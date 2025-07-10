@@ -1,0 +1,8 @@
+EDGES --> <--
+SETS Y, A, Z, X
+START <-- AT Y
+OUTPUT ...
+
+... | --> | current not in X
+<-- | <-- | current not in X and next not in Z
+--> | <-- | current in A and next not in Z

@@ -4,35 +4,7 @@ requires-python = ">=3.13"
 
 [[package]]
 name = "ciflypy"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e4/b6/11602cee911d91a4e6f11d124cf25e4370397f5d874a9fa2f4a08b885794/ciflypy-0.1.1.tar.gz", hash = "sha256:ce0535e673b6e83dac45cd850e25b3fea85bedabf1628d4e66f0eb4e687afba7", size = 5544, upload-time = "2025-07-07T10:39:06.699Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/d1/9c55e0360f8015fd5e4efc54511c57eb10dd624d93614d54060b64cf1e18/ciflypy-0.1.1-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:38c1af1bd64e69312f492ef81acf7a092f384a5a1140fffafc9d4f3ab0a6ddfc", size = 312274, upload-time = "2025-07-07T10:38:20.5Z" },
-    { url = "https://files.pythonhosted.org/packages/ee/d6/50ecf01158a9acd843c708f671e15cb76f5a30994a7484af523991250045/ciflypy-0.1.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:2ae31360a84425968acd9e1ecc51f7b04449488e5cdca4513999e0a6287789e1", size = 297929, upload-time = "2025-07-07T10:38:17.17Z" },
-    { url = "https://files.pythonhosted.org/packages/67/dd/ce38c2a44cc9f672ae5ff878f7ce5622f31d6bd0d67e73bd7987750f5621/ciflypy-0.1.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8358d3caf261a326efbacc55434dc5738a9fe89ab957aadaf75e048e680b4bb7", size = 332156, upload-time = "2025-07-07T10:37:13.211Z" },
-    { url = "https://files.pythonhosted.org/packages/cb/11/58b16b09411a677c5ad5d512b81258b33bedb6c7cc7c1dad64764e69bb82/ciflypy-0.1.1-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:cc1a96abad3891c02007c2d29943d3c67fa4c6148538e2ca67cc76d2634a93fa", size = 344825, upload-time = "2025-07-07T10:37:25.406Z" },
-    { url = "https://files.pythonhosted.org/packages/25/aa/e62add6f097596178863704d822ee50f48a0e66f6ab4146eed0b5016a47a/ciflypy-0.1.1-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:24aa97b82c88f2e2e59f5dd43fe58a6f6823789543085dde30e33aa9f18fcf0d", size = 470591, upload-time = "2025-07-07T10:37:36.866Z" },
-    { url = "https://files.pythonhosted.org/packages/6d/ba/7b16a3d764bb779f89fbc827d9b78c2e13d7c199b9c8822fcfbbae22a0f1/ciflypy-0.1.1-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:a4f3c8cd88a242d00f29d91eeb0ca792572af9888cbc7cbaca76957816be7cab", size = 370891, upload-time = "2025-07-07T10:37:48.689Z" },
-    { url = "https://files.pythonhosted.org/packages/84/d4/154d1540aada72e1844b35c4835d8fb8983944c0a5cd8c51c6bf0217afe9/ciflypy-0.1.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:60cf56aac7b9a112c72b13682c846e8b4f891b0f8e5e26f0430dba7adf0069aa", size = 338353, upload-time = "2025-07-07T10:38:08.595Z" },
-    { url = "https://files.pythonhosted.org/packages/2a/f3/e43f9eb3e13ac4bb60c41a7c34ef1c16ba8ba918f6e2fd113fb72f971685/ciflypy-0.1.1-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:96ab10b3c4653ea6ee78263ee9f026550bf70cb471c52d35c31a9f2d7bd48dc6", size = 365616, upload-time = "2025-07-07T10:37:58.942Z" },
-    { url = "https://files.pythonhosted.org/packages/51/f1/60507eeed7c7ee6abf4112e6966c594b3e3a53dce13db3cb4b17dc53e517/ciflypy-0.1.1-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:cc3217bcc89aabe091deca38ddd57f62a35bdf24e74f9f9a7b9dd923a4e40548", size = 510641, upload-time = "2025-07-07T10:38:25.101Z" },
-    { url = "https://files.pythonhosted.org/packages/b3/6a/807758c3ccf660508a64684cb929e50e321e576ea0419470a9598fe8bb7d/ciflypy-0.1.1-cp313-cp313-musllinux_1_2_armv7l.whl", hash = "sha256:0018f4ef1ec7d4b754d7e869f47f7c5910bd76743db448d27ce2156b1fbd2664", size = 606763, upload-time = "2025-07-07T10:38:36.284Z" },
-    { url = "https://files.pythonhosted.org/packages/95/bb/0cfef0fcd2e50b9a4617e65c6b06413303e5faf5c820b8acd9044bfc9452/ciflypy-0.1.1-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:1a0a08d9d52e2fa6922d5cb2403f2fc28e6e01f4e02f5a74bc8319a222957305", size = 539030, upload-time = "2025-07-07T10:38:47.569Z" },
-    { url = "https://files.pythonhosted.org/packages/f4/b5/720794dcb4b5be5412c2d39fbb960641a94c740277da394762ccb47efde2/ciflypy-0.1.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:568078329b1b67a19d2c70b709e029fe4e3d8ff39f50d157dbd95dd2fe061c16", size = 508994, upload-time = "2025-07-07T10:38:58.962Z" },
-    { url = "https://files.pythonhosted.org/packages/5c/89/72f953ea35711eb90f1ed3a947e01d38b63df9f8cddf1b606d74dff4fa67/ciflypy-0.1.1-cp313-cp313-win32.whl", hash = "sha256:ad17002b6bbf0661072ced679a3284fcb4473fd91dbe2b1745a1861f23e3bf07", size = 189621, upload-time = "2025-07-07T10:39:16.983Z" },
-    { url = "https://files.pythonhosted.org/packages/17/56/28ff66d24860665e86da3c682030c6ad033642f23b165da6a911b27f052c/ciflypy-0.1.1-cp313-cp313-win_amd64.whl", hash = "sha256:ff79ff07a47501fac025149674cf7d01f981ce5f56877103c6a1bfc0e626da58", size = 200028, upload-time = "2025-07-07T10:39:10.342Z" },
-    { url = "https://files.pythonhosted.org/packages/3e/26/667aa6d636df149757d800cffd1dc6ce3f0c5ccf19fa33675d9e33e95a24/ciflypy-0.1.1-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:db2644a663f867e12a3325fdbbedbc37caab10a4261ab1b3c8ef4d3377aff471", size = 331613, upload-time = "2025-07-07T10:37:14.256Z" },
-    { url = "https://files.pythonhosted.org/packages/61/d7/ea2c89ae863ba411523cb5560bf2da8c10ae379d86a50cea849a6d42489b/ciflypy-0.1.1-cp313-cp313t-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:5e391fbeb20f95d96bfdeefa158cf833d5b6778cd99ebde7d2d174b4761fac19", size = 344173, upload-time = "2025-07-07T10:37:26.322Z" },
-    { url = "https://files.pythonhosted.org/packages/98/f3/59d00059bfc3f4db8fb6eb868c750f0759d6c47a2ccd2f2420159b59d381/ciflypy-0.1.1-cp313-cp313t-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:eefae9647896ea4023c8dc374149b9642abf1e90e17eec49905fdf5dd999014a", size = 468152, upload-time = "2025-07-07T10:37:38.205Z" },
-    { url = "https://files.pythonhosted.org/packages/33/09/4b64bf5621b5b13ffcc143a813bbf116310725cb8393c0d0b6da01f7b051/ciflypy-0.1.1-cp313-cp313t-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:d9c1c9c9789865ffd0db844139b622f504813ff050dc35a4c7f3b9b61c6d707b", size = 371458, upload-time = "2025-07-07T10:37:49.935Z" },
-    { url = "https://files.pythonhosted.org/packages/27/5d/1c42649f6ef0ba7966cb4ce5ce29d97e1fc77e236953cbb6a88cd4383004/ciflypy-0.1.1-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:cc94df1c2317c9d0b1e75f13d22a35f8a7b0508299e120110be302bbf7d7b35c", size = 510509, upload-time = "2025-07-07T10:38:26.182Z" },
-    { url = "https://files.pythonhosted.org/packages/fa/c8/aa359d9d55f2a9814d29c72b86595cbba6d523b8f328a989f1d3d9efc8ee/ciflypy-0.1.1-cp313-cp313t-musllinux_1_2_armv7l.whl", hash = "sha256:c6793819650905663b2f446a1ea9df0603dbabd567e1b5d7909d66e4c8df2d53", size = 605863, upload-time = "2025-07-07T10:38:37.653Z" },
-    { url = "https://files.pythonhosted.org/packages/7d/ba/19e2f10c380b6c9ca43d1d9016fb3580fed26603338e3faae5aea65fe5aa/ciflypy-0.1.1-cp313-cp313t-musllinux_1_2_i686.whl", hash = "sha256:3389027311ef79f9dbf90eecddb3cb227a557a8cab89c876315751ac4296136e", size = 537685, upload-time = "2025-07-07T10:38:48.635Z" },
-    { url = "https://files.pythonhosted.org/packages/9f/0f/0f14584f4c9d7c1900886fc80a69530efcacc93e999cb276b6f3e2044b9f/ciflypy-0.1.1-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:82de77f5b14ae095a11fa2a7703fa2d2e7c7448cd3a5ed1c11d44bafb62cedc6", size = 509380, upload-time = "2025-07-07T10:39:00.119Z" },
-    { url = "https://files.pythonhosted.org/packages/f7/a0/0a221ccac8d4fcc1434043f6fd23ea3d5a027495c3d4027822b7e6ca39cd/ciflypy-0.1.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4ca3a5839c2e045f5353e6dcdcd0145bd51966560bb0f539d5320fe3b8398898", size = 339075, upload-time = "2025-07-07T10:38:09.538Z" },
-    { url = "https://files.pythonhosted.org/packages/6b/ad/2a853478e400bd00aa8c51b18c639c0c2a69fcc07493af068e0d84d27597/ciflypy-0.1.1-cp314-cp314-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:e986820dd9c5970f1714f60a4d2a39d661e3909b90b5a495b7594be8baf7f678", size = 364880, upload-time = "2025-07-07T10:37:59.95Z" },
-]
+source = { directory = "../../ciflypy" }
 
 [[package]]
 name = "ciflypy-examples"
@@ -48,7 +20,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "ciflypy", specifier = ">=0.1.1" }]
+requires-dist = [{ name = "ciflypy", directory = "../../ciflypy" }]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8.3.5" }]

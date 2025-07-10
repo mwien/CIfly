@@ -73,5 +73,36 @@
         "year": "2022",
         "venue": "JRSS-B",
         "url": "https://academic.oup.com/jrsssb/article/84/2/579/7056108"
+    },
+    "pearlFrontdoor": {
+        "authors": [
+            "Pearl, Judea"
+        ],
+        "title": "Causal diagrams for empirical research",
+        "year": "1995",
+        "venue": "Biometrika",
+        "url": "https://www.jstor.org/stable/2337329"
+    },
+    "jeongFrontdoor": {
+        "authors": [
+            "Jeong, Hyunchai",
+            "Tian, Jin",
+            "Bareinboim, Elias"
+        ],
+        "title": "Finding and Listing Front-door Adjustment Sets",
+        "year": "2022",
+        "venue": "NeurIPS",
+        "url": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/d67ac621411d6fa4dca682ce62f84ea7-Abstract-Conference.html"
+    },
+    "wienoebstFrontdoor": {
+        "authors": [
+            "Wienöbst, Marcel",
+            "van der Zander, Benito",
+            "Liśkiewicz, Maciej"
+        ],
+        "title": "Linear-Time Algorithms for Front-Door Adjustment in Causal Graphs",
+        "year": "2024",
+        "venue": "AAAI",
+        "url": "https://ojs.aaai.org/index.php/AAAI/article/view/30043"
     }
 }
