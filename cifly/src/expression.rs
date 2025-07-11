@@ -44,7 +44,10 @@ impl RuletableAtom {
         }
     }
 
-    fn from_string(atom: &str, sets: &HashMap<String, usize>) -> RuletableAtom {
+    fn from_string(
+        atom: &str,
+        sets: &HashMap<String, usize>,
+    ) -> Result<RuletableAtom, ParseExpressionError> {
         let identifier_variants = [
             RuletableAtom::True,
             RuletableAtom::False,
@@ -57,10 +60,16 @@ impl RuletableAtom {
                     .get_identifier()
                     .expect("rule table atom should have an identifier")
             {
-                return variant;
+                return Ok(variant);
             }
         }
-        RuletableAtom::Set(*sets.get(atom).unwrap())
+        match sets.get(atom) {
+            Some(&a) => Ok(RuletableAtom::Set(a)),
+            None => Err(ParseExpressionError(format!(
+                "could not find set '{}', are you sure you defined it?",
+                atom
+            ))),
+        }
     }
 }
 
@@ -131,7 +140,7 @@ impl Expression {
         sets: &HashMap<String, usize>,
     ) -> Result<Expression, ParseExpressionError> {
         let mut lhs = match lexer.next() {
-            Token::Atom(s) => Expression::Atom(RuletableAtom::from_string(&s, sets)),
+            Token::Atom(s) => Expression::Atom(RuletableAtom::from_string(&s, sets)?),
             Token::BraceOpen => {
                 let lhs = Self::expr_bp(lexer, 0, sets)?;
                 if lexer.next() != Token::BraceClose {

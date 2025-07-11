@@ -109,7 +109,7 @@ impl Ruletable {
                     "line {}: trying to parse a {} line: {} \n  {}",
                     line_number + 1,
                     line_type,
-                    err,
+                    err.0,
                     line.chars().take(80).collect::<String>()
                         + if line.len() <= 80 { "" } else { "..." }
                 ))
