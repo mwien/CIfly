@@ -1,0 +1,77 @@
+---
+title: Finding front-door adjustment sets
+shortTitle: Front-door
+summary: Find a front-door adjustment set in a DAG for sets of variables X and Y.
+code: [optimal_iv.py, optimalIV.R]
+ruletables: [ancestors_admg, backdoor_connected_dag, frontdoor_dag, descendands_blocked_dag]
+graph: DAG
+references: [pearlFrontdoor, jeongFrontdoor, wienoebstFrontdoor]
+number: 7
+---
+
+import CodeSwitcher from "../../components/CodeSwitcher.astro"
+import ExampleCode from "../../components/ExampleCode.astro"
+import Ruletable from "../../components/Ruletable.astro"
+import Reference from "../../components/Reference.astro"
+
+In this article, we develop a CIfly algorithm that finds a front-door adjustment set in a DAG for treatment variables $X$ and outcome variables $Y$, or reports that no such set exists. Front-door adjustment is a classical strategy for identifying a causal effect. It uses a *front-door adjustment set* $Z$ to express the causal effect of $X$ on $Y$ through the formula $P(y \mid do(x)) = \sum_z P(z \mid x) \sum_{x'} P(y \mid x', z) P(x')$. <Reference id="pearlFrontdoor" format="author(year)"/> gives a sufficient criterion for a set of nodes $Z$ to be a valid front-door adjustment set:
+
+**Theorem 1** [<Reference id="pearlFrontdoor" format="author(year)"/>]    
+Let $G = (V, E)$ be a DAG and $X$, $Y$, $Z$  pairwise disjoint subsets of $V$. Then, set $Z$ is a front-door adjustment set relative to $(X, Y)$ in $G$ if
+1. $Z$ intercepts all directed paths from $X$ to $Y$,
+2. there is no unblocked proper back-door path from $X$ to $Z$ and
+3. all proper back-door paths from $Z$ and $Y$ are blocked by $X$. 
+
+To understand this criterion, some definitions are in order. A path from $A$ to $B$ is a *back-door* path if it starts with an edge $a \leftarrow$ for some $a \in A$. It is *proper* if it contains exactly one node from $A$. It is *unblocked* if it is d-connected and *blocked* if it is d-separated. 
+
+Note that these are *not* necessary conditions for $Z$ to be a front-door adjustment set. Still, when we refer to front-door adjustment sets in the following, we mean those that satisfy this criterion (even though there might be sets $Z$ that can be used in the front-door formula but do not satisfy Pearl's criterion). Our goal in this article is to develop an algorithm that finds a front-door set $Z$ or decides that none exists. 
+
+
+### General strategy for finding a front-door adjustment set
+Even though we have a criterion that allows us to check whether a certain set $Z$ is a front-door adjustment set, it doesn't mean it is easy to *find* one. Naively, one could go through all possible sets $Z$ and check for each whether it satisfies the criterion, but that would require time exponential in the input size. Hence, a more clever method is generally needed. Such a method was proposed by <Reference id="jeongFrontdoor" format="author(year)"/> and we follow it for the implementation of our CIfly algorithm. 
+
+The strategy for finding $Z$ consists of the following steps:
+- first compute $Z_{(i)}$ to include all nodes that satisfy the second condition of the front-door criterion, 
+- then compute $Z_{(ii)}$ as the largest subset of $Z_{(i)}$ that also satisfies the third condition of the front-door criterion and
+- finally return the set $Z_{(ii)}$ if it satisfies the first condition of the front-door criterion. 
+
+The reasoning behind this is that for satisfying the first condition of the front-door criterion, larger sets can only help in blocking the directed paths from $X$ to $Y$. Hence, we compute $Z_{(ii)}$ as the largest possible set of nodes that satisfies the other two conditions. It will be a corollary of the algorithmic approach below that this set is unique.  As we will see, the second step of this procedure is the tricky one. Thus, let us deal with the other two first.
+
+### Checking the first condition
+We begin with the last step of the procedure that checks whether the first condition of the front-door criterion is satisfied. Here, our goal is to find out whether every directed path from $X$ to $Y$ contains a node in $Z$, which corresponds to the question whether we reach $Y$ from $X$ when stopping at nodes in $Z$. Hence, we can do this with the following rule table.
+
+<Ruletable id="intercepted_paths_dag" withHeader={true}/>
+
+If this search returns a node from $Y$, then the condition is violated. 
+
+### Finding nodes satisfying the second condition
+The second condition of the front-door criterion excludes nodes $z$ for which there exists a proper open back-door path from $X$ to $z$. It easy to find those nodes with the following rule table (this rule table also allows to specify a conditioning set $W$, which however is not needed here). 
+
+<Ruletable id="backdoor_connected_dag" withHeader={true}/>
+
+The first transition from color ```init``` to ```yield``` is allowed only for back-door edges ```<--```. Afterwards, only non-colliders are traversed.
+
+### Finding a set of nodes satisfying the third condition
+Computing the nodes that can be part of a set satisfying the third condition of the front-door criterion is more complicated. The reason for this is that it needs to be ensured that there is no proper back-door path *from* $Z$ to $Y$ blocked by $Y$. This means that we cannot decide for individual nodes in isolation whether they should be part of $Z_{(ii)}$ due to the fact that adding extra nodes to $Z_{(ii)}$ may affect which *proper* paths exist. Instead, we will compute this set by identifying the nodes that *cannot* be in $Z_{(ii)}$ with a single graph search following the approach by <Reference id="wienoebstFrontdoor" format="author(year)"/>. This method guarantees that the remaining nodes form the unique maximum-size set of nodes satisfying the second and third condition of the front-door criterion. It relies on the following Lemma:
+
+**Lemma 1** [<Reference id="wienoebstFrontdoor" format="author(year)"/>]    
+Let $G$ be a DAG and $X$, $Y$ disjoint sets of vertices. Vertex $v$ is not in $Z_{(ii)}$ if, and only if,
+- $v \not\in Z_{(i)}$,
+- $v \leftarrow Y$, or
+- there exists an open back-door way (consisting of at least three variables) from $v$ to $Y$ given $X$, and all its nonterminal nodes are not in $Z_{(ii)}$. 
+
+Hence, we have a recursive definition of the nodes *not* in $Z_{(ii)}$. It already suggests a graph traversal visiting only nodes in $Z_{(ii)}$ which connect to $Y$ via a back-door path. The problematic bit is that if a node is visited, it may yet be unclear which parents of it are not in $Z_{(ii)}$. Thus, a parent might be identified later on as a node not in $Z_{(ii)}$ (via some other path from $Y$) and then the search may need to be continued. It is possible to precisely characterize when this happens (for details, we refer to the proofs in the paper), yielding the following rule table which uses the sets $Y$, the ancestors of $Y$, $Z_{(i)}$ and $X$. 
+
+<Ruletable id="frontdoor_forbidden_dag" withHeader={true}/>
+
+### Putting everything together
+We are now ready to give a full implemention of the algorithm for finding a front-door adjustment set. Before we look at the code, a few more remarks:
+- The code offers the user the option to constrain the front-door adjustment set to *only* include nodes from set $R$ and to *always* include nodes from set $I$. Hence, a set $Z$ satisfying $I \subseteq Z \subseteq R$ is returned. In particular, this allows the modeling of unobserved variables by excluding them from $R$. A different implementation option, that we have chosen in other articles, is to directly design the algorithm for ADMGs.
+- The algorithm will always return a front-door set of maximum size. Often this may not be the desired outcome. <Reference id="wienoebstFrontdoor" format="author(year)"/> also present algorithms for finding minimal front-door sets and for listing all front-door sets. Both can be implemented with CIfly, however, this goes beyond the scope of this article.
+
+Adding the constraining set $R$ to the algorithm is fairly straightforward by restricting $Z_{(i)}$ and thus also $Z_{(ii)}$ to these nodes. For set $I$ we only need to check that it is part of $Z_{(ii)}$ before returning, as $Z_{(ii)}$ is the unique maximum size front-door set. 
+
+<CodeSwitcher>
+	<ExampleCode slot="python-code" id="frontdoor.py"/>
+	<ExampleCode slot="r-code" id="frontdoor.R"/>
+</CodeSwitcher>
