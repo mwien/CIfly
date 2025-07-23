@@ -11,7 +11,7 @@
 ciflyr is the R interface to the CIfly framework for designing efficient
 causal inference algorithms based on reductions to graph reachability
 specified by rule tables. For more information on CIfly, see our
-[website](https://cifly.pages.dev/) and our
+[website](https://cifly.dev/) and our
 [paper](https://arxiv.org/abs/2506.15758).
 
 ## Installation

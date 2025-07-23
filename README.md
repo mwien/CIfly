@@ -1,6 +1,6 @@
 # CIfly
 
-A declarative framework for designing efficient causal inference algorithms based on reductions to graph reachability specified by rule tables. For all information on CIfly, see our [website](https://cifly.pages.dev/).
+A declarative framework for designing efficient causal inference algorithms based on reductions to graph reachability specified by rule tables. For all information on CIfly, see our [website](https://cifly.dev/).
 
 ## Installation
 
@@ -76,7 +76,7 @@ test_dsep <- function(G, x, y, Z) {
 print(test_dsep(list("-->" = rbind(c(1, 2), c(2, 3))), 1, 3, c(2)))
 ```
 
-Find more details on this example and how to use CIfly [in our documentation](https://cifly.pages.dev/docs/).
+Find more details on this example and how to use CIfly [in our documentation](https://cifly.dev/docs/).
 
 ## Support for other languages
 
