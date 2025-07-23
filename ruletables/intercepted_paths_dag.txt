@@ -1,0 +1,6 @@
+EDGES --> <--
+SETS X, Z
+START --> AT X
+OUTPUT -->
+
+--> | --> | current not in Z

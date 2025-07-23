@@ -8,10 +8,13 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "ciflypy>=0.1.1",
+    "ciflypy",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.3.5",
 ]
+
+[tool.uv.sources]
+ciflypy = { path = "../../ciflypy" }

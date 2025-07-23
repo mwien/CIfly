@@ -1,0 +1,8 @@
+---
+title: "Intercepted paths"
+source: intercepted_paths_dag
+graph: DAG
+references: []
+---
+
+A rule table that tracks directed paths from $X$ that are not blocked by a set $Z$. 

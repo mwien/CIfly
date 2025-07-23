@@ -1,0 +1,7 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Linear-Time Primitives for Algorithm Development in Graphical Causal Inference",
+  author   = c(person("Marcel", "Wienöbst", role = "aut"), person("Sebastian", "Weichwald", role = "aut"), person("Leonard", "Henckel", role = "aut")),
+  journal  = "arXiv preprint arXiv:2506.15758",
+  year     = "2025",
+)
