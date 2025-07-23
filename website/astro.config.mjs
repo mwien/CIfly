@@ -21,7 +21,7 @@ export default defineConfig({
       themes: { light: customCatppucinLatte, dark: customCatppucinMocha },
     },
   },
-  site: "https://cifly.pages.dev",
+  site: "https://cifly.dev",
   integrations: [mdx(), sitemap()],
   trailingSlash: "always",
   vite: {
