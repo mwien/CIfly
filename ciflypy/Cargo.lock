@@ -10,13 +10,13 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "cifly"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a81367a9f3ae562b9b114d4a5e21f7a0375a6c299ee616094828c1cc7365b631"
+checksum = "2b9ecda8537aabb2207db5b29d20b4fec94ad17b5839248f59d2c6ae3501040a"
 
 [[package]]
 name = "ciflypy"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "cifly",
  "pyo3",
