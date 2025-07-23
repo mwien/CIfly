@@ -2,7 +2,7 @@
 //!
 //! Allows for the specification of reachability-based algorithm with rule tables.
 //! Best used through the wrapper packages ciflypy and ciflyr for Python and R.
-//! Find more information on the [CIfly website](https://cifly.pages.dev).
+//! Find more information on the [CIfly website](https://cifly.dev).
 
 mod array_nd;
 mod expression;
