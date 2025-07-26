@@ -11,7 +11,7 @@ const { references, darker, small, truncate } = Astro.props;
     >
       References:
     </div>
-    <div class:list={[{"text-gray-800": darker }, { "text-sm md:text-base": small }, { truncate: truncate }]}>
+    <div class:list={[{"text-gray-800 dark:text-gray-200": darker }, { "text-sm md:text-base": small }, { truncate: truncate }]}>
       {references.map((reference, index) => (
         <>
           <span>

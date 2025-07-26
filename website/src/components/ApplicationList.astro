@@ -11,7 +11,7 @@ const { applications, darker, small, truncate } = Astro.props;
       Applications:
     </div>
     <div
-  class:list={[{"text-gray-800": darker}, {"text-sm md:text-base": small }, { truncate: truncate }]}
+  class:list={[{"text-gray-800 dark:text-gray-200": darker}, {"text-sm md:text-base": small }, { truncate: truncate }]}
     >
       {applications.map((application, index) => (
         <>
