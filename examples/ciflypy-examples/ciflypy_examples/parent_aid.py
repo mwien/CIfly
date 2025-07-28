@@ -3,14 +3,12 @@ import ciflypy_examples.utils as utils
 
 ruletables = utils.get_ruletable_path()
 
-poss_desc_table = cifly.Ruletable(str(ruletables / "possible_descendants_cpdag.txt"))
-not_amenable_table = cifly.Ruletable(str(ruletables / "not_amenable_cpdag.txt"))
+poss_desc_table = cifly.Ruletable(ruletables / "possible_descendants_cpdag.txt")
+not_amenable_table = cifly.Ruletable(ruletables / "not_amenable_cpdag.txt")
 forb_path_conn_table = cifly.Ruletable(
-    str(ruletables / "forbidden_path_connected_cpdag.txt")
+    ruletables / "forbidden_path_connected_cpdag.txt"
 )
-non_causal_conn_table = cifly.Ruletable(
-    str(ruletables / "non_causal_connected_cpdag.txt")
-)
+non_causal_conn_table = cifly.Ruletable(ruletables / "non_causal_connected_cpdag.txt")
 
 
 def poss_desc(g, x):

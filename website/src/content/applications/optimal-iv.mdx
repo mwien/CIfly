@@ -140,9 +140,34 @@ may prove useful, which abstracts this code for different edge types including a
 ### Full implementation
 Hence, we obtain the following implementation for finding graphically optimal instrumental sets $Z$ and $W$ assuming that the causal effect of $x$ on $y$ cannot be identified with adjustment. 
 
-The functions for checking parents and siblings are loaded from ```utils```. As [before](/applications/cpdag-adjustment-check/), we also rely on a simple function ```get_ruletable_path()```, respectively ```getRuletablePath()```, that returns a path to the rule-table folder. 
+The functions for checking parents and siblings are loaded from ```utils```. As [before](/applications/cpdag-adjustment-check/#full-implementation), we rely on a simple function ```get_ruletable_path()```, respectively ```getRuletablePath()```, that returns a path to the rule-table folder. Replace this line according to the location of the rule tables in your project.
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="optimal_iv.py"/>
 	<ExampleCode slot="r-code" id="optimalIV.R"/>
+</CodeSwitcher>
+
+Both [Python](https://github.com/mwien/CIfly/blob/main/examples/ciflypy-examples/ciflypy_examples/optimal_iv.py) and [R code](https://github.com/mwien/CIfly/blob/main/examples/ciflyr-examples/R/optimalIV.R) are also available in the CIfly Github repository. Finally, the functions can be called as shown in the following example:
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`# find an optimal instrument relative to nodes 3 and 4
+# in the ADMG with the specified directed and bidirected edges
+admg = {"-->": [(0, 1), (0, 3), (1, 2), (3, 4)], "<->": [(2, 4), (3, 4)]}
+x = 3
+y = 4
+
+print(optimal_instrument(admg, x, y))`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`# find an optimal instrument relative to nodes 4 and 5
+# in the ADMG with the specified directed and bidirected edges
+dirEdges <- rbind(c(1, 2), c(1, 4), c(2, 3), c(4, 5))
+bidirEdges <- rbind(c(3, 5), c(4, 5))
+g <- list("-->" = dirEdges, "<->" = bidirEdges)
+x <- 4
+y <- 5
+
+print(optimalInstrument(g, x, y))`
+} lang="r" title="" />
 </CodeSwitcher>

@@ -89,9 +89,28 @@ To construct the optimal set itself we need precisely the causal set and the for
 <Ruletable id="parents_cpdag" withHeader={true}/>
 
 ### Full implementation
-In the final implementation, we use the four tables introduced above to check whether $Y$ consists of possible descendants of $X$, to verify whether a valid adjustment set exists and finally to construct the optimal set simultanously.
+In the final implementation, we use the four tables introduced above to check whether $Y$ consists of possible descendants of $X$, to verify whether a valid adjustment set exists and finally to construct the optimal set simultanously. In your code, assign the ```ruletables``` variable according to the location of the rule tables in your project (in Python, the code uses a ```Path``` object from the ```pathlib``` library; in R, ```ruletables``` is a string holding the path to the folder).
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="optimal_adjustment.py"/>
 	<ExampleCode slot="r-code" id="optimalAdjustment.R"/>
+</CodeSwitcher>
+
+You can also find this code in the CIfly Github repository, see the [Python](https://github.com/mwien/CIfly/blob/main/examples/ciflypy-examples/ciflypy_examples/optimal_adjustment.py) and [R version](https://github.com/mwien/CIfly/blob/main/examples/ciflyr-examples/R/optimalAdjustment.R). Finally, the following short code snippet shows how this function can be called:
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`# find an optimal adjustment set for nodes x = 2 and y = 4
+# in the CPDAG with the specified directed and undirected edges
+cpdag = {"-->": [(1, 4), (3, 4), (2, 4)], "---": [(0, 1), (0, 3), (1, 3)]}
+
+print(optimal_adjustment(cpdag, [2], [4]))`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`# find an optimal adjustment set for nodes x = 3 and y = 5
+# in the CPDAG with the specified directed and undirected edges
+cpdag <- list("-->" = rbind(c(2, 5), c(4, 5), c(3, 5)), "---" = rbind(c(1, 2), c(1,4), c(2,4)))
+
+print(optimalAdjustment(cpdag, c(3), c(5)))`
+} lang="r" title="" />
 </CodeSwitcher>

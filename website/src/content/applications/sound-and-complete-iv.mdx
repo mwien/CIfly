@@ -84,7 +84,7 @@ forb <- append(reach(g, list("X" = cn), desTable), x)`
 Now, we are able to provide a full implementation based on the algorithm described above. The only thing we haven't discussed yet is how to compute $\tilde{G}$, that is the graph obtained by deleting all directed edges from $x$ to a node in $\text{causal}_G(x, y)$ from $G$. This graph modification can be done directly for graphs in the CIfly format (based on edgelists), but can also be done in your favorite graph library if you prefer to use the CIfly graph format only in ```reach``` calls. We show code for doing this directly CIfly graphs below. We note that one can also avoid the graph modification altogether, when encoding in the rule table that edges between $x$ and $\text{causal}_G(x, y)$ can not be traversed (as we have done in this [article](/applications/cpdag-adjustment-check/)). 
 
 
-The function removes edge between the sets ```from``` and ```to``` which have the specified edge type. This is done by constructing a new graph where these edges are filtered out. Hence, this function has no side effects and runs in time $O(p + m)$. You may implement this differently depending on your use case. We note that the function only works for ordered edges but can be easily adapted to unordered ones similar to the discussing for checking parents and siblings in [this article](/applications/optimal-iv/).
+The function removes edge between the sets ```from``` and ```to``` which have the specified edge type. This is done by constructing a new graph where these edges are filtered out. Hence, this function has no side effects and runs in time $O(p + m)$. You may implement this differently depending on your use case. We note that the function only works for ordered edges but can be easily adapted to unordered ones similar to the discussion for checking parents and siblings in [this article](/applications/optimal-iv/).
 <CodeSwitcher>
 <CodeHelper slot="python-code" code={
 `def removed_ordered_edges(g, from_vars, to_vars, edge_type):
@@ -125,9 +125,36 @@ The function removes edge between the sets ```from``` and ```to``` which have th
 } lang="r" title="" />
 </CodeSwitcher>
 
-Now, we are able to give the full implementation of the first sound-and-complete algorithm for finding conditional instruments. 
+Now, we are able to give the full implementation of the first sound-and-complete algorithm for finding conditional instruments. It also relies on the function ```get_ruletable_path```, respectively, ```getRuletablePath``` from ```utils```. As discussed [previously](/applications/cpdag-adjustment-check/#full-implementation), replace this according to the location of the rule tables in your project.
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="sound_and_complete_iv.py"/>
 	<ExampleCode slot="r-code" id="soundAndCompleteIV.R"/>
+</CodeSwitcher>
+
+This code is also available in the CIfly Github repository, see the [Python](https://github.com/mwien/CIfly/blob/main/examples/ciflypy-examples/ciflypy_examples/sound_and_complete_iv.py) and the [R version](https://github.com/mwien/CIfly/blob/main/examples/ciflyr-examples/R/soundAndCompleteIV.R). Finally, let us look at an example code snippet that calls the function above:
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`# find conditional instrumental set for nodes 3 and 4
+# for the ADMG with the specified directed and bidirected edges
+p = 5
+admg = {"-->": [(0, 1), (0, 3), (1, 2), (3, 4)], "<->": [(2, 4), (3, 4)]}
+x = 3
+y = 4
+
+print(sound_and_complete_instrument(p, admg, x, y))`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`# find conditional instrumental set for nodes 4 and 5
+# for the ADMG with the specified directed and bidirected edges
+p <- 5
+dirEdges <- rbind(c(1, 2), c(1, 4), c(2, 3), c(4, 5))
+bidirEdges <- rbind(c(3, 5), c(4, 5))
+g <- list("-->" = dirEdges, "<->" = bidirEdges)
+x <- 4
+y <- 5
+
+print(soundAndCompleteInstrument(p, g, x, y))`
+} lang="r" title="" />
 </CodeSwitcher>

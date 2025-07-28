@@ -77,9 +77,34 @@ This table tracks definite-status walks open given $W$ and it is easy to show th
 ### Full implementation
 In the final implementation, we use the four tables introduced above to check the conditions one-by-one. We note that we could add early returns for when either the first or the second condition is violated. This is omitted here in favor of a clearer presentation. 
 
-We rely on a function in ```utils``` that returns the path to the rule-table folder. In Python, this function returns a ```Path``` object from the ```pathlib``` library. In R, it returns a string holding this path, which is created using the ```here``` library. 
+The code uses a function in ```utils``` that returns the path to the rule-table folder. In Python, this function returns a ```Path``` object from the ```pathlib``` library. In R, it returns a string holding this path, which is created using the ```here``` library. Replace this line according to the location of the rule tables in your project.
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="cpdag_adjustment_check.py"/>
 	<ExampleCode slot="r-code" id="cpdagAdjustmentCheck.R"/>
+</CodeSwitcher>
+
+[The Python](https://github.com/mwien/CIfly/blob/main/examples/ciflypy-examples/ciflypy_examples/cpdag_adjustment_check.py) and [R code](https://github.com/mwien/CIfly/blob/main/examples/ciflyr-examples/R/cpdagAdjustmentCheck.R) are also available in the CIfly Github repository. Finally, as a simple example, the function for checking adjustment set validity can be called as follows:
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`# test adjustment set W = {3} relative to nodes 0 and 2
+# in the CPDAG with the specified directed and undirected edges
+cpdag = {"-->": [(0, 1), (0, 2), (3, 1), (3, 2)], "---": [(0, 4), (1, 2)]}
+X = [0]
+Y = [2]
+Z = [3]
+
+print(is_cpdag_adjustment(cpdag, X, Y, Z))`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`# test adjustment set W = {4} relative to nodes 1 and 3
+# in the CPDAG with the specified directed and undirected edges
+cpdag <- list("-->" = rbind(c(1, 2), c(1, 3), c(4, 2), c(4, 3)), "---" = rbind(c(1, 5), c(2, 3)))
+X <- c(1)
+Y <- c(3)
+Z <- c(4)
+
+print(isCpdagAdjustment(cpdag, X, Y, Z))`
+} lang="r" title="" />
 </CodeSwitcher>

@@ -76,11 +76,11 @@ The general idea of the algorithm is to go through all $x$, look up its parents 
 - all $y$ such that the pair $x$ and $y$ is not amenable in $G_{\text{true}}$, and
 - all $y$ such that $\text{pa}_{G_{\text{guess}}}(x)$ is not a valid adjustment set relative to $x$ and $y$ in $G_{\text{true}}$. 
 
-With these sets we can compote the parent adjustment distance directly as defined in Definition 1. For this, we iterate over all $y$ and check whether the parent adjustment distances increases for pair $x$ and $y$ in constant time per $y$. Overall, this yields run-time $O(p \cdot (p + m))$. 
+With these sets we can compute the parent adjustment distance directly as defined in Definition 1. For this, we iterate over all $y$ and check whether the parent adjustment distances increases for pair $x$ and $y$ in constant time per $y$. Overall, this yields run-time $O(p \cdot (p + m))$. 
 
 The only functionality we have not discussed yet is how to compute the set of parents for each node in the CIfly graph. Again, this can be done easily in Python and R directly, based on the CIfly graph representation. Of course, you can also rely on your favorite graph library or format for this task (and translate it into CIfly format only for performing the ```reach``` calls). 
 
-As in our R example, we defer this code to the ```utils.R``` source file, we show it here for completeness. The code avoids loops for better performance. 
+In our R example, we defer this code to a ```utils.R``` source file, we show it here for completeness. The code avoids loops for better performance. 
 
 ```r
 # p is the number of nodes and g the CIfly graph
@@ -97,12 +97,32 @@ parents <- function(p, g) {
 Generally, in this application we put more focus than usual on practical efficiency. More precisely,
 
 - we parse the graphs into CIfly objects outside of the loop over all $x$,
-- we have a *single* function which returns not-amenable $y$ and all $y$ for which the adjustment set is not valid in $G_{\text{guess}}$ to avoid computing non-amenable $y$ twice, and
+- we have a *single* function which returns non-amenable $y$ and all $y$ for which the adjustment set is not valid in $G_{\text{guess}}$ to avoid computing non-amenable $y$ twice, and
 - we make sure that testing membership in the sets of $y$ nodes by using the ```set``` data structure in Python and Boolean indicator vectors in R (there is no native set data structure in R).
 
-We do this to achieve comparable performance with the optimized [gadjid](https://github.com/CausalDisco/gadjid) library written in Rust and accessible from Python. In particular, parsing the graphs into CIfly objects is an effective trick for better practical performance if ```reach``` is called often with the same graph. Finally, we present the overall code for computing the parent adjustment distance.
+We do this to achieve comparable performance with the optimized [gadjid](https://github.com/CausalDisco/gadjid) library written in Rust and accessible from Python. In particular, parsing the graphs into CIfly objects is an effective trick for better practical performance if ```reach``` is called often with the same graph. Finally, we present the overall code for computing the parent adjustment distance. This code is available in the CIfly Github repository, too, see [the Python](https://github.com/mwien/CIfly/blob/main/examples/ciflypy-examples/ciflypy_examples/parent_aid.py) and [R code](https://github.com/mwien/CIfly/blob/main/examples/ciflyr-examples/R/parentAid.R). When using this code, set the ```ruletables``` variable according to the location of the rule tables in your project.
 
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="parent_aid.py"/>
 	<ExampleCode slot="r-code" id="parentAid.R"/>
+</CodeSwitcher>
+
+The following code snippet gives a simple example how to call this function:
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`# compute the parent adjustment distance between the two CPDAGs
+g_true = {"-->": [(0, 1), (2, 1), (3, 1)], "---": [(2, 3)]}
+g_guess = {"-->": [(0, 1), (2, 1), (0, 3), (2, 3)], "---": [(1, 3)]}
+
+# pass the number of nodes as first argument
+print(parent_aid(4, g_true, g_guess))`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`# compute the parent adjustment distance between the two CPDAGs
+cpdagTrue <- list("-->" = rbind(c(1, 2), c(3, 2), c(4, 2)), "---" = rbind(c(3, 4)))
+cpdagGuess <- list("-->" = rbind(c(1, 2), c(3, 2), c(1, 4), c(3, 4)), "---" = rbind(c(2, 4)))
+
+# pass the number of nodes as first argument
+print(parentAid(4, cpdagTrue, cpdagGuess))`
+} lang="r" title="" />
 </CodeSwitcher>

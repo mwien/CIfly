@@ -2,10 +2,10 @@ from ciflypy_examples.cpdag_adjustment_check import is_cpdag_adjustment
 
 
 def test_figure4_example3():
-    cpdag = {"-->": [(0, 1), (0, 2), (5, 3), (5, 4)], "---": [(0, 4), (1, 2)]}
+    cpdag = {"-->": [(0, 1), (0, 2), (3, 1), (3, 2)], "---": [(0, 4), (1, 2)]}
     X = [0]
     Y = [2]
-    Z = [5]
+    Z = [3]
 
     assert is_cpdag_adjustment(cpdag, X, Y, Z)
 

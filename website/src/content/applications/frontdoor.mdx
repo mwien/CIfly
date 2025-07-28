@@ -9,6 +9,7 @@ references: [pearlFrontdoor, jeongFrontdoor, wienoebstFrontdoor]
 number: 7
 ---
 
+import CodeHelper from "../../components/CodeHelper.astro"
 import CodeSwitcher from "../../components/CodeSwitcher.astro"
 import ExampleCode from "../../components/ExampleCode.astro"
 import Ruletable from "../../components/Ruletable.astro"
@@ -74,4 +75,52 @@ Adding the constraining set $R$ to the algorithm is fairly straightforward by re
 <CodeSwitcher>
 	<ExampleCode slot="python-code" id="frontdoor.py"/>
 	<ExampleCode slot="r-code" id="frontdoor.R"/>
+</CodeSwitcher>
+
+[The Python](https://github.com/mwien/CIfly/blob/main/examples/ciflypy-examples/ciflypy_examples/frontdoor.py) and [R code](https://github.com/mwien/CIfly/blob/main/examples/ciflyr-examples/R/frontdoor.R) are also available in the CIfly Github repository. In your code, assign the value of the ```ruletables``` variable according to the location of the rule tables in your project. Alternatively, it is also possible to specify the rule tables as multi-line strings directly in the Python or R code by setting ```table_as_string=True```, respectively, ```tableAsString=TRUE```. For example, for the ```ancestors_admg``` table this looks as follows: 
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`ancestors_table_string = """
+EDGES --> <--, <->
+SETS X
+START <-- AT X
+OUTPUT ...
+
+... | <-- | true
+"""
+ancestors_table = cf.Ruletable(ancestors_table_string, table_as_string=True)`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`ancestorsTableString = "
+EDGES --> <--, <->
+SETS X
+START <-- AT X
+OUTPUT ...
+
+... | <-- | true
+"
+ancestorsTable = parseRuletable(ancestorTableString, tableAsString=TRUE)`
+} lang="r" title="" />
+</CodeSwitcher>
+
+Finally, the function for finding front-door adjustment sets should be called as shown in the code snippet below:
+
+<CodeSwitcher>
+<CodeHelper slot="python-code" code={
+`# find front-door adjustment set for nodes 0 and 2
+# in the DAG with the specified directed edges
+g = {"-->": [(0, 1), (1, 2), (3, 0), (3, 2)]}
+x = [0]
+y = [2]
+print(frontdoor(g, x, y, [], [1]))`
+} lang="py" title="" />
+<CodeHelper slot="r-code" code={
+`# find front-door adjustment set for nodes 1 and 3
+# in the DAG with the specified directed edges
+g = list("-->" = rbind(c(1, 2), c(2, 3), c(4, 1), c(4, 3)))
+x <- c(1)
+y <- c(3)
+print(frontdoor(g, x, y, c(), c(2)))`
+} lang="r" title="" />
 </CodeSwitcher>
