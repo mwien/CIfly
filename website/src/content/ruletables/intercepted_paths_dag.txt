@@ -1,5 +1,6 @@
 ---
 title: "Intercepted paths"
+description: "CIfly rule table for tracking non-intercepted paths as used for checking a condition of the front-door criterion."
 source: intercepted_paths_dag
 graph: DAG
 references: []

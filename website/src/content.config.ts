@@ -31,6 +31,7 @@ const ruletables = defineCollection({
   loader: glob({ pattern: "*.{md,mdx}", base: "./src/content/ruletables" }),
   schema: z.object({
     title: z.string(),
+    description: z.string(),
     source: reference("ruletables_raw"),
     graph: z.string(),
     references: z.array(reference("references")),
@@ -77,6 +78,7 @@ const applications = defineCollection({
     title: z.string(),
     shortTitle: z.string(),
     summary: z.string(),
+    description: z.string(),
     code: z.array(reference("code_raw")),
     ruletables: z.array(reference("ruletables_raw")),
     graph: z.string(),
@@ -102,6 +104,7 @@ const docs = defineCollection({
     title: z.string(),
     shortTitle: z.string(),
     summary: z.string(),
+    description: z.string(),
     number: z.number(),
   }),
 });
