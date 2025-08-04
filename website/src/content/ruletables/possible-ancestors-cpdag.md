@@ -1,5 +1,6 @@
 ---
 title: "Possible ancestors"
+description: "CIfly rule table for finding possible ancestors in a CPDAG."
 source: possible_ancestors_cpdag
 graph: CPDAG
 references: []

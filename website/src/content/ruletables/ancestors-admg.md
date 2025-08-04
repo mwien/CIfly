@@ -1,5 +1,6 @@
 ---
 title: "Ancestors"
+description: "Simple CIfly rule table for computing ancestorsin an ADMG."
 source: ancestors_admg
 graph: ADMG
 references: []
