@@ -8,3 +8,5 @@ __pycache__/
 target/
 .env/
 ciflyr/.here
+
+*.pdf
