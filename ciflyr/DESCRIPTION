@@ -1,6 +1,6 @@
 Package: ciflyr
 Title: Reachability-Based Primitives for Graphical Causal Inference
-Version: 0.1.1.9000
+Version: 0.1.2
 Authors@R: c(
     person("Marcel", "Wienöbst", email = "marcel.wienoebst@gmx.de", role = c("aut", "cre", "cph")),
     person("Sebastian", "Weichwald", role = "aut"),

@@ -1,58 +1,14 @@
-The authors of the dependency Rust crates:
+Authors of ciflyr: Marcel Wienöbst, Sebastian Weichwald, Leonard Henckel
 
-build-print (version 0.1.1):
-  sam0x17
+Authors of the dependency Rust crates:
 
-cifly (version 0.1.0):
-  Marcel Wienöbst
-  Sebastian Weichwald
-  Leonard Henckel
-
-extendr-api (version 0.8.0):
-  andy-thomason
-  Thomas Down
-  Mossa Merhi Reimert
-  Josiah Parry
-  Claus O. Wilke
-  Hiroaki Yutani
-  Ilia A. Kosenkov
-  Michael Milton
-
-extendr-ffi (version 0.8.0):
-  andy-thomason
-  Thomas Down
-  Mossa Merhi Reimert
-  Josiah Parry
-  Claus O. Wilke
-  Hiroaki Yutani
-  Ilia A. Kosenkov
-  Michael Milton
-
-extendr-macros (version 0.8.0):
-  andy-thomason
-  Thomas Down
-  Mossa Merhi Reimert
-  Josiah Parry
-  Claus O. Wilke
-  Hiroaki Yutani
-  Ilia A. Kosenkov
-  Michael Milton
-
-once_cell (version 1.21.3):
-  Aleksey Kladov
-
-paste (version 1.0.15):
-  David Tolnay
-
-proc-macro2 (version 1.0.95):
-  David Tolnay
-  Alex Crichton
-
-quote (version 1.0.40):
-  David Tolnay
-
-syn (version 2.0.101):
-  David Tolnay
-
-unicode-ident (version 1.0.18):
-  David Tolnay
+- cifly (version 0.1.3): Marcel Wienöbst, Sebastian Weichwald, Leonard Henckel
+- extendr-api (version 0.8.1): andy-thomason, Thomas Down, Mossa Merhi Reimert, Josiah Parry, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
+- extendr-ffi (version 0.8.1): andy-thomason, Thomas Down, Mossa Merhi Reimert, Josiah Parry, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
+- extendr-macros (version 0.8.1): andy-thomason, Thomas Down, Mossa Merhi Reimert, Josiah Parry, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
+- once_cell (version 1.21.3): Aleksey Kladov
+- paste (version 1.0.15): David Tolnay
+- proc-macro2 (version 1.0.101): David Tolnay, Alex Crichton
+- quote (version 1.0.41): David Tolnay
+- syn (version 2.0.106): David Tolnay
+- unicode-ident (version 1.0.19): David Tolnay
