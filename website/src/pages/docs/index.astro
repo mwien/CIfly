@@ -3,13 +3,14 @@ import "../../styles/global.css";
 import Layout from "../../layouts/Layout.astro";
 import DocCard from "../../components/DocCard.astro";
 import { getCollection } from "astro:content";
-import Prose from "../../components/Prose.astro";
-import DocsIntro from "../../content/docs_intro.mdx";
 
 const docs = await getCollection("docs");
 ---
 
-<Layout title="Docs">
+<Layout
+  title="Docs"
+  description="Documentation of the CIfly framework for designing efficient causal inference algorithms with rule tables."
+>
   <div class="w-full md:w-7/10">
     <p
       class="text-base/7 md:text-lg text-pretty mb-4 mt-1 md:my-4 hyphens-auto"

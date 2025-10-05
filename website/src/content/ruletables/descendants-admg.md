@@ -1,5 +1,6 @@
 ---
 title: "Descendants"
+description: "Simple CIfly rule table for finding descendants in an ADMG."
 source: descendants_admg
 graph: ADMG
 references: []

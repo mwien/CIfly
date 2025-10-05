@@ -1,5 +1,6 @@
 ---
 title: "d-connected"
+description: "CIfly rule table for finding d-connected nodes in an ADMG."
 source: dconnected_admg
 graph: ADMG
 references: [shachterBayesBall]

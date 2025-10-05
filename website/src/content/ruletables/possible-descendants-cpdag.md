@@ -1,5 +1,6 @@
 ---
 title: "Possible descendants"
+description: "CIfly rule table for finding possible descendants in a CPDAG."
 source: possible_descendants_cpdag
 graph: CPDAG
 references: []
