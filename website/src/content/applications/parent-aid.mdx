@@ -33,7 +33,7 @@ Consider two graphs $G_{\text{guess}} = (V, E_{\text{guess}})$ and $G_{\text{tru
 2. $y$ is a parent of $x$ in $G_{\text{guess}}$ which implies a causal effect of zero but $y$ is a descendant of $x$ in $G_{\text{true}}$ contradicting this, or
 3.  the parents of $x$ in $G_{\text{guess}}$ are a valid adjustment set in $G_{\text{guess}}$ but not a valid adjustment set relative to $x$ and $y$ in $G_{\text{true}}$.
 
-Directly evaluating this definition, by iterating over all node pairs $x, y$ and checking the relevant conditions of the adjustment criterion as discussed, e.g., in our [earlier article](/application/cpdag-adjustment-check/), would yield a $p^2 \cdot (p + m)$ time algorithm for graphs with $p$ nodes and $m$ edges. As shown by <Reference id="henckelAID" format="author(year)"/>, this can be improved further by checking, for a given $x$, the status of all $y$ in linear-time at once. 
+Directly evaluating this definition, by iterating over all node pairs $x, y$ and checking the relevant conditions of the adjustment criterion as discussed, e.g., in our [earlier article](/applications/cpdag-adjustment-check/), would yield a $p^2 \cdot (p + m)$ time algorithm for graphs with $p$ nodes and $m$ edges. As shown by <Reference id="henckelAID" format="author(year)"/>, this can be improved further by checking, for a given $x$, the status of all $y$ in linear-time at once. 
 
 ### Efficient algorithm for the parent adjustment distance
 The algorithm by <Reference id="henckelAID" format="author(year)"/> for computing the parent adjustment distance in time $O(p \cdot (p + m))$ is based on the following lemma.
