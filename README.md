@@ -25,7 +25,7 @@ In Python, the installation should work out-of-the-box without relying on any fu
 If you use CIfly in your scientific work, please cite [this paper](https://arxiv.org/abs/2506.15758) introducing CIfly and its theoretical foundations:
 ```bibtex
 @article{cifly2025,
-  author  = {Marcel Wien{"{o}}bst and Sebastian Weichwald and Leonard Henckel},
+  author  = {Marcel Wien{\"o}bst and Sebastian Weichwald and Leonard Henckel},
   title   = {{Linear-Time Primitives for Algorithm Development in Graphical Causal Inference}},
   journal = {{arXiv preprint arXiv:2506.15758}},
   year    = {2025}
