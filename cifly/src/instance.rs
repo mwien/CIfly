@@ -104,14 +104,14 @@ impl Error for ParseGraphError {
 pub struct Sets(Vec<Vec<bool>>);
 
 impl Sets {
-    /// Constructs a new `Sets` from a map of set labels to element lists.
+    /// Constructs a new `Sets` from a map of set names to element lists.
     ///
-    /// Each set label must be defined in the `Ruletable`.
+    /// Each set name must be defined in the `Ruletable`.
     /// Duplicates within a set cause an error.
     pub fn new(
         sets: &HashMap<String, Vec<usize>>,
         ruletable: &Ruletable,
-    ) -> Result<Sets, ParseSetsError> {
+    ) -> Result<Self, ParseSetsError> {
         let mut z = vec![Vec::new(); ruletable.num_sets()];
         for (set_string, set) in sets.iter() {
             let n = *set.iter().max().unwrap_or(&0) + 1;
@@ -130,7 +130,7 @@ impl Sets {
                 z[set_num][x] = true;
             }
         }
-        Ok(Sets(z))
+        Ok(Self(z))
     }
 
     pub(crate) fn contains(&self, set_id: usize, element: usize) -> bool {
@@ -164,6 +164,56 @@ impl fmt::Display for ParseSetsError {
 }
 
 impl Error for ParseSetsError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
+}
+
+// TODO: try to get rid of use of 'labels' independent of node labels, replace by 'name'
+
+/// Internal `Labels` representation.
+///
+/// # Usage
+/// Can be constructed using [`Labels::new`] and then passed to `reach`.
+pub struct Labels(Vec<Vec<usize>>);
+
+impl Labels {
+    /// Constructs a new `Labels` from a map of label names to lists of node labels (specified for
+    /// each node).
+    ///
+    /// Each label name must be defined in the `Ruletable`.
+    pub fn new(
+        labels: &HashMap<String, Vec<usize>>,
+        ruletable: &Ruletable,
+    ) -> Result<Self, ParseLabelsError> {
+        let mut z = vec![Vec::new(); ruletable.num_labels()];
+        for (name, l) in labels.iter() {
+            let label_num = ruletable
+                .get_label_id(name)
+                .ok_or(ParseLabelsError(format!(
+                    "label {name} was not specified in rule table"
+                )))?;
+            z[label_num] = l.clone();
+        }
+        Ok(Labels(z))
+    }
+
+    pub(crate) fn get_label_for(&self, set_id: usize, node_id: usize) -> usize {
+        self.0[set_id][node_id]
+    }
+}
+
+/// Error type for reporting invalid set definitions.
+#[derive(Debug)]
+pub struct ParseLabelsError(String);
+
+impl fmt::Display for ParseLabelsError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Error when pasetsrsing labels: {}", self.0)
+    }
+}
+
+impl Error for ParseLabelsError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         None
     }

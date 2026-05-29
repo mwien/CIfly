@@ -16,6 +16,7 @@ pub struct Ruletable {
     colors: HashMap<String, usize>,
     edges: HashMap<String, (usize, usize)>,
     sets: HashMap<String, usize>,
+    labels: HashMap<String, usize>,
     start: Vec<(usize, usize, usize)>,
     output: Vec<(usize, usize)>,
     rules: Vec<Rule>,
@@ -34,6 +35,10 @@ impl Ruletable {
 
     pub(crate) fn num_sets(&self) -> usize {
         self.sets.len()
+    }
+
+    pub(crate) fn num_labels(&self) -> usize {
+        self.labels.len()
     }
 
     pub(crate) fn starts(&self) -> &Vec<(usize, usize, usize)> {
@@ -58,6 +63,10 @@ impl Ruletable {
 
     pub(crate) fn get_set_id(&self, s: &str) -> Option<usize> {
         self.sets.get(s).copied()
+    }
+
+    pub(crate) fn get_label_id(&self, s: &str) -> Option<usize> {
+        self.labels.get(s).copied()
     }
 
     pub(crate) fn pass(&self, sets: &Sets, s1: State, s2: State) -> bool {
@@ -125,6 +134,7 @@ impl Ruletable {
             colors: HashMap::new(),
             edges: HashMap::new(),
             sets: HashMap::new(),
+            labels: HashMap::new(),
             start: Vec::new(),
             output: Vec::new(),
             rules: Vec::new(),
@@ -142,6 +152,7 @@ impl Ruletable {
             LineType::Edges,
             LineType::Colors,
             LineType::Sets,
+            LineType::Labels,
             LineType::Start,
             LineType::Output,
         ];
@@ -172,8 +183,9 @@ impl Ruletable {
         match line_type {
             LineType::Empty | LineType::Comment => (),
             LineType::Edges => self.edges = Self::parse_edges(&to_parse)?,
-            LineType::Colors => self.colors = Self::parse_labels(&to_parse, "colors")?,
-            LineType::Sets => self.sets = Self::parse_labels(&to_parse, "sets")?,
+            LineType::Colors => self.colors = Self::parse_names(&to_parse, "colors")?,
+            LineType::Sets => self.sets = Self::parse_names(&to_parse, "sets")?,
+            LineType::Labels => self.labels = Self::parse_names(&to_parse, "labels")?,
             LineType::Start => self.start.append(&mut self.parse_start(&to_parse)?),
             LineType::Output => self.output.append(&mut self.parse_output(&to_parse)?),
             LineType::Rule => self.rules.push(self.parse_rule(&to_parse)?),
@@ -212,7 +224,8 @@ impl Ruletable {
         Ok(result)
     }
 
-    fn parse_labels(
+    // TODO: could check that no name is used twice (for colors, sets, labels)
+    fn parse_names(
         s: &str,
         description: &str,
     ) -> Result<HashMap<String, usize>, ParseRuletableError> {
@@ -606,6 +619,7 @@ enum LineType {
     Edges,
     Colors,
     Sets,
+    Labels,
     Start,
     Output,
     Rule,
@@ -619,6 +633,7 @@ impl fmt::Display for LineType {
             LineType::Edges => write!(f, "edge declaration"),
             LineType::Colors => write!(f, "color declaration"),
             LineType::Sets => write!(f, "set declaration"),
+            LineType::Labels => write!(f, "labels declaration"),
             LineType::Start => write!(f, "start declaration"),
             LineType::Output => write!(f, "output declaration"),
             LineType::Rule => write!(f, "rule declaration"),
@@ -634,6 +649,7 @@ impl LineType {
             LineType::Edges => Some("EDGES"),
             LineType::Colors => Some("COLORS"),
             LineType::Sets => Some("SETS"),
+            LineType::Labels => Some("LABELS"),
             LineType::Start => Some("START"),
             LineType::Output => Some("OUTPUT"),
         }
